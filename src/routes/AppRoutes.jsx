@@ -7,6 +7,7 @@ import MainLayout from '../layouts/MainLayout';
 import Ranking from '../pages/Ranking';
 import PSNShop from '../pages/PSNShop';
 import Conocenos from '../pages/Conocenos';
+import ProtectedRoute from '../components/ProtectedRoute';
 
 function AppRoutes() {
   return (
@@ -14,11 +15,46 @@ function AppRoutes() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/matches" element={<Matches />} />
-          <Route path="/ranking" element={<Ranking />} />
-          <Route path="/shop" element={<PSNShop />} />
-          <Route path="/conocenos" element={<Conocenos />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/matches"
+            element={
+              <ProtectedRoute>
+                <Matches />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ranking"
+            element={
+              <ProtectedRoute>
+                <Ranking />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/shop"
+            element={
+              <ProtectedRoute>
+                <PSNShop />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/conocenos"
+            element={
+              <ProtectedRoute>
+                <Conocenos />
+              </ProtectedRoute>
+            }
+          />
         </Route>
         <Route path="/auth" element={<AuthPage />} />
       </Routes>
