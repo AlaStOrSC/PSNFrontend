@@ -96,11 +96,12 @@ function Profile() {
       const errorMessage = error.response?.data?.error || error.response?.data?.message || t('profile.error.update_profile');
       if (errorMessage.includes('The email is already in use')) {
         setModalMessage(t('profile.error.email_in_use'));
-        setIsModalOpen(true);
+      } else if (errorMessage.includes('Usuario no autenticado')) {
+        setModalMessage(t('profile.error.unauthenticated'));
       } else {
         setModalMessage(errorMessage);
-        setIsModalOpen(true);
       }
+      setIsModalOpen(true);
       setSuccess(null);
     }
   };
@@ -114,11 +115,10 @@ function Profile() {
     setSuccess(null);
 
     try {
-      // Validar tipo y tamaño de la imagen
       if (!['image/jpeg', 'image/png'].includes(file.type)) {
         throw new Error(t('profile.error.invalid_format'));
       }
-      if (file.size > 5 * 1024 * 1024) { // 5MB
+      if (file.size > 5 * 1024 * 1024) { 
         throw new Error(t('profile.error.file_too_large'));
       }
 
@@ -139,7 +139,11 @@ function Profile() {
     } catch (error) {
       console.error('Error al subir la foto:', error);
       const errorMessage = error.response?.data?.error || error.message || t('profile.error.upload_picture');
-      setModalMessage(errorMessage);
+      if (errorMessage.includes('Usuario no autenticado')) {
+        setModalMessage(t('profile.error.unauthenticated'));
+      } else {
+        setModalMessage(errorMessage);
+      }
       setIsModalOpen(true);
       setSuccess(null);
     } finally {
