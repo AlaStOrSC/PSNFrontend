@@ -104,34 +104,34 @@ function Matches() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-neutral py-8 text-center">
-        <p className="text-lg text-gray-700">Cargando partidos...</p>
+      <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8 text-center">
+        <p className="text-lg text-gray-700 dark:text-dark-text-secondary">Cargando partidos...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-neutral py-8 text-center">
-        <p className="text-lg text-red-500">{error}</p>
+      <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8 text-center">
+        <p className="text-lg text-red-500 dark:text-dark-error">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-neutral py-8">
+    <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-primary mb-6 text-center">Tus partidos</h1>
+        <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">Tus partidos</h1>
         <div className="flex justify-center space-x-4 mb-6">
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="bg-primary text-white px-6 py-3 rounded-lg font-medium hover:bg-secondary transition-colors"
+            className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
           >
             {showCreateForm ? 'Cerrar formulario' : 'Crear partido'}
           </button>
           <button
             onClick={() => setShowFilterForm(!showFilterForm)}
-            className="bg-accent text-white px-6 py-3 rounded-lg font-medium hover:bg-orange-500 transition-colors"
+            className="bg-accent text-white dark:bg-dark-text-accent dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-orange-500 dark:hover:bg-yellow-600 transition-colors"
           >
             {showFilterForm ? 'Cerrar filtros' : 'Filtros'}
           </button>
@@ -144,9 +144,9 @@ function Matches() {
             onApplyFilters={handleApplyFilters}
           />
         )}
-        <div className="space-y-6">   {/* grid grid-cols-1 sm:grid-cols-2 gap-4*/}
+        <div className="space-y-6">
           {filteredMatches.length === 0 ? (
-            <p className="text-center text-gray-600">No tienes partidos que coincidan con los filtros.</p>
+            <p className="text-center text-gray-600 dark:text-dark-text-secondary">No tienes partidos que coincidan con los filtros.</p>
           ) : (
             filteredMatches.map((match) => (
               <MatchCard

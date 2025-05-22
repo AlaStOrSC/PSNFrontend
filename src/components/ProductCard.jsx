@@ -18,46 +18,48 @@ function ProductCard({ product, onPurchase }) {
           <StarIcon className="w-5 h-5 text-yellow-400" style={{ clipPath: 'inset(0 50% 0 0)' }} />
         )}
         {[...Array(emptyStars)].map((_, i) => (
-          <StarIcon key={`empty-${i}`} className="w-5 h-5 text-gray-300" />
+          <StarIcon key={`empty-${i}`} className="w-5 h-5 text-gray-300 dark:text-gray-600" />
         ))}
-        <span className="ml-1 text-sm">({rating.toFixed(1)})</span>
+        <span className="ml-1 text-sm text-gray-600 dark:text-dark-text-secondary">({rating.toFixed(1)})</span>
       </div>
     );
   };
 
   return (
-    <div className="bg-white shadow-md rounded-lg p-4">
-      <h3 className="text-lg font-semibold">{product.name}</h3>
-      <img
-        src={product.image}
-        alt={product.name}
-        className="w-full h-48 object-cover rounded-lg mt-2"
-      />
-      <p className="text-xl font-bold mt-2">€{product.price.toFixed(2)}</p>
+    <div className="bg-white dark:bg-dark-bg-secondary shadow-md dark:shadow-dark-shadow rounded-lg p-4">
+      <h3 className="text-lg font-semibold text-gray-800 dark:text-dark-text-primary">{product.name}</h3>
+      <div className="relative w-full h-48 mt-2 bg-white dark:bg-dark-bg-secondary rounded-lg overflow-hidden">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-full object-contain rounded-lg"
+        />
+      </div>
+      <p className="text-xl font-bold mt-2 text-gray-900 dark:text-dark-text-primary">€{product.price.toFixed(2)}</p>
       <button
         onClick={() => setShowDetails(!showDetails)}
-        className="bg-primary text-white px-4 py-2 rounded-lg mt-2 hover:bg-secondary transition-colors"
+        className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg mt-2 hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
       >
         {showDetails ? 'Ocultar detalle' : 'Ver detalle'}
       </button>
 
       {showDetails && (
         <div className="mt-4">
-          <p className="text-sm text-gray-600">Descripción: {product.description}</p>
+          <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Descripción: {product.description}</p>
           <div className="mt-2">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 dark:text-dark-text-secondary">
               Vendedor: {product.seller.username}
             </p>
             <div className="group relative">
               {renderStars(product.seller.averageRating || 0)}
-              <span className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded py-1 px-2">
+              <span className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 dark:bg-dark-bg-tertiary text-white dark:text-dark-text-primary text-xs rounded py-1 px-2">
                 {product.seller.averageRating?.toFixed(1) || 0}
               </span>
             </div>
           </div>
           <button
             onClick={onPurchase}
-            className="bg-green-500 text-white px-4 py-2 rounded-lg mt-2 hover:bg-green-600 transition-colors"
+            className="bg-green-500 text-white dark:bg-green-600 dark:text-dark-text-primary px-4 py-2 rounded-lg mt-2 hover:bg-green-600 dark:hover:bg-green-700 transition-colors"
           >
             Comprar
           </button>

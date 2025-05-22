@@ -8,6 +8,7 @@ import ProfileCard from '../components/ProfileCard';
 function Profile() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { theme } = useSelector((state) => state.theme);
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({
     phone: user?.phone || '',
@@ -60,10 +61,12 @@ function Profile() {
   }, [dispatch]);
 
   if (!user) {
-    return <div className="text-center text-red-500">Error: No se encontró el usuario.</div>;
+    return <div className="text-center text-red-500 dark:text-dark-error">Error: No se encontró el usuario.</div>;
   }
 
-  const defaultAvatar = `https://ui-avatars.com/api/?name=${user.username}&background=05374d&color=fff&size=128`;
+  const defaultAvatar = `https://ui-avatars.com/api/?name=${user.username}&background=${
+    theme === 'dark' ? '0f172a' : '05374d'
+  }&color=fff&size=128`;
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -203,9 +206,9 @@ function Profile() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-neutral py-8">
+    <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-primary mb-6 text-center">Mi Perfil</h1>
+        <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">Mi Perfil</h1>
 
         <Modal
           isOpen={isModalOpen}
@@ -233,7 +236,7 @@ function Profile() {
                 <button
                   onClick={handleUploadClick}
                   disabled={isUploading}
-                  className="text-primary hover:underline disabled:opacity-50"
+                  className="text-primary dark:text-dark-text-accent hover:underline dark:hover:text-dark-secondary disabled:opacity-50"
                 >
                   {isUploading ? 'Subiendo...' : user.profilePicture ? 'Cambiar foto' : 'Subir foto'}
                 </button>
@@ -241,67 +244,67 @@ function Profile() {
 
               <div className="space-y-2 flex-1">
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700">Nombre:</span>
-                  <span className="text-gray-600">{user.username}</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Nombre:</span>
+                  <span className="text-gray-600 dark:text-dark-text-secondary">{user.username}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700">Teléfono:</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Teléfono:</span>
                   {isEditing ? (
                     <input
                       type="text"
                       name="phone"
                       value={editedData.phone}
                       onChange={handleInputChange}
-                      className="border rounded-lg p-1 text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="border rounded-lg p-1 text-gray-600 dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                     />
                   ) : (
-                    <span className="text-gray-600">{user.phone}</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.phone}</span>
                   )}
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700">Email:</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Email:</span>
                   {isEditing ? (
                     <input
                       type="email"
                       name="email"
                       value={editedData.email}
                       onChange={handleInputChange}
-                      className="border rounded-lg p-1 text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="border rounded-lg p-1 text-gray-600 dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                     />
                   ) : (
-                    <span className="text-gray-600">{user.email}</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.email}</span>
                   )}
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700">Ciudad:</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Ciudad:</span>
                   {isEditing ? (
                     <input
                       type="text"
                       name="city"
                       value={editedData.city}
                       onChange={handleInputChange}
-                      className="border rounded-lg p-1 text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary"
+                      className="border rounded-lg p-1 text-gray-600 dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                     />
                   ) : (
-                    <span className="text-gray-600">{user.city}</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.city}</span>
                   )}
                 </div>
               </div>
 
-              {success && <p className="text-green-500 text-center mt-4">{success}</p>}
+              {success && <p className="text-green-500 dark:text-green-400 text-center mt-4">{success}</p>}
 
               <div className="flex justify-center mt-4 space-x-2">
                 {isEditing ? (
                   <button
                     onClick={handleSave}
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors"
+                    className="px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
                   >
                     Guardar cambios
                   </button>
                 ) : (
                   <button
                     onClick={handleEdit}
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors"
+                    className="px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
                   >
                     Editar
                   </button>
@@ -312,32 +315,32 @@ function Profile() {
 
           <div className="max-w-md mx-auto sm:max-w-none sm:mx-0 sm:flex-1">
             <ProfileCard>
-              <h2 className="text-xl font-semibold text-primary mb-4 text-center">Estadísticas</h2>
+              <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">Estadísticas</h2>
               <div className="flex-1 flex items-center">
                 <div className="space-y-2 w-full">
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700">Puntuación:</span>
-                    <span className="text-gray-600">{(user.score ?? 0).toFixed(2)}</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Puntuación:</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{(user.score ?? 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700">Partidos ganados:</span>
-                    <span className="text-gray-600">{user.matchesWon ?? 0}</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Partidos ganados:</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesWon ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700">Partidos perdidos:</span>
-                    <span className="text-gray-600">{user.matchesLost ?? 0}</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Partidos perdidos:</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesLost ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700">Partidos empatados:</span>
-                    <span className="text-gray-600">{user.matchesDrawn ?? 0}</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Partidos empatados:</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesDrawn ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700">Partidos totales:</span>
-                    <span className="text-gray-600">{user.totalMatches ?? 0}</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Partidos totales:</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.totalMatches ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700">Porcentaje de victoria:</span>
-                    <span className="text-gray-600">{winPercentage}%</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Porcentaje de victoria:</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{winPercentage}%</span>
                   </div>
                 </div>
               </div>
@@ -347,56 +350,66 @@ function Profile() {
 
         <div className="max-w-md mx-auto">
           <ProfileCard>
-            <h2 className="text-xl font-semibold text-primary mb-4 text-center">Solicitudes de amistad</h2>
+            <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">Solicitudes de amistad</h2>
             {loadingFriends ? (
-              <p className="text-center text-gray-600">Cargando datos de amistad...</p>
+              <p className="text-center text-gray-600 dark:text-dark-text-secondary">Cargando datos de amistad...</p>
             ) : errorFriends ? (
-              <p className="text-center text-red-500">{errorFriends}</p>
+              <p className="text-center text-red-500 dark:text-dark-error">{errorFriends}</p>
             ) : (
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">Solicitudes de amistad enviadas</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">Solicitudes de amistad enviadas</h3>
                   {pendingRequests.sent.length > 0 ? (
                     <div className="space-y-2">
                       {pendingRequests.sent.map((request) => (
-                        <div key={request.recipientId} className="bg-gray-100 p-3 rounded-lg flex items-center">
+                        <div key={request.recipientId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                           <img
-                            src={request.profilePicture || `https://ui-avatars.com/api/?name=${request.username}&background=05374d&color=fff&size=40`}
+                            src={
+                              request.profilePicture ||
+                              `https://ui-avatars.com/api/?name=${request.username}&background=${
+                                theme === 'dark' ? '0f172a' : '05374d'
+                              }&color=fff&size=40`
+                            }
                             alt={request.username}
                             className="w-10 h-10 rounded-full mr-3"
                           />
-                          <span className="flex-1 text-gray-700">
+                          <span className="flex-1 text-gray-700 dark:text-dark-text-primary">
                             Solicitud enviada a {request.username}
                           </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-600">No hay solicitudes enviadas.</p>
+                    <p className="text-gray-600 dark:text-dark-text-secondary">No hay solicitudes enviadas.</p>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">Solicitudes de amistad recibidas</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">Solicitudes de amistad recibidas</h3>
                   {pendingRequests.received.length > 0 ? (
                     <div className="space-y-2">
                       {pendingRequests.received.map((request) => (
-                        <div key={request.requesterId} className="bg-gray-100 p-3 rounded-lg flex items-center">
+                        <div key={request.requesterId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                           <img
-                            src={request.profilePicture || `https://ui-avatars.com/api/?name=${request.username}&background=05374d&color=fff&size=40`}
+                            src={
+                              request.profilePicture ||
+                              `https://ui-avatars.com/api/?name=${request.username}&background=${
+                                theme === 'dark' ? '0f172a' : '05374d'
+                              }&color=fff&size=40`
+                            }
                             alt={request.username}
                             className="w-10 h-10 rounded-full mr-3"
                           />
-                          <span className="flex-1 text-gray-700">{request.username}</span>
+                          <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{request.username}</span>
                           <button
                             onClick={() => handleAcceptRequest(request.requesterId)}
-                            className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg ml-2"
+                            className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1 rounded-lg ml-2"
                           >
                             Aceptar
                           </button>
                           <button
                             onClick={() => handleRejectRequest(request.requesterId)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg ml-2"
+                            className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
                           >
                             Rechazar
                           </button>
@@ -404,25 +417,30 @@ function Profile() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-600">No hay solicitudes recibidas.</p>
+                    <p className="text-gray-600 dark:text-dark-text-secondary">No hay solicitudes recibidas.</p>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">Amigos</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">Amigos</h3>
                   {friends.length > 0 ? (
                     <div className="space-y-2">
                       {friends.map((friend) => (
-                        <div key={friend.id} className="bg-gray-100 p-3 rounded-lg flex items-center">
+                        <div key={friend.id} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                           <img
-                            src={friend.profilePicture || `https://ui-avatars.com/api/?name=${friend.username}&background=05374d&color=fff&size=40`}
+                            src={
+                              friend.profilePicture ||
+                              `https://ui-avatars.com/api/?name=${friend.username}&background=${
+                                theme === 'dark' ? '0f172a' : '05374d'
+                              }&color=fff&size=40`
+                            }
                             alt={friend.username}
                             className="w-10 h-10 rounded-full mr-3"
                           />
-                          <span className="flex-1 text-gray-700">{friend.username}</span>
+                          <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{friend.username}</span>
                           <button
                             onClick={() => handleRemoveFriend(friend.id)}
-                            className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-lg ml-2"
+                            className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
                           >
                             Eliminar
                           </button>
@@ -430,7 +448,7 @@ function Profile() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-600">No tienes amigos todavía.</p>
+                    <p className="text-gray-600 dark:text-dark-text-secondary">No tienes amigos todavía.</p>
                   )}
                 </div>
               </div>

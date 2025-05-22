@@ -14,6 +14,8 @@ function Ranking() {
   const [modalMessage, setModalMessage] = useState('');
   const { isMobile } = useWindowSize();
   const { user } = useSelector((state) => state.auth);
+  const { theme } = useSelector((state) => state.theme);
+  
 
   useEffect(() => {
     const fetchRanking = async () => {
@@ -63,10 +65,9 @@ function Ranking() {
     }
   };
 
-  const handleChat = (userId) => {
-    // Implementar lógica para abrir el chat (pendiente)
-    console.log(`Abrir chat con usuario ${userId}`);
-  };
+  // const handleChat = (userId) => { TODO
+  //   console.log(`Abrir chat con usuario ${userId}`);
+  // };
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -90,7 +91,12 @@ function Ranking() {
       renderCell: (params) => (
         <div className="flex items-center">
           <img
-            src={params.row.profilePicture || `https://ui-avatars.com/api/?name=${params.row.username}&background=05374d&color=fff&size=40`}
+            src={
+  params.row.profilePicture ||
+  `https://ui-avatars.com/api/?name=${params.row.username}&background=${
+    theme === 'dark' ? '0f172a' : '05374d'
+  }&color=fff&size=40`
+}
             alt={params.row.username}
             className="w-8 h-8 rounded-full mr-2"
           />
@@ -131,14 +137,14 @@ function Ranking() {
         <div className="flex space-x-2">
           <button
             onClick={() => handleAddFriend(params.row.id)}
-            className="text-primary hover:text-secondary transition-colors duration-200"
+            className="text-primary hover:text-secondary transition-colors duration-200 dark:text-dark-text-accent dark:hover:text-dark-secondary"
             title="Añadir amigo"
           >
             <UserPlusIcon className="w-5 h-5" />
           </button>
           <button
             onClick={() => handleChat(params.row.id)}
-            className="text-primary hover:text-secondary transition-colors duration-200"
+            className="text-primary hover:text-secondary transition-colors duration-200 dark:text-dark-text-accent dark:hover:text-dark-secondary"
             title="Abrir chat"
           >
             <ChatBubbleLeftIcon className="w-5 h-5" />
@@ -149,27 +155,23 @@ function Ranking() {
   ];
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center text-primary">
+    <div className="container mx-auto p-4 bg-neutral dark:bg-dark-bg">
+      <h1 className="text-3xl font-bold mb-6 text-center text-primary dark:text-dark-text-accent">
         Ranking de Jugadores
       </h1>
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title={
-          modalMessage.includes('Error') ||
-          modalMessage.includes('Ya has enviado')
-            ? 'Error'
-            : 'Éxito'
-        }
+        title={modalMessage.includes('Error') || modalMessage.includes('Ya has enviado') ? 'Error' : 'Éxito'}
         message={modalMessage}
+        className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
       />
       {loading ? (
-        <p className="text-center text-gray-600">Cargando ranking...</p>
+        <p className="text-center text-gray-600 dark:text-dark-text-secondary">Cargando ranking...</p>
       ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
+        <p className="text-center text-red-500 dark:text-dark-error">{error}</p>
       ) : (
-        <div className="bg-white rounded-lg shadow-xl p-6 overflow-x-auto">
+        <div className="bg-neutral rounded-lg shadow-xl p-6 overflow-x-auto dark:bg-dark-bg-secondary dark:shadow-dark-shadow">
           <div style={{ height: 600, width: '100%' }}>
             <DataGrid
               rows={users.map((rankedUser, index) => ({
@@ -250,6 +252,64 @@ function Ranking() {
                   '&:hover': {
                     backgroundColor: '#7bafe6',
                   },
+                },
+                
+                '.dark & .MuiDataGrid-root': {
+                  border: '1px solid #4b5563',
+                  backgroundColor: '#1e293b',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                },
+                '.dark & .MuiDataGrid-columnHeaders': {
+                  background: 'linear-gradient(to bottom, #1e40af, #3b82f6)',
+                  color: '#f4a261',
+                  borderBottom: '3px solid #4b5563',
+                },
+                '.dark & .MuiDataGrid-columnHeader': {
+                  background: '#0f172a',
+                  borderRight: '1px solid #4b5563',
+                  '&:last-child': {
+                    borderRight: 'none',
+                  },
+                },
+                '.dark & .MuiDataGrid-cell': {
+                  color: '#d1d5db',
+                  borderRight: '1px solid #4b5563',
+                  '&:last-child': {
+                    borderRight: 'none',
+                  },
+                },
+                '.dark & .MuiDataGrid-row': {
+                  backgroundColor: '#1e293b',
+                  '&:nth-of-type(even)': {
+                    backgroundColor: '#334155',
+                  },
+                  '&:hover': {
+                    backgroundColor: '#4b5563',
+                    transition: 'background-color 0.2s ease',
+                  },
+                },
+                '.dark & .MuiDataGrid-footerContainer': {
+                  backgroundColor: '#334155',
+                  borderTop: '1px solid #4b5563',
+                  color: '#f3f4f6',
+                },
+                '.dark & .bg-blue-100': {
+                  backgroundColor: '#4b5563',
+                  '&:hover': {
+                    backgroundColor: '#6b7280',
+                  },
+                },
+                '.dark & .MuiTablePagination-root': {
+                  color: '#f3f4f6',
+                },
+                '.dark & .MuiTablePagination-selectLabel': {
+                  color: '#f3f4f6',
+                },
+                '.dark & .MuiTablePagination-displayedRows': {
+                  color: '#f3f4f6',
+                },
+                '.dark & .MuiDataGrid-footerContainer .MuiSvgIcon-root': {
+                  color: '#f3f4f6',
                 },
               }}
             />

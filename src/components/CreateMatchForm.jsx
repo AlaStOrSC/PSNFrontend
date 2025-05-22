@@ -42,7 +42,6 @@ function CreateMatchForm({ onCreate }) {
   };
 
   const handleSubmit = async () => {
-    // Validar que los jugadores sean diferentes
     const selectedPlayers = [formData.player2, formData.player3, formData.player4].filter(Boolean);
     const uniquePlayers = new Set(selectedPlayers);
     if (uniquePlayers.size !== selectedPlayers.length) {
@@ -81,17 +80,14 @@ function CreateMatchForm({ onCreate }) {
   };
 
   if (loadingUsers) {
-    return <div className="text-center text-gray-700">Cargando usuarios...</div>;
+    return <div className="text-center text-gray-700 dark:text-dark-text-secondary">Cargando usuarios...</div>;
   }
 
   if (errorUsers) {
-    return <div className="text-center text-red-500">{errorUsers}</div>;
+    return <div className="text-center text-red-500 dark:text-dark-error">{errorUsers}</div>;
   }
 
-  // Filtrar usuarios disponibles para cada selector
   const availableUsers = users.filter((u) => u.username !== user?.username);
-
-  const selectedPlayers = [formData.player2, formData.player3, formData.player4].filter(Boolean);
 
   const availableForPlayer2 = availableUsers.filter(
     (u) => !formData.player3 && !formData.player4 ? true : ![formData.player3, formData.player4].includes(u.username)
@@ -114,14 +110,14 @@ function CreateMatchForm({ onCreate }) {
       submitLabel="Crear partido"
     >
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Tu compañero (Jugador 2)
         </label>
         <select
           name="player2"
           value={formData.player2}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
           required
         >
           <option value="" disabled>Selecciona un compañero</option>
@@ -133,14 +129,14 @@ function CreateMatchForm({ onCreate }) {
         </select>
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Rival 1 (Jugador 3)
         </label>
         <select
           name="player3"
           value={formData.player3}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
           required
         >
           <option value="" disabled>Selecciona un rival</option>
@@ -152,14 +148,14 @@ function CreateMatchForm({ onCreate }) {
         </select>
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Rival 2 (Jugador 4)
         </label>
         <select
           name="player4"
           value={formData.player4}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
           required
         >
           <option value="" disabled>Selecciona un rival</option>
@@ -171,7 +167,7 @@ function CreateMatchForm({ onCreate }) {
         </select>
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Fecha
         </label>
         <input
@@ -179,12 +175,12 @@ function CreateMatchForm({ onCreate }) {
           name="date"
           value={formData.date}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
           required
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Hora
         </label>
         <input
@@ -192,12 +188,12 @@ function CreateMatchForm({ onCreate }) {
           name="time"
           value={formData.time}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
           required
         />
       </div>
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Ciudad
         </label>
         <input
@@ -205,7 +201,7 @@ function CreateMatchForm({ onCreate }) {
           name="city"
           value={formData.city}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
           placeholder="Ciudad"
           required
         />

@@ -183,69 +183,69 @@ function PSNShop() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4 text-center">Tienda PSN</h1>
+    <div className="container mx-auto p-4 bg-neutral dark:bg-dark-bg">
+      <h1 className="text-3xl font-bold mb-4 text-center text-primary dark:text-dark-text-accent">Tienda PSN</h1>
 
       <div className="flex justify-between mb-4">
         {user && (
           <button
             onClick={() => setShowSellForm(true)}
-            className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"
+            className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
           >
             Vender
           </button>
         )}
         <button
           onClick={() => setShowFilterForm(true)}
-          className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+          className="bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
         >
           Filtrar
         </button>
       </div>
 
       {showFilterForm && (
-        <div className="bg-gray-100 p-4 rounded-lg mb-4">
-          <h2 className="text-xl font-semibold mb-4">Filtros</h2>
+        <div className="bg-gray-100 dark:bg-dark-bg-tertiary p-4 rounded-lg mb-4">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">Filtros</h2>
           <form onSubmit={handleFilterSubmit}>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Valoración mínima (1-5)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Valoración mínima (1-5)</label>
               <input
                 type="number"
                 value={filters.minRating}
                 onChange={(e) => setFilters({ ...filters, minRating: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 min="1"
                 max="5"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Precio mínimo (€)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Precio mínimo (€)</label>
               <input
                 type="number"
                 value={filters.minPrice}
                 onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 min="0"
                 step="0.01"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Precio máximo (€)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Precio máximo (€)</label>
               <input
                 type="number"
                 value={filters.maxPrice}
                 onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 min="0"
                 step="0.01"
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Categoría</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Categoría</label>
               <select
                 value={filters.category}
                 onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
               >
                 <option value="">Todas las categorías</option>
                 <option value="Palas">Palas</option>
@@ -256,31 +256,31 @@ function PSNShop() {
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Vendedor (nombre de usuario)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Vendedor (nombre de usuario)</label>
               <input
                 type="text"
                 value={filters.sellerUsername}
                 onChange={(e) => setFilters({ ...filters, sellerUsername: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
               />
             </div>
             <button
               type="submit"
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"
+              className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
             >
               Aplicar filtros
             </button>
             <button
               type="button"
               onClick={handleClearFilters}
-              className="ml-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+              className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
             >
               Limpiar filtros
             </button>
             <button
               type="button"
               onClick={() => setShowFilterForm(false)}
-              className="ml-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+              className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
             >
               Cancelar
             </button>
@@ -289,57 +289,57 @@ function PSNShop() {
       )}
 
       {showSellForm && (
-        <div className="bg-gray-100 p-4 rounded-lg mb-4">
-          <h2 className="text-xl font-semibold mb-4">Vender un producto</h2>
+        <div className="bg-gray-100 dark:bg-dark-bg-tertiary p-4 rounded-lg mb-4">
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">Vender un producto</h2>
           <form onSubmit={handleSellSubmit}>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Nombre del producto</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Nombre del producto</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 required
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Imagen del producto</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Imagen del producto</label>
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary"
                 required
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Precio (€)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Precio (€)</label>
               <input
                 type="number"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 min="0"
                 step="0.01"
                 required
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Descripción</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Descripción</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 maxLength="100"
                 required
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1">Categoría</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Categoría</label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full p-2 border rounded-lg"
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 required
               >
                 <option value="">Selecciona una categoría</option>
@@ -352,14 +352,14 @@ function PSNShop() {
             </div>
             <button
               type="submit"
-              className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"
+              className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
             >
               Enviar
             </button>
             <button
               type="button"
               onClick={() => setShowSellForm(false)}
-              className="ml-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+              className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
             >
               Cancelar
             </button>
@@ -381,95 +381,95 @@ function PSNShop() {
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
           disabled={page === 1}
-          className="bg-primary text-white px-4 py-2 rounded-lg mr-2 disabled:bg-gray-400"
+          className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg mr-2 disabled:bg-gray-400 dark:disabled:bg-gray-600"
         >
           Anterior
         </button>
-        <span className="self-center">Página {page} de {totalPages}</span>
+        <span className="self-center text-gray-700 dark:text-dark-text-primary">Página {page} de {totalPages}</span>
         <button
           onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={page === totalPages}
-          className="bg-primary text-white px-4 py-2 rounded-lg ml-2 disabled:bg-gray-400"
+          className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg ml-2 disabled:bg-gray-400 dark:disabled:bg-gray-600"
         >
           Siguiente
         </button>
       </div>
 
       {showPurchaseForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Formulario de pago</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center">
+          <div className="bg-white dark:bg-dark-bg-secondary p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">Formulario de pago</h2>
             <form onSubmit={handlePurchaseSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Nombre</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Nombre</label>
                 <input
                   type="text"
                   value={purchaseData.name}
                   onChange={(e) => setPurchaseData({ ...purchaseData, name: e.target.value })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Apellidos</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Apellidos</label>
                 <input
                   type="text"
                   value={purchaseData.lastName}
                   onChange={(e) => setPurchaseData({ ...purchaseData, lastName: e.target.value })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Teléfono</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Teléfono</label>
                 <input
                   type="tel"
                   value={purchaseData.phone}
                   onChange={(e) => setPurchaseData({ ...purchaseData, phone: e.target.value })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Ciudad</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Ciudad</label>
                 <input
                   type="text"
                   value={purchaseData.city}
                   onChange={(e) => setPurchaseData({ ...purchaseData, city: e.target.value })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Dirección</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Dirección</label>
                 <input
                   type="text"
                   value={purchaseData.address}
                   onChange={(e) => setPurchaseData({ ...purchaseData, address: e.target.value })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Tarjeta de crédito</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Tarjeta de crédito</label>
                 <input
                   type="text"
                   value={purchaseData.creditCard}
                   onChange={(e) => setPurchaseData({ ...purchaseData, creditCard: e.target.value })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
               <button
                 type="submit"
-                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"
+                className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
               >
                 Pagar
               </button>
               <button
                 type="button"
                 onClick={() => setShowPurchaseForm(false)}
-                className="ml-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
               >
                 Cancelar
               </button>
@@ -479,41 +479,41 @@ function PSNShop() {
       )}
 
       {showRatingForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4">Valora el producto</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center">
+          <div className="bg-white dark:bg-dark-bg-secondary p-6 rounded-lg w-full max-w-md">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">Valora el producto</h2>
             <form onSubmit={handleRatingSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Valoración (1-5 estrellas)</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Valoración (1-5 estrellas)</label>
                 <input
                   type="number"
                   value={ratingData.rating}
                   onChange={(e) => setRatingData({ ...ratingData, rating: parseInt(e.target.value) })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   min="1"
                   max="5"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Comentario (opcional, máximo 100 caracteres)</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Comentario (opcional, máximo 100 caracteres)</label>
                 <textarea
                   value={ratingData.comment}
                   onChange={(e) => setRatingData({ ...ratingData, comment: e.target.value })}
-                  className="w-full p-2 border rounded-lg"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   maxLength="100"
                 />
               </div>
               <button
                 type="submit"
-                className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"
+                className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
               >
                 Enviar valoración
               </button>
               <button
                 type="button"
                 onClick={() => setShowRatingForm(false)}
-                className="ml-2 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+                className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
               >
                 Cancelar
               </button>

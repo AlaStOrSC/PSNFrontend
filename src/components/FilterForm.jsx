@@ -44,7 +44,7 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
       resetLabel="Limpiar filtros"
     >
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Fecha desde
         </label>
         <input
@@ -52,11 +52,11 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
           name="dateFrom"
           value={filters.dateFrom}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Fecha hasta
         </label>
         <input
@@ -64,18 +64,18 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
           name="dateTo"
           value={filters.dateTo}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Estado
         </label>
         <select
           name="status"
           value={filters.status}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
         >
           <option value="Todos">Todos</option>
           <option value="Finalizado">Finalizado</option>
@@ -83,14 +83,14 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
         </select>
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
           Resultado
         </label>
         <select
           name="result"
           value={filters.result}
           onChange={handleInputChange}
-          className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
         >
           <option value="Todos">Todos</option>
           <option value="Ganados">Ganados</option>

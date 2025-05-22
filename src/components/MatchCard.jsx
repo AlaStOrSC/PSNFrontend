@@ -32,11 +32,11 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
   }, [isFinalized, match.isSaved]);
 
   const getCardStyle = () => {
-    if (match.result === 'pending') return 'bg-white';
-    if (match.result === 'won') return 'bg-green-100';
-    if (match.result === 'lost') return 'bg-red-100';
-    if (match.result === 'draw') return 'bg-blue-100';
-    return 'bg-white';
+    if (match.result === 'pending') return 'bg-white dark:bg-dark-bg-secondary';
+    if (match.result === 'won') return 'bg-green-100 dark:bg-green-900';
+    if (match.result === 'lost') return 'bg-red-100 dark:bg-red-900';
+    if (match.result === 'draw') return 'bg-blue-100 dark:bg-blue-900';
+    return 'bg-white dark:bg-dark-bg-secondary';
   };
 
   const handleEdit = () => {
@@ -126,7 +126,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
   };
 
   return (
-    <div className={`rounded-lg shadow-lg p-6 ${getCardStyle()} mb-6 max-w-md mx-auto`}>
+    <div className={`rounded-lg shadow-lg dark:shadow-dark-shadow p-6 ${getCardStyle()} mb-6 max-w-md mx-auto`}>
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
@@ -140,11 +140,11 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
           name="date"
           value={formData.date}
           onChange={handleInputChange}
-          className="text-2xl font-bold text-primary mb-4 w-full p-2 border rounded"
+          className="text-2xl font-bold text-primary dark:text-dark-text-accent mb-4 w-full p-2 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
         />
       ) : (
-        <h2 className="text-2xl font-bold text-primary mb-4 flex items-center">
-          <CalendarIcon className="h-6 w-6 mr-2" />
+        <h2 className="text-2xl font-bold text-primary dark:text-dark-text-accent mb-4 flex items-center">
+          <CalendarIcon className="h-6 w-6 mr-2 text-primary dark:text-dark-text-accent" />
           {new Date(match.date).toLocaleDateString('es-ES', {
             day: 'numeric',
             month: 'long',
@@ -153,7 +153,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
         </h2>
       )}
 
-      <p className="text-lg text-gray-700 mb-2">
+      <p className="text-lg text-gray-700 dark:text-dark-text-primary mb-2">
         {isEditing ? (
           <>
             {user.username} /{' '}
@@ -162,7 +162,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
               name="player2"
               value={formData.player2}
               onChange={handleInputChange}
-              className="inline p-1 border rounded"
+              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
               placeholder="Compañero"
             />
           </>
@@ -177,7 +177,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
               name="player3"
               value={formData.player3}
               onChange={handleInputChange}
-              className="inline p-1 border rounded"
+              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
               placeholder="Rival 1"
             />
             {' / '}
@@ -186,7 +186,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
               name="player4"
               value={formData.player4}
               onChange={handleInputChange}
-              className="inline p-1 border rounded"
+              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
               placeholder="Rival 2"
             />
           </>
@@ -195,15 +195,15 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
         )}
       </p>
 
-      <p className="text-gray-600 flex items-center mb-2">
-        <MapPinIcon className="h-5 w-5 mr-2" />
+      <p className="text-gray-600 dark:text-dark-text-secondary flex items-center mb-2">
+        <MapPinIcon className="h-5 w-5 mr-2 text-gray-600 dark:text-dark-text-secondary" />
         {isEditing ? (
           <input
             type="text"
             name="city"
             value={formData.city}
             onChange={handleInputChange}
-            className="p-1 border rounded w-full"
+            className="p-1 border border-gray-200 dark:border-dark-border rounded w-full bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
             placeholder="Ciudad"
           />
         ) : (
@@ -211,15 +211,15 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
         )}
       </p>
 
-      <p className="text-gray-600 flex items-center mb-2">
-        <ClockIcon className="h-5 w-5 mr-2" />
+      <p className="text-gray-600 dark:text-dark-text-secondary flex items-center mb-2">
+        <ClockIcon className="h-5 w-5 mr-2 text-gray-600 dark:text-dark-text-secondary" />
         {isEditing && !isFinalized ? (
           <input
             type="time"
             name="time"
             value={formData.time}
             onChange={handleInputChange}
-            className="p-1 border rounded w-full"
+            className="p-1 border border-gray-200 dark:border-dark-border rounded w-full bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
           />
         ) : (
           match.time
@@ -227,42 +227,42 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
       </p>
 
       <div className="mb-2">
-        <p className="text-gray-600 flex items-center">
-          <SunIcon className="h-5 w-5 mr-2" />
+        <p className="text-gray-600 dark:text-dark-text-secondary flex items-center">
+          <SunIcon className="h-5 w-5 mr-2 text-gray-600 dark:text-dark-text-secondary" />
           {match.weather || 'Clima no disponible'}
         </p>
         {match.rainWarning && (
-          <p className="text-yellow-600 flex items-center mt-1 text-sm">
-            <ExclamationTriangleIcon className="h-5 w-5 mr-2" />
+          <p className="text-yellow-600 dark:text-yellow-400 flex items-center mt-1 text-sm">
+            <ExclamationTriangleIcon className="h-5 w-5 mr-2 text-yellow-600 dark:text-yellow-400" />
             Posibilidad de lluvia, recomendado reservar en cubierto
           </p>
         )}
       </div>
 
-      <p className="text-gray-600 mb-4">
+      <p className="text-gray-600 dark:text-dark-text-secondary mb-4">
         Estado: <span className="font-semibold">{isFinalized ? 'Finalizado' : 'Pendiente'}</span>
       </p>
 
       {isFinalized && (
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-primary mb-2">Resultado</h3>
-          <table className="w-full text-center border-collapse">
+          <h3 className="text-lg font-semibold text-primary dark:text-dark-text-accent mb-2">Resultado</h3>
+          <table className="w-full text-center border-collapse border border-gray-200 dark:border-dark-border">
             <thead>
               <tr>
-                <th className="border p-2">Equipo 1</th>
-                <th className="border p-2">Equipo 2</th>
+                <th className="border border-gray-200 dark:border-dark-border p-2 text-gray-700 dark:text-dark-text-primary">Equipo 1</th>
+                <th className="border border-gray-200 dark:border-dark-border p-2 text-gray-700 dark:text-dark-text-primary">Equipo 2</th>
               </tr>
             </thead>
             <tbody>
               {['set1', 'set2', 'set3'].map((set) => (
                 <tr key={set}>
-                  <td className="border p-2">
+                  <td className="border border-gray-200 dark:border-dark-border p-2">
                     {isEditing ? (
                       <input
                         type="number"
                         value={formData.results[set].left}
                         onChange={(e) => handleResultChange(set, 'left', e.target.value)}
-                        className="w-16 p-1 border rounded text-center"
+                        className="w-16 p-1 border border-gray-200 dark:border-dark-border rounded text-center bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                         min="0"
                         max="7"
                       />
@@ -270,13 +270,13 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
                       formData.results[set].left
                     )}
                   </td>
-                  <td className="border p-2">
+                  <td className="border border-gray-200 dark:border-dark-border p-2">
                     {isEditing ? (
                       <input
                         type="number"
                         value={formData.results[set].right}
                         onChange={(e) => handleResultChange(set, 'right', e.target.value)}
-                        className="w-16 p-1 border rounded text-center"
+                        className="w-16 p-1 border border-gray-200 dark:border-dark-border rounded text-center bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                         min="0"
                         max="7"
                       />
@@ -293,18 +293,18 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
 
       {isFinalized && (
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-primary mb-2">Comentarios</h3>
+          <h3 className="text-lg font-semibold text-primary dark:text-dark-text-accent mb-2">Comentarios</h3>
           {isEditing ? (
             <textarea
               name="comments"
               value={formData.comments}
               onChange={handleInputChange}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
               rows="4"
               placeholder="Describe el partido..."
             />
           ) : (
-            <p className="text-gray-600">{formData.comments || 'Sin comentarios'}</p>
+            <p className="text-gray-600 dark:text-dark-text-secondary">{formData.comments || 'Sin comentarios'}</p>
           )}
         </div>
       )}
@@ -313,7 +313,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
         {isEditing && (
           <button
             onClick={handleSave}
-            className="flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition-colors"
+            className="flex items-center px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
           >
             <CheckCircleIcon className="h-5 w-5 mr-2" />
             Guardar
@@ -321,14 +321,14 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
         )}
         <button
           onClick={handleEdit}
-          className="flex items-center px-4 py-2 bg-accent text-white rounded-lg hover:bg-orange-500 transition-colors"
+          className="flex items-center px-4 py-2 bg-accent text-white dark:bg-dark-text-accent dark:text-dark-text-primary rounded-lg hover:bg-orange-500 dark:hover:bg-yellow-600 transition-colors"
         >
           <PencilIcon className="h-5 w-5 mr-2" />
           Editar
         </button>
         <button
           onClick={handleDelete}
-          className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+          className="flex items-center px-4 py-2 bg-red-500 text-white dark:bg-red-600 dark:text-dark-text-primary rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-colors"
         >
           <TrashIcon className="h-5 w-5 mr-2" />
           Borrar
