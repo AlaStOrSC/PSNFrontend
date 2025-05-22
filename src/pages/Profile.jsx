@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 import { setUser } from '../store/slices/authSlice';
 import Modal from '../components/Modal';
@@ -9,6 +10,7 @@ function Profile() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.theme);
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editedData, setEditedData] = useState({
     phone: user?.phone || '',
@@ -34,7 +36,7 @@ function Profile() {
         dispatch(setUser(response.data));
       } catch (err) {
         console.error('Error al cargar el perfil del usuario:', err);
-        setError(err.response?.data?.message || 'Error al cargar el perfil');
+        setError(err.response?.data?.message || t('profile.error.load_profile'));
       }
     };
 
@@ -50,7 +52,7 @@ function Profile() {
         setErrorFriends(null);
       } catch (err) {
         console.error('Error al cargar datos de amistad:', err);
-        setErrorFriends(err.response?.data?.message || 'Error al cargar datos de amistad');
+        setErrorFriends(err.response?.data?.message || t('profile.error.load_friends'));
       } finally {
         setLoadingFriends(false);
       }
@@ -58,10 +60,10 @@ function Profile() {
 
     fetchUserProfile();
     fetchFriendshipData();
-  }, [dispatch]);
+  }, [dispatch, t]);
 
   if (!user) {
-    return <div className="text-center text-red-500 dark:text-dark-error">Error: No se encontró el usuario.</div>;
+    return <div className="text-center text-red-500 dark:text-dark-error">{t('profile.error.no_user')}</div>;
   }
 
   const defaultAvatar = `https://ui-avatars.com/api/?name=${user.username}&background=${
@@ -87,14 +89,14 @@ function Profile() {
       const response = await api.put('/users/profile', editedData);
       dispatch(setUser(response.data));
       setIsEditing(false);
-      setSuccess('Perfil actualizado exitosamente');
+      setSuccess(t('profile.success.profile_updated'));
       setError(null);
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
       console.log('Respuesta completa del error:', error.response?.data);
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Error al actualizar el perfil';
-      if (errorMessage.includes('El email ya está en uso')) {
-        setModalMessage('Este email ya está en uso, por favor elige otro');
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || t('profile.error.update_profile');
+      if (errorMessage.includes('El email ya está en uso') || errorMessage.includes('The email is already in use')) {
+        setModalMessage(t('profile.error.email_in_use'));
         setIsModalOpen(true);
       } else {
         setModalMessage(errorMessage);
@@ -126,10 +128,10 @@ function Profile() {
 
       const updateResponse = await api.put('/users/profile', { profilePicture: url });
       dispatch(setUser(updateResponse.data));
-      setSuccess('Foto de perfil actualizada exitosamente');
+      setSuccess(t('profile.success.profile_picture_updated'));
     } catch (error) {
       console.error('Error al subir la foto:', error);
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Error al subir la foto';
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || t('profile.error.upload_picture');
       setModalMessage(errorMessage);
       setIsModalOpen(true);
       setSuccess(null);
@@ -162,7 +164,7 @@ function Profile() {
       setErrorFriends(null);
     } catch (err) {
       console.error('Error al recargar datos de amistad:', err);
-      setErrorFriends(err.response?.data?.message || 'Error al recargar datos de amistad');
+      setErrorFriends(err.response?.data?.message || t('profile.error.load_friends'));
     } finally {
       setLoadingFriends(false);
     }
@@ -174,7 +176,7 @@ function Profile() {
       await refreshFriendshipData();
     } catch (err) {
       console.error('Error al aceptar solicitud:', err);
-      setModalMessage(err.response?.data?.message || 'Error al aceptar solicitud');
+      setModalMessage(err.response?.data?.message || t('profile.error.accept_request'));
       setIsModalOpen(true);
     }
   };
@@ -185,7 +187,7 @@ function Profile() {
       await refreshFriendshipData();
     } catch (err) {
       console.error('Error al rechazar solicitud:', err);
-      setModalMessage(err.response?.data?.message || 'Error al rechazar solicitud');
+      setModalMessage(err.response?.data?.message || t('profile.error.reject_request'));
       setIsModalOpen(true);
     }
   };
@@ -196,7 +198,7 @@ function Profile() {
       await refreshFriendshipData();
     } catch (err) {
       console.error('Error al eliminar amigo:', err);
-      setModalMessage(err.response?.data?.message || 'Error al eliminar amigo');
+      setModalMessage(err.response?.data?.message || t('profile.error.remove_friend'));
       setIsModalOpen(true);
     }
   };
@@ -208,12 +210,12 @@ function Profile() {
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">Mi Perfil</h1>
+        <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">{t('profile.title')}</h1>
 
         <Modal
           isOpen={isModalOpen}
           onClose={closeModal}
-          title="Error"
+          title={t('profile.modal.error_title')}
           message={modalMessage}
         />
 
@@ -223,7 +225,7 @@ function Profile() {
               <div className="flex flex-col items-center mb-4">
                 <img
                   src={user.profilePicture || defaultAvatar}
-                  alt="Foto de perfil"
+                  alt={t('profile.alt.profile_picture')}
                   className="w-32 h-32 rounded-full object-cover mb-4"
                 />
                 <input
@@ -238,17 +240,21 @@ function Profile() {
                   disabled={isUploading}
                   className="text-primary dark:text-dark-text-accent hover:underline dark:hover:text-dark-secondary disabled:opacity-50"
                 >
-                  {isUploading ? 'Subiendo...' : user.profilePicture ? 'Cambiar foto' : 'Subir foto'}
+                  {isUploading
+                    ? t('profile.uploading')
+                    : user.profilePicture
+                    ? t('profile.change_picture')
+                    : t('profile.upload_picture')}
                 </button>
               </div>
 
               <div className="space-y-2 flex-1">
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Nombre:</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.username')}:</span>
                   <span className="text-gray-600 dark:text-dark-text-secondary">{user.username}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Teléfono:</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.phone')}:</span>
                   {isEditing ? (
                     <input
                       type="text"
@@ -262,7 +268,7 @@ function Profile() {
                   )}
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Email:</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.email')}:</span>
                   {isEditing ? (
                     <input
                       type="email"
@@ -276,7 +282,7 @@ function Profile() {
                   )}
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Ciudad:</span>
+                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.city')}:</span>
                   {isEditing ? (
                     <input
                       type="text"
@@ -299,14 +305,14 @@ function Profile() {
                     onClick={handleSave}
                     className="px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
                   >
-                    Guardar cambios
+                    {t('profile.save_changes')}
                   </button>
                 ) : (
                   <button
                     onClick={handleEdit}
                     className="px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
                   >
-                    Editar
+                    {t('profile.edit')}
                   </button>
                 )}
               </div>
@@ -315,31 +321,31 @@ function Profile() {
 
           <div className="max-w-md mx-auto sm:max-w-none sm:mx-0 sm:flex-1">
             <ProfileCard>
-              <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">Estadísticas</h2>
+              <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.stats_title')}</h2>
               <div className="flex-1 flex items-center">
                 <div className="space-y-2 w-full">
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Puntuación:</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.score')}:</span>
                     <span className="text-gray-600 dark:text-dark-text-secondary">{(user.score ?? 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Partidos ganados:</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.matches_won')}:</span>
                     <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesWon ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Partidos perdidos:</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.matches_lost')}:</span>
                     <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesLost ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Partidos empatados:</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.matches_drawn')}:</span>
                     <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesDrawn ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Partidos totales:</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.total_matches')}:</span>
                     <span className="text-gray-600 dark:text-dark-text-secondary">{user.totalMatches ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">Porcentaje de victoria:</span>
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.win_percentage')}:</span>
                     <span className="text-gray-600 dark:text-dark-text-secondary">{winPercentage}%</span>
                   </div>
                 </div>
@@ -350,15 +356,15 @@ function Profile() {
 
         <div className="max-w-md mx-auto">
           <ProfileCard>
-            <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">Solicitudes de amistad</h2>
+            <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.friend_requests_title')}</h2>
             {loadingFriends ? (
-              <p className="text-center text-gray-600 dark:text-dark-text-secondary">Cargando datos de amistad...</p>
+              <p className="text-center text-gray-600 dark:text-dark-text-secondary">{t('profile.loading_friends')}</p>
             ) : errorFriends ? (
               <p className="text-center text-red-500 dark:text-dark-error">{errorFriends}</p>
             ) : (
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">Solicitudes de amistad enviadas</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.sent_requests')}</h3>
                   {pendingRequests.sent.length > 0 ? (
                     <div className="space-y-2">
                       {pendingRequests.sent.map((request) => (
@@ -374,18 +380,18 @@ function Profile() {
                             className="w-10 h-10 rounded-full mr-3"
                           />
                           <span className="flex-1 text-gray-700 dark:text-dark-text-primary">
-                            Solicitud enviada a {request.username}
+                            {t('profile.request_sent_to')} {request.username}
                           </span>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-600 dark:text-dark-text-secondary">No hay solicitudes enviadas.</p>
+                    <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">Solicitudes de amistad recibidas</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.received_requests')}</h3>
                   {pendingRequests.received.length > 0 ? (
                     <div className="space-y-2">
                       {pendingRequests.received.map((request) => (
@@ -405,24 +411,24 @@ function Profile() {
                             onClick={() => handleAcceptRequest(request.requesterId)}
                             className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1 rounded-lg ml-2"
                           >
-                            Aceptar
+                            {t('profile.accept')}
                           </button>
                           <button
                             onClick={() => handleRejectRequest(request.requesterId)}
                             className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
                           >
-                            Rechazar
+                            {t('profile.reject')}
                           </button>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-600 dark:text-dark-text-secondary">No hay solicitudes recibidas.</p>
+                    <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_received_requests')}</p>
                   )}
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">Amigos</h3>
+                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.friends')}</h3>
                   {friends.length > 0 ? (
                     <div className="space-y-2">
                       {friends.map((friend) => (
@@ -442,13 +448,13 @@ function Profile() {
                             onClick={() => handleRemoveFriend(friend.id)}
                             className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
                           >
-                            Eliminar
+                            {t('profile.remove_friend')}
                           </button>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-600 dark:text-dark-text-secondary">No tienes amigos todavía.</p>
+                    <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_friends')}</p>
                   )}
                 </div>
               </div>

@@ -40,7 +40,6 @@ function Chat() {
     websocket.onopen = () => {
       console.log('Conectado a WebSocket');
       setWs(websocket);
-      // Enviar un mensaje de ping cada 30 segundos para mantener la conexión viva
       const pingInterval = setInterval(() => {
         if (websocket.readyState === WebSocket.OPEN) {
           websocket.send(JSON.stringify({ type: 'ping' }));
@@ -108,7 +107,6 @@ function Chat() {
   useEffect(() => {
     if (!searchQuery) {
       setSearchResults([]);
-      // No limpiamos selectedUser aquí para que el botón "Abrir chat" persista
       return;
     }
 
@@ -148,7 +146,7 @@ function Chat() {
       });
       setSearchQuery('');
       setSearchResults([]);
-      setSelectedUser(null); // Limpiamos selectedUser después de abrir el chat
+      setSelectedUser(null);
       if (ws) {
         ws.send(JSON.stringify({
           type: 'markAsRead',
