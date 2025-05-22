@@ -48,6 +48,8 @@
   "profile.error.update_profile": "Error al actualizar el perfil",
   "profile.error.email_in_use": "Este email ya está en uso, por favor elige otro",
   "profile.error.upload_picture": "Error al subir la foto",
+  "profile.error.invalid_format": "Solo se permiten imágenes JPEG o PNG",
+  "profile.error.file_too_large": "La imagen excede el tamaño máximo de 5MB",
   "profile.error.accept_request": "Error al aceptar solicitud",
   "profile.error.reject_request": "Error al rechazar solicitud",
   "profile.error.remove_friend": "Error al eliminar amigo",

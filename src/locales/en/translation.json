@@ -48,6 +48,8 @@
   "profile.error.update_profile": "Error updating profile",
   "profile.error.email_in_use": "This email is already in use, please choose another",
   "profile.error.upload_picture": "Error uploading picture",
+  "profile.error.invalid_format": "Only JPEG or PNG images are allowed",
+  "profile.error.file_too_large": "The image exceeds the maximum size of 5MB",
   "profile.error.accept_request": "Error accepting request",
   "profile.error.reject_request": "Error rejecting request",
   "profile.error.remove_friend": "Error removing friend",

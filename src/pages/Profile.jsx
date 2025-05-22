@@ -93,9 +93,8 @@ function Profile() {
       setError(null);
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
-      console.log('Respuesta completa del error:', error.response?.data);
       const errorMessage = error.response?.data?.error || error.response?.data?.message || t('profile.error.update_profile');
-      if (errorMessage.includes('El email ya está en uso') || errorMessage.includes('The email is already in use')) {
+      if (errorMessage.includes('The email is already in use')) {
         setModalMessage(t('profile.error.email_in_use'));
         setIsModalOpen(true);
       } else {
@@ -115,6 +114,14 @@ function Profile() {
     setSuccess(null);
 
     try {
+      // Validar tipo y tamaño de la imagen
+      if (!['image/jpeg', 'image/png'].includes(file.type)) {
+        throw new Error(t('profile.error.invalid_format'));
+      }
+      if (file.size > 5 * 1024 * 1024) { // 5MB
+        throw new Error(t('profile.error.file_too_large'));
+      }
+
       const formData = new FormData();
       formData.append('profilePicture', file);
 
@@ -131,7 +138,7 @@ function Profile() {
       setSuccess(t('profile.success.profile_picture_updated'));
     } catch (error) {
       console.error('Error al subir la foto:', error);
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || t('profile.error.upload_picture');
+      const errorMessage = error.response?.data?.error || error.message || t('profile.error.upload_picture');
       setModalMessage(errorMessage);
       setIsModalOpen(true);
       setSuccess(null);
@@ -232,7 +239,7 @@ function Profile() {
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
-                  accept="image/*"
+                  accept="image/jpeg,image/png"
                   className="hidden"
                 />
                 <button
