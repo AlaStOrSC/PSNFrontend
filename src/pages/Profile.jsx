@@ -118,7 +118,7 @@ function Profile() {
       if (!['image/jpeg', 'image/png'].includes(file.type)) {
         throw new Error(t('profile.error.invalid_format'));
       }
-      if (file.size > 5 * 1024 * 1024) { 
+      if (file.size > 5 * 1024 * 1024) {
         throw new Error(t('profile.error.file_too_large'));
       }
 
@@ -212,6 +212,11 @@ function Profile() {
       setModalMessage(err.response?.data?.message || t('profile.error.remove_friend'));
       setIsModalOpen(true);
     }
+  };
+
+  const handleRedeemPoints = () => {
+    // TODO: Implementar lógica para canjear puntos
+    console.log('Botón Canjear puntos clickeado');
   };
 
   const winPercentage = user.totalMatches > 0
@@ -359,7 +364,21 @@ function Profile() {
                     <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.win_percentage')}:</span>
                     <span className="text-gray-600 dark:text-dark-text-secondary">{winPercentage}%</span>
                   </div>
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.points')}:</span>
+                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.points ?? 0}</span>
+                  </div>
                 </div>
+              </div>
+              <div className="flex justify-center mt-4">
+                <button
+                  onClick={handleRedeemPoints}
+                  className="px-4 py-2 text-white font-semibold rounded-lg shadow-md transition-all duration-300
+                    bg-gradient-to-r from-[#f4a261] to-[#1a5673] hover:from-[#e69550] hover:to-[#134a62]
+                    dark:from-[#d88a3f] dark:to-[#0f3c50] dark:hover:from-[#c07a36] dark:hover:to-[#0c2e40]"
+                >
+                  {t('profile.redeem_points')}
+                </button>
               </div>
             </ProfileCard>
           </div>
