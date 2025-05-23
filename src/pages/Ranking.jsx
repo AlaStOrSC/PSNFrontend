@@ -15,7 +15,6 @@ function Ranking() {
   const { isMobile } = useWindowSize();
   const { user } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.theme);
-  
 
   useEffect(() => {
     const fetchRanking = async () => {
@@ -43,7 +42,7 @@ function Ranking() {
       return;
     }
 
-    if (user.id === recipientId) {
+    if (user.userId === recipientId) {
       setModalMessage('No puedes enviarte una solicitud de amistad a ti mismo');
       setIsModalOpen(true);
       return;
@@ -65,9 +64,9 @@ function Ranking() {
     }
   };
 
-  // const handleChat = (userId) => { TODO
-  //   console.log(`Abrir chat con usuario ${userId}`);
-  // };
+  const handleChat = (userId) => {
+    console.log(`Abrir chat con usuario ${userId}`);
+  };
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -92,11 +91,11 @@ function Ranking() {
         <div className="flex items-center">
           <img
             src={
-  params.row.profilePicture ||
-  `https://ui-avatars.com/api/?name=${params.row.username}&background=${
-    theme === 'dark' ? '0f172a' : '05374d'
-  }&color=fff&size=40`
-}
+              params.row.profilePicture ||
+              `https://ui-avatars.com/api/?name=${params.row.username}&background=${
+                theme === 'dark' ? '0f172a' : '05374d'
+              }&color=fff&size=40`
+            }
             alt={params.row.username}
             className="w-8 h-8 rounded-full mr-2"
           />
@@ -136,14 +135,14 @@ function Ranking() {
       renderCell: (params) => (
         <div className="flex space-x-2">
           <button
-            onClick={() => handleAddFriend(params.row.id)}
+            onClick={() => handleAddFriend(params.row.userId)}
             className="text-primary hover:text-secondary transition-colors duration-200 dark:text-dark-text-accent dark:hover:text-dark-secondary"
             title="Añadir amigo"
           >
             <UserPlusIcon className="w-5 h-5" />
           </button>
           <button
-            onClick={() => handleChat(params.row.id)}
+            onClick={() => handleChat(params.row.userId)}
             className="text-primary hover:text-secondary transition-colors duration-200 dark:text-dark-text-accent dark:hover:text-dark-secondary"
             title="Abrir chat"
           >
@@ -175,13 +174,14 @@ function Ranking() {
           <div style={{ height: 600, width: '100%' }}>
             <DataGrid
               rows={users.map((rankedUser, index) => ({
-                id: rankedUser.id,
+                id: rankedUser.userId,
                 position: index + 1,
                 user: rankedUser.username,
                 username: rankedUser.username,
                 profilePicture: rankedUser.profilePicture,
                 city: rankedUser.city,
                 score: rankedUser.score,
+                userId: rankedUser.userId,
               }))}
               columns={columns}
               initialState={{
@@ -197,7 +197,7 @@ function Ranking() {
                 actions: !isMobile,
               }}
               getRowClassName={(params) =>
-                params.row.id === user?.id ? 'bg-blue-100' : ''
+                params.row.userId === user?.userId ? 'bg-blue-100' : ''
               }
               sx={{
                 '& .MuiDataGrid-root': {
@@ -253,7 +253,6 @@ function Ranking() {
                     backgroundColor: '#7bafe6',
                   },
                 },
-                
                 '.dark & .MuiDataGrid-root': {
                   border: '1px solid #4b5563',
                   backgroundColor: '#1e293b',

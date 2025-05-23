@@ -54,7 +54,7 @@ function Chat() {
         if (activeConversation?.userId === data.senderId) {
           setMessages((prev) => [...prev, {
             sender: data.senderId,
-            receiver: user.id,
+            receiver: user.userId,
             content: data.content,
             timestamp: data.timestamp,
           }]);
@@ -114,8 +114,8 @@ function Chat() {
       try {
         const response = await api.get('/users');
         const filteredUsers = response.data
-          .filter((u) => u.id !== user?.id && u.username.toLowerCase().includes(searchQuery.toLowerCase()))
-          .filter((u) => !conversations.some((conv) => conv.userId === u.id));
+          .filter((u) => u.userId !== user?.userId && u.username.toLowerCase().includes(searchQuery.toLowerCase())) // Cambiado de u.id
+          .filter((u) => !conversations.some((conv) => conv.userId === u.userId));
         setSearchResults(filteredUsers);
       } catch (err) {
         console.error('Error al buscar usuarios:', err);
@@ -169,7 +169,7 @@ function Chat() {
     setMessages((prev) => [
       ...prev,
       {
-        sender: user.id,
+        sender: user.userId,
         receiver: activeConversation.userId,
         content: newMessage,
         timestamp: new Date(),
@@ -211,7 +211,7 @@ function Chat() {
               <div className="absolute bg-white border rounded-lg mt-1 w-72 max-h-40 overflow-y-auto z-10">
                 {searchResults.map((result) => (
                   <div
-                    key={result.id}
+                    key={result.userId}
                     onClick={() => {
                       setSelectedUser(result);
                       setSearchQuery('');
@@ -240,7 +240,7 @@ function Chat() {
                   <span>{selectedUser.username}</span>
                 </div>
                 <button
-                  onClick={() => handleOpenChat(selectedUser.id)}
+                  onClick={() => handleOpenChat(selectedUser.userId)}
                   className="bg-primary text-white px-3 py-1 rounded-lg hover:bg-secondary"
                 >
                   Abrir chat
@@ -267,11 +267,11 @@ function Chat() {
                   {messages.map((msg, index) => (
                     <div
                       key={index}
-                      className={`mb-2 flex ${msg.sender === user.id ? 'justify-end' : 'justify-start'}`}
+                      className={`mb-2 flex ${msg.sender === user.userId ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
                         className={`max-w-xs p-2 rounded-lg ${
-                          msg.sender === user.id
+                          msg.sender === user.userId
                             ? 'bg-primary text-white'
                             : 'bg-gray-200 text-gray-800'
                         }`}
