@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 import { setUser } from '../store/slices/authSlice';
-import Modal from '../components/Modal';
+import ModalP from '../components/ModalP';
 import ProfileCard from '../components/ProfileCard';
+import LuckyWheel from '../components/LuckyWheel';
 
 function Profile() {
   const dispatch = useDispatch();
@@ -22,6 +23,11 @@ function Profile() {
   const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
+  const [isWheelModalOpen, setIsWheelModalOpen] = useState(false);
+  const [isPrizeModalOpen, setIsPrizeModalOpen] = useState(false);
+  const [prize, setPrize] = useState('');
+  const [isConfettiActive, setIsConfettiActive] = useState(false);
   const fileInputRef = useRef(null);
 
   const [pendingRequests, setPendingRequests] = useState({ received: [], sent: [] });
@@ -161,6 +167,63 @@ function Profile() {
   const closeModal = () => {
     setIsModalOpen(false);
     setModalMessage('');
+    setIsConfettiActive(false);
+  };
+
+  const closeRedeemModal = () => {
+    setIsRedeemModalOpen(false);
+  };
+
+  const closeWheelModal = () => {
+    setIsWheelModalOpen(false);
+  };
+
+  const closePrizeModal = () => {
+    setIsPrizeModalOpen(false);
+    setPrize('');
+    setIsConfettiActive(false);
+  };
+
+  const handleRedeemPoints = () => {
+    setIsRedeemModalOpen(true);
+  };
+
+  const handleRedeemOption = async (option, points) => {
+    try {
+      const response = await api.post('/users/redeem-points', { option, points });
+      dispatch(setUser(response.data.result.user));
+      if (option === 'luckyWheel') {
+        setPrize(response.data.result.prize);
+        setIsRedeemModalOpen(false);
+        setIsWheelModalOpen(true);
+      } else {
+        let message = '';
+        if (option === 'customGrip') {
+          message = t('redeem.custom_grip_success');
+        } else if (option === 'coachingSessions') {
+          message = t('redeem.coaching_sessions_success');
+        } else if (option === 'psnPack') {
+          message = t('redeem.psn_pack_success');
+        } else if (option === 'highPerformancePaddle') {
+          message = t('redeem.high_performance_paddle_success');
+        }
+        setModalMessage(message);
+        setIsModalOpen(true);
+        setIsRedeemModalOpen(false);
+        setIsConfettiActive(true);
+      }
+    } catch (error) {
+      setModalMessage(error.response?.data?.error || t('redeem.error'));
+      setIsModalOpen(true);
+      setIsConfettiActive(false);
+    }
+  };
+
+  const handleWheelSpinFinish = (winner) => {
+    setPrize(winner);
+    setIsWheelModalOpen(false);
+    setIsPrizeModalOpen(true);
+    setIsConfettiActive(winner !== t('redeem.prizes.next_time'));
   };
 
   const refreshFriendshipData = async () => {
@@ -214,25 +277,109 @@ function Profile() {
     }
   };
 
-  const handleRedeemPoints = () => {
-    // TODO: Implementar lógica para canjear puntos
-    console.log('Botón Canjear puntos clickeado');
-  };
-
   const winPercentage = user.totalMatches > 0
     ? ((user.matchesWon / (user.totalMatches - user.matchesDrawn)) * 100).toFixed(2)
     : 0;
+
+  const wheelOptions = [
+    t('redeem.prizes.overgrip'),
+    t('redeem.prizes.ball_pack'),
+    t('redeem.prizes.towel'),
+    t('redeem.prizes.cap'),
+    t('redeem.prizes.next_time'),
+    t('redeem.prizes.laces'),
+    t('redeem.prizes.protector'),
+  ];
 
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">{t('profile.title')}</h1>
 
-        <Modal
+        <ModalP
           isOpen={isModalOpen}
           onClose={closeModal}
-          title={t('profile.modal.error_title')}
+          title={modalMessage.includes('insuficientes') ? t('redeem.error_title') : modalMessage.includes('Error') ? t('profile.modal.error_title') : t('redeem.success_title')}
           message={modalMessage}
+          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          confetti={isConfettiActive}
+        />
+
+        <ModalP
+          isOpen={isRedeemModalOpen}
+          onClose={closeRedeemModal}
+          title={t('redeem.title')}
+          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+        >
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('redeem.100_points')}</h3>
+              <div className="space-y-2">
+                <button
+                  onClick={() => handleRedeemOption('luckyWheel', 100)}
+                  className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                >
+                  {t('redeem.lucky_wheel')}
+                </button>
+                <button
+                  onClick={() => handleRedeemOption('customGrip', 100)}
+                  className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                >
+                  {t('redeem.custom_grip')}
+                </button>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('redeem.500_points')}</h3>
+              <button
+                onClick={() => handleRedeemOption('coachingSessions', 500)}
+                className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+              >
+                {t('redeem.coaching_sessions')}
+              </button>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('redeem.1000_points')}</h3>
+              <button
+                onClick={() => handleRedeemOption('psnPack', 1000)}
+                className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+              >
+                {t('redeem.psn_pack')}
+              </button>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('redeem.5000_points')}</h3>
+              <button
+                onClick={() => handleRedeemOption('highPerformancePaddle', 5000)}
+                className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+              >
+                {t('redeem.high_performance_paddle')}
+              </button>
+            </div>
+          </div>
+        </ModalP>
+
+        <ModalP
+          isOpen={isWheelModalOpen}
+          onClose={closeWheelModal}
+          title={t('redeem.lucky_wheel')}
+          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+        >
+          <LuckyWheel
+            options={wheelOptions}
+            onFinish={handleWheelSpinFinish}
+            primaryColor={theme === 'dark' ? '#0f172a' : '#05374d'}
+            textColor="#fff"
+          />
+        </ModalP>
+
+        <ModalP
+          isOpen={isPrizeModalOpen}
+          onClose={closePrizeModal}
+          title={prize === t('redeem.prizes.next_time') ? t('redeem.no_prize_title') : t('redeem.prize_title')}
+          message={prize === t('redeem.prizes.next_time') ? t('redeem.no_prize_message') : `${t('redeem.prize_message').replace('{prize}', prize)}`}
+          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          confetti={isConfettiActive}
         />
 
         <div className="mb-6 sm:flex sm:gap-6 sm:items-stretch sm:min-h-[400px]">
@@ -462,7 +609,7 @@ function Profile() {
                   {friends.length > 0 ? (
                     <div className="space-y-2">
                       {friends.map((friend) => (
-                        <div key={friend.id} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
+                        <div key={friend.userId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                           <img
                             src={
                               friend.profilePicture ||
@@ -475,7 +622,7 @@ function Profile() {
                           />
                           <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{friend.username}</span>
                           <button
-                            onClick={() => handleRemoveFriend(friend.id)}
+                            onClick={() => handleRemoveFriend(friend.userId)}
                             className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
                           >
                             {t('profile.remove_friend')}
