@@ -184,7 +184,7 @@ function Chat() {
     <div className="fixed bottom-4 right-4 z-50">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-primary text-white px-4 py-2 rounded-lg shadow-lg hover:bg-secondary transition-colors flex items-center"
+        className="bg-primary text-white px-4 py-2 rounded-lg shadow-lg hover:bg-secondary transition-colors flex items-center dark:bg-dark-primary dark:hover:bg-dark-secondary"
       >
         Chat
         {isOpen ? (
