@@ -12,7 +12,7 @@ const ModalP = ({ isOpen, onClose, title, message, className = '', confetti = fa
             height={window.innerHeight}
             numberOfPieces={200}
             recycle={false}
-            colors={['#f4a261', '#1a5673', '#05374d', '#f8fafc']}
+            colors={['#FFFF00', '#FF0000', '#FF69B4', '#00BFFF', '#FF00FF', '#00FF00', '#FFA500']}
           />
         )}
         <h2 className="text-xl font-semibold text-gray-700 dark:text-dark-text-primary mb-4">{title}</h2>

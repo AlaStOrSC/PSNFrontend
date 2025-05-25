@@ -6,7 +6,7 @@ const LuckyWheel = ({ options, onFinish, primaryColor, textColor }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
   const segmentAngle = 360 / options.length;
-  const vividColors = ['#FF69B4', '#FFFF00', '#00FF00', '#00B7EB', '#FF0000', '#FFA500', '#800080'];
+  const vividColors = ['#FF69B4', '#FFC107', '#00FF00', '#00B7EB', '#FF0000', '#FFA500', '#800080'];
 
   const spinWheel = () => {
     if (isSpinning) return;
@@ -48,7 +48,7 @@ const LuckyWheel = ({ options, onFinish, primaryColor, textColor }) => {
               key={index}
               className="absolute w-full h-full flex items-center justify-center"
               style={{
-                transform: `rotate(${index * segmentAngle}deg)`,
+                transform: `rotate(${index * segmentAngle - 20}deg)`,
                 transformOrigin: 'center center',
                 width: '100%',
                 height: '100%',
@@ -56,7 +56,7 @@ const LuckyWheel = ({ options, onFinish, primaryColor, textColor }) => {
             >
               <span
                 style={{
-                  transform: `translateY(-120%) rotate(${-index * segmentAngle - 90}deg)`,
+                  transform: `translateY(-250%) rotate(${-index * segmentAngle - 55}deg)`,
                   color: textColor,
                   fontSize: '10px',
                   fontWeight: 'bold',
@@ -66,7 +66,7 @@ const LuckyWheel = ({ options, onFinish, primaryColor, textColor }) => {
                   wordBreak: 'break-word',
                   lineHeight: '1.1',
                   position: 'absolute',
-                  top: '50%',
+                  top: '25%',
                 }}
               >
                 {option}
