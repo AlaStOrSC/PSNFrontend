@@ -1,14 +1,17 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import { setUser } from '../store/slices/authSlice';
 import ModalP from '../components/ModalP';
 import ProfileCard from '../components/ProfileCard';
 import LuckyWheel from '../components/LuckyWheel';
+import Spinner from '../components/Spinner';
 
 function Profile() {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
   const { user } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.theme);
   const { t } = useTranslation();
@@ -18,7 +21,6 @@ function Profile() {
     email: user?.email || '',
     city: user?.city || '',
   });
-  const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,43 +32,147 @@ function Profile() {
   const [isConfettiActive, setIsConfettiActive] = useState(false);
   const fileInputRef = useRef(null);
 
-  const [pendingRequests, setPendingRequests] = useState({ received: [], sent: [] });
-  const [friends, setFriends] = useState([]);
-  const [loadingFriends, setLoadingFriends] = useState(true);
-  const [errorFriends, setErrorFriends] = useState(null);
+  const { data: friendshipData, isLoading: isFriendshipLoading, error: friendshipError } = useQuery({
+    queryKey: ['friendship'],
+    queryFn: async () => {
+      const [requestsResponse, friendsResponse] = await Promise.all([
+        api.get('/users/friends/requests'),
+        api.get('/users/friends'),
+      ]);
+      return { pendingRequests: requestsResponse.data, friends: friendsResponse.data };
+    },
+    enabled: !!user,
+  });
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await api.get('/users/profile');
-        dispatch(setUser(response.data));
-      } catch (err) {
-        console.error('Error al cargar el perfil del usuario:', err);
-        setError(err.response?.data?.message || t('profile.error.load_profile'));
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await api.put('/users/profile', data);
+      return response.data;
+    },
+    onSuccess: (data) => {
+      dispatch(setUser(data));
+      setIsEditing(false);
+      setSuccess(t('profile.success.profile_updated'));
+    },
+    onError: (error) => {
+      console.error('Error updating profile:', error.response?.data, error.message);
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message || t('profile.error.update_profile');
+      if (errorMessage.toLowerCase().includes('email is already in use')) {
+        setModalMessage(t('profile.error.email_in_use'));
+      } else if (errorMessage.includes('Usuario no autenticado')) {
+        setModalMessage(t('profile.error.unauthenticated'));
+      } else {
+        setModalMessage(t('profile.error.update_profile'));
       }
-    };
+      setIsModalOpen(true);
+      setSuccess(null);
+    },
+  });
 
-    const fetchFriendshipData = async () => {
-      try {
-        setLoadingFriends(true);
-        const [requestsResponse, friendsResponse] = await Promise.all([
-          api.get('/users/friends/requests'),
-          api.get('/users/friends'),
-        ]);
-        setPendingRequests(requestsResponse.data);
-        setFriends(friendsResponse.data);
-        setErrorFriends(null);
-      } catch (err) {
-        console.error('Error al cargar datos de amistad:', err);
-        setErrorFriends(err.response?.data?.message || t('profile.error.load_friends'));
-      } finally {
-        setLoadingFriends(false);
+  const uploadProfilePictureMutation = useMutation({
+    mutationFn: async ({ file }) => {
+      const formData = new FormData();
+      formData.append('profilePicture', file);
+      const uploadResponse = await api.post('/files/upload-profile-picture', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      const { profilePicture: url } = uploadResponse.data;
+      const updateResponse = await api.put('/users/profile', { profilePicture: url });
+      return updateResponse.data;
+    },
+    onSuccess: (data) => {
+      dispatch(setUser(data));
+      setSuccess(t('profile.success.profile_picture_updated'));
+    },
+    onError: (error) => {
+      const errorMessage = error.response?.data?.error || error.message || t('profile.error.upload_picture');
+      if (errorMessage.includes('Usuario no autenticado')) {
+        setModalMessage(t('profile.error.unauthenticated'));
+      } else {
+        setModalMessage(errorMessage);
       }
-    };
+      setIsModalOpen(true);
+      setSuccess(null);
+    },
+    onSettled: () => {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    },
+  });
 
-    fetchUserProfile();
-    fetchFriendshipData();
-  }, [dispatch, t]);
+  const redeemPointsMutation = useMutation({
+    mutationFn: async ({ option, points }) => {
+      const response = await api.post('/users/redeem-points', { option, points });
+      return response.data.result;
+    },
+    onSuccess: (result, { option }) => {
+      dispatch(setUser(result.user));
+      if (option === 'luckyWheel') {
+        setPrize(result.prize);
+        setIsRedeemModalOpen(false);
+        setIsWheelModalOpen(true);
+      } else {
+        let message = '';
+        if (option === 'customGrip') {
+          message = t('redeem.custom_grip_success');
+        } else if (option === 'coachingSessions') {
+          message = t('redeem.coaching_sessions_success');
+        } else if (option === 'psnPack') {
+          message = t('redeem.psn_pack_success');
+        } else if (option === 'highPerformancePaddle') {
+          message = t('redeem.high_performance_paddle_success');
+        }
+        setModalMessage(message);
+        setIsModalOpen(true);
+        setIsRedeemModalOpen(false);
+        setIsConfettiActive(true);
+      }
+    },
+    onError: (error) => {
+      setModalMessage(error.response?.data?.error || t('redeem.error'));
+      setIsModalOpen(true);
+      setIsConfettiActive(false);
+    },
+  });
+
+  const acceptFriendRequestMutation = useMutation({
+    mutationFn: async (requesterId) => {
+      await api.put(`/users/friends/accept/${requesterId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['friendship']);
+    },
+    onError: (err) => {
+      setModalMessage(err.response?.data?.message || t('profile.error.accept_request'));
+      setIsModalOpen(true);
+    },
+  });
+
+  const rejectFriendRequestMutation = useMutation({
+    mutationFn: async (requesterId) => {
+      await api.put(`/users/friends/reject/${requesterId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['friendship']);
+    },
+    onError: (err) => {
+      setModalMessage(err.response?.data?.message || t('profile.error.reject_request'));
+      setIsModalOpen(true);
+    },
+  });
+
+  const removeFriendMutation = useMutation({
+    mutationFn: async (friendId) => {
+      await api.delete(`/users/friends/${friendId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['friendship']);
+    },
+    onError: (err) => {
+      setModalMessage(err.response?.data?.message || t('profile.error.remove_friend'));
+      setIsModalOpen(true);
+    },
+  });
 
   if (!user) {
     return <div className="text-center text-red-500 dark:text-dark-error">{t('profile.error.no_user')}</div>;
@@ -78,7 +184,6 @@ function Profile() {
 
   const handleEdit = () => {
     setIsEditing(true);
-    setError(null);
     setSuccess(null);
   };
 
@@ -90,74 +195,29 @@ function Profile() {
     }));
   };
 
-  const handleSave = async () => {
-    try {
-      const response = await api.put('/users/profile', editedData);
-      dispatch(setUser(response.data));
-      setIsEditing(false);
-      setSuccess(t('profile.success.profile_updated'));
-      setError(null);
-    } catch (error) {
-      console.error('Error al actualizar el perfil:', error);
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || t('profile.error.update_profile');
-      if (errorMessage.includes('The email is already in use')) {
-        setModalMessage(t('profile.error.email_in_use'));
-      } else if (errorMessage.includes('Usuario no autenticado')) {
-        setModalMessage(t('profile.error.unauthenticated'));
-      } else {
-        setModalMessage(errorMessage);
-      }
-      setIsModalOpen(true);
-      setSuccess(null);
-    }
+  const handleSave = () => {
+    updateProfileMutation.mutate(editedData);
   };
 
-  const handleFileChange = async (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     setIsUploading(true);
-    setError(null);
-    setSuccess(null);
-
-    try {
-      if (!['image/jpeg', 'image/png'].includes(file.type)) {
-        throw new Error(t('profile.error.invalid_format'));
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        throw new Error(t('profile.error.file_too_large'));
-      }
-
-      const formData = new FormData();
-      formData.append('profilePicture', file);
-
-      const uploadResponse = await api.post('/files/upload-profile-picture', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      const { profilePicture: url } = uploadResponse.data;
-
-      const updateResponse = await api.put('/users/profile', { profilePicture: url });
-      dispatch(setUser(updateResponse.data));
-      setSuccess(t('profile.success.profile_picture_updated'));
-    } catch (error) {
-      console.error('Error al subir la foto:', error);
-      const errorMessage = error.response?.data?.error || error.message || t('profile.error.upload_picture');
-      if (errorMessage.includes('Usuario no autenticado')) {
-        setModalMessage(t('profile.error.unauthenticated'));
-      } else {
-        setModalMessage(errorMessage);
-      }
+    if (!['image/jpeg', 'image/png'].includes(file.type)) {
+      setModalMessage(t('profile.error.invalid_format'));
       setIsModalOpen(true);
-      setSuccess(null);
-    } finally {
       setIsUploading(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+      return;
     }
+    if (file.size > 5 * 1024 * 1024) {
+      setModalMessage(t('profile.error.file_too_large'));
+      setIsModalOpen(true);
+      setIsUploading(false);
+      return;
+    }
+
+    uploadProfilePictureMutation.mutate({ file });
   };
 
   const handleUploadClick = () => {
@@ -188,35 +248,8 @@ function Profile() {
     setIsRedeemModalOpen(true);
   };
 
-  const handleRedeemOption = async (option, points) => {
-    try {
-      const response = await api.post('/users/redeem-points', { option, points });
-      dispatch(setUser(response.data.result.user));
-      if (option === 'luckyWheel') {
-        setPrize(response.data.result.prize);
-        setIsRedeemModalOpen(false);
-        setIsWheelModalOpen(true);
-      } else {
-        let message = '';
-        if (option === 'customGrip') {
-          message = t('redeem.custom_grip_success');
-        } else if (option === 'coachingSessions') {
-          message = t('redeem.coaching_sessions_success');
-        } else if (option === 'psnPack') {
-          message = t('redeem.psn_pack_success');
-        } else if (option === 'highPerformancePaddle') {
-          message = t('redeem.high_performance_paddle_success');
-        }
-        setModalMessage(message);
-        setIsModalOpen(true);
-        setIsRedeemModalOpen(false);
-        setIsConfettiActive(true);
-      }
-    } catch (error) {
-      setModalMessage(error.response?.data?.error || t('redeem.error'));
-      setIsModalOpen(true);
-      setIsConfettiActive(false);
-    }
+  const handleRedeemOption = (option, points) => {
+    redeemPointsMutation.mutate({ option, points });
   };
 
   const handleWheelSpinFinish = (winner) => {
@@ -226,55 +259,16 @@ function Profile() {
     setIsConfettiActive(winner !== t('redeem.prizes.next_time'));
   };
 
-  const refreshFriendshipData = async () => {
-    try {
-      setLoadingFriends(true);
-      const [requestsResponse, friendsResponse] = await Promise.all([
-        api.get('/users/friends/requests'),
-        api.get('/users/friends'),
-      ]);
-      setPendingRequests(requestsResponse.data);
-      setFriends(friendsResponse.data);
-      setErrorFriends(null);
-    } catch (err) {
-      console.error('Error al recargar datos de amistad:', err);
-      setErrorFriends(err.response?.data?.message || t('profile.error.load_friends'));
-    } finally {
-      setLoadingFriends(false);
-    }
+  const handleAcceptRequest = (requesterId) => {
+    acceptFriendRequestMutation.mutate(requesterId);
   };
 
-  const handleAcceptRequest = async (requesterId) => {
-    try {
-      await api.put(`/users/friends/accept/${requesterId}`);
-      await refreshFriendshipData();
-    } catch (err) {
-      console.error('Error al aceptar solicitud:', err);
-      setModalMessage(err.response?.data?.message || t('profile.error.accept_request'));
-      setIsModalOpen(true);
-    }
+  const handleRejectRequest = (requesterId) => {
+    rejectFriendRequestMutation.mutate(requesterId);
   };
 
-  const handleRejectRequest = async (requesterId) => {
-    try {
-      await api.put(`/users/friends/reject/${requesterId}`);
-      await refreshFriendshipData();
-    } catch (err) {
-      console.error('Error al rechazar solicitud:', err);
-      setModalMessage(err.response?.data?.message || t('profile.error.reject_request'));
-      setIsModalOpen(true);
-    }
-  };
-
-  const handleRemoveFriend = async (friendId) => {
-    try {
-      await api.delete(`/users/friends/${friendId}`);
-      await refreshFriendshipData();
-    } catch (err) {
-      console.error('Error al eliminar amigo:', err);
-      setModalMessage(err.response?.data?.message || t('profile.error.remove_friend'));
-      setIsModalOpen(true);
-    }
+  const handleRemoveFriend = (friendId) => {
+    removeFriendMutation.mutate(friendId);
   };
 
   const winPercentage = user.totalMatches > 0
@@ -303,6 +297,7 @@ function Profile() {
           message={modalMessage}
           className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
           confetti={isConfettiActive}
+          zIndex={60}
         />
 
         <ModalP
@@ -310,6 +305,7 @@ function Profile() {
           onClose={closeRedeemModal}
           title={t('redeem.title')}
           className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          zIndex={50}
         >
           <div className="space-y-6">
             <div>
@@ -364,6 +360,7 @@ function Profile() {
           onClose={closeWheelModal}
           title={t('redeem.lucky_wheel')}
           className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          zIndex={50}
         >
           <LuckyWheel
             options={wheelOptions}
@@ -377,9 +374,10 @@ function Profile() {
           isOpen={isPrizeModalOpen}
           onClose={closePrizeModal}
           title={prize === t('redeem.prizes.next_time') ? t('redeem.no_prize_title') : t('redeem.prize_title')}
-          message={prize === t('redeem.prizes.next_time') ? t('redeem.no_prize_message') : `${t('redeem.prize_message').replace('{prize}', prize)}`}
+          message={prize === t('redeem.prizes.next_time') ? t('redeem.no_prize_message') : `${t('redeem.prize_message').replace('{prize}', prize)} `}
           className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
           confetti={isConfettiActive}
+          zIndex={60}
         />
 
         <div className="mb-6 sm:flex sm:gap-6 sm:items-stretch sm:min-h-[400px]">
@@ -534,17 +532,17 @@ function Profile() {
         <div className="max-w-md mx-auto">
           <ProfileCard>
             <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.friend_requests_title')}</h2>
-            {loadingFriends ? (
-              <p className="text-center text-gray-600 dark:text-dark-text-secondary">{t('profile.loading_friends')}</p>
-            ) : errorFriends ? (
-              <p className="text-center text-red-500 dark:text-dark-error">{errorFriends}</p>
+            {isFriendshipLoading ? (
+              <Spinner />
+            ) : friendshipError ? (
+              <p className="text-center text-red-500 dark:text-dark-error">{friendshipError.message || t('profile.error.load_friends')}</p>
             ) : (
               <div className="space-y-4">
                 <div>
                   <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.sent_requests')}</h3>
-                  {pendingRequests.sent.length > 0 ? (
+                  {friendshipData?.pendingRequests.sent.length > 0 ? (
                     <div className="space-y-2">
-                      {pendingRequests.sent.map((request) => (
+                      {friendshipData.pendingRequests.sent.map((request) => (
                         <div key={request.recipientId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                           <img
                             src={
@@ -569,9 +567,9 @@ function Profile() {
 
                 <div>
                   <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.received_requests')}</h3>
-                  {pendingRequests.received.length > 0 ? (
+                  {friendshipData?.pendingRequests.received.length > 0 ? (
                     <div className="space-y-2">
-                      {pendingRequests.received.map((request) => (
+                      {friendshipData.pendingRequests.received.map((request) => (
                         <div key={request.requesterId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                           <img
                             src={
@@ -606,9 +604,9 @@ function Profile() {
 
                 <div>
                   <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.friends')}</h3>
-                  {friends.length > 0 ? (
+                  {friendshipData?.friends.length > 0 ? (
                     <div className="space-y-2">
-                      {friends.map((friend) => (
+                      {friendshipData.friends.map((friend) => (
                         <div key={friend.userId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                           <img
                             src={

@@ -1,5 +1,6 @@
 import { useEffect, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
 import Cookies from 'js-cookie';
 import { setUser, logout } from './store/slices/authSlice';
 import { setTheme } from './store/slices/themeSlice';
@@ -12,22 +13,23 @@ function App() {
   const dispatch = useDispatch();
   const { theme } = useSelector((state) => state.theme);
 
-  useEffect(() => {
-    const validateToken = async () => {
+  useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
       const token = Cookies.get('token');
-      if (token) {
-        try {
-          console.log('Validando token...');
-          const response = await api.get('/users/profile');
-          dispatch(setUser(response.data));
-        } catch (error) {
-          console.error('Error al validar token:', error);
-          dispatch(logout());
-        }
-      }
-    };
-    validateToken();
+      if (!token) throw new Error('No token');
+      const response = await api.get('/users/profile');
+      dispatch(setUser(response.data));
+      return response.data;
+    },
+    enabled: !!Cookies.get('token'),
+    onError: (error) => {
+      console.error('Error al validar token:', error);
+      dispatch(logout());
+    },
+  });
 
+  useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light';
     dispatch(setTheme(savedTheme));
   }, [dispatch]);

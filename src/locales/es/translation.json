@@ -115,5 +115,10 @@
   "redeem.prize_message": "¡Enhorabuena! Enviaremos tu {prize} a tu dirección próximamente.",
   "redeem.no_prize_title": "¡Sigue intentándolo!",
   "redeem.no_prize_message": "¡La próxima vez será! Sigue jugando para ganar más puntos.",
-  "redeem.spin": "Girar"
+  "redeem.spin": "Girar",
+  "home.welcome": "Bienvenid@ a PSN",
+  "home.authenticated_message": "Estás listo para organizar partidos, conectar con amigos y mejorar tu ranking.",
+  "home.unauthenticated_message": "Únete a la comunidad de pádel, crea partidos y compite con otros jugadores.",
+  "home.login": "Iniciar Sesión",
+  "home.register": "Registrarse"
 }

@@ -1,39 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
-
+import Spinner from './Spinner';
+//Uso de reactquery solo para practicar con el, aunque no tenga sentido en una peticion de noticias.
 function NewsCards() {
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data: articles = [], isLoading, error } = useQuery({
+    queryKey: ['news'],
+    queryFn: async () => {
+      const response = await api.get('/news');
+      return response.data.slice(0, 4);
+      
+    },
+    retry: 2,
+    staleTime: 10 * 60 * 1000,
+  });
 
-  useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await api.get('/news');
-        setArticles(response.data.slice(0, 4));
-        setLoading(false);
-      } catch (err) {
-        console.error('Error al obtener noticias:', err);
-        setError(err.response?.data?.message || 'Error al cargar las noticias');
-        setLoading(false);
-      }
-    };
-
-    fetchNews();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="text-center py-10">
-        <p className="text-lg text-gray-700 dark:text-dark-text-secondary">Cargando noticias...</p>
-      </div>
-    );
+  if (isLoading) {
+    return <Spinner />;
   }
 
   if (error) {
     return (
       <div className="text-center py-10">
-        <p className="text-lg text-red-500 dark:text-dark-error">{error}</p>
+        <p className="text-lg text-red-500 dark:text-dark-error">{error.message || 'Error al cargar las noticias'}</p>
       </div>
     );
   }

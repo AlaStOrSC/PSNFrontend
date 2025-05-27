@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { StarIcon } from '@heroicons/react/20/solid';
 
 function ProductCard({ product, onPurchase }) {
