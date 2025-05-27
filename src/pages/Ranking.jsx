@@ -1,6 +1,6 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { useSelector } from 'react-redux';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import useWindowSize from '../hooks/useWindowSize';
 import Modal from '../components/Modal';
@@ -14,18 +14,30 @@ function Ranking() {
   const { user } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.theme);
 
-  const { data: users = [], isLoading: loading, error } = useQuery({
-    queryKey: ['ranking'],
-    queryFn: async () => {
-      const response = await api.get('/users');
-      return [...response.data].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+  const queryClient = useQueryClient();
+
+  const addFriendMutation = useMutation({
+    mutationFn: async (recipientId) => {
+      await api.post(`/users/friends/request/${recipientId}`);
+    },
+    onSuccess: () => {
+      setModalMessage('✅ Solicitud de amistad enviada exitosamente');
+      setIsModalOpen(true);
+      queryClient.invalidateQueries(['friendship']);
     },
     onError: (err) => {
-      console.error('Error al cargar el ranking:', err);
+      console.error('Error al enviar solicitud de amistad:', err);
+      const errorMessage = err.response?.data?.error || 'Error al enviar solicitud de amistad';
+      if (errorMessage === 'Ya hay una solicitud de amistad pendiente') {
+        setModalMessage('Ya has enviado una solicitud a este usuario');
+      } else {
+        setModalMessage(errorMessage);
+      }
+      setIsModalOpen(true);
     },
   });
 
-  const handleAddFriend = async (recipientId) => {
+  const handleAddFriend = (recipientId) => {
     if (!user) {
       setModalMessage('Debes iniciar sesión para enviar solicitudes de amistad');
       setIsModalOpen(true);
@@ -38,21 +50,19 @@ function Ranking() {
       return;
     }
 
-    try {
-      await api.post(`/users/friends/request/${recipientId}`);
-      setModalMessage('✅ Solicitud de amistad enviada exitosamente');
-      setIsModalOpen(true);
-    } catch (err) {
-      console.error('Error al enviar solicitud de amistad:', err);
-      const errorMessage = err.response?.data?.error || 'Error al enviar solicitud de amistad';
-      if (errorMessage === 'Ya hay una solicitud de amistad pendiente') {
-        setModalMessage('Ya has enviado una solicitud a este usuario');
-      } else {
-        setModalMessage(errorMessage);
-      }
-      setIsModalOpen(true);
-    }
+    addFriendMutation.mutate(recipientId);
   };
+
+  const { data: users = [], isLoading: loading, error } = useQuery({
+    queryKey: ['ranking'],
+    queryFn: async () => {
+      const response = await api.get('/users');
+      return [...response.data].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+    },
+    onError: (err) => {
+      console.error('Error al cargar el ranking:', err);
+    },
+  });
 
   const handleChat = (userId) => {
     console.log(`Abrir chat con usuario ${userId}`);
