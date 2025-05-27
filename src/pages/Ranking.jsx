@@ -1,39 +1,29 @@
-import { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { useSelector } from 'react-redux';
+import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import useWindowSize from '../hooks/useWindowSize';
 import Modal from '../components/Modal';
 import { UserPlusIcon, ChatBubbleLeftIcon, TrophyIcon } from '@heroicons/react/24/solid';
+import { useState } from 'react';
 
 function Ranking() {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const { isMobile } = useWindowSize();
   const { user } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.theme);
 
-  useEffect(() => {
-    const fetchRanking = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get('/users');
-        const sortedUsers = [...response.data].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
-        setUsers(sortedUsers);
-        setError(null);
-      } catch (err) {
-        console.error('Error al cargar el ranking:', err);
-        setError(err.response?.data?.message || 'Error al cargar el ranking');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRanking();
-  }, []);
+  const { data: users = [], isLoading: loading, error } = useQuery({
+    queryKey: ['ranking'],
+    queryFn: async () => {
+      const response = await api.get('/users');
+      return [...response.data].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+    },
+    onError: (err) => {
+      console.error('Error al cargar el ranking:', err);
+    },
+  });
 
   const handleAddFriend = async (recipientId) => {
     if (!user) {
@@ -168,7 +158,7 @@ function Ranking() {
       {loading ? (
         <p className="text-center text-gray-600 dark:text-dark-text-secondary">Cargando ranking...</p>
       ) : error ? (
-        <p className="text-center text-red-500 dark:text-dark-error">{error}</p>
+        <p className="text-center text-red-500 dark:text-dark-error">{error.message || 'Error al cargar el ranking'}</p>
       ) : (
         <div className="bg-neutral rounded-lg shadow-xl p-6 overflow-x-auto dark:bg-dark-bg-secondary dark:shadow-dark-shadow">
           <div style={{ height: 600, width: '100%' }}>

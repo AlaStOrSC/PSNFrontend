@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useDispatch } from 'react-redux';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { loginSuccess } from '../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -28,34 +29,67 @@ function AuthPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [serverError, setServerError] = useState(null);
+  const queryClient = useQueryClient();
 
-  const onSubmit = async (data) => {
-    try {
-      console.log(`Enviando datos de ${isLogin ? 'login' : 'registro'}:`, data);
-      const response = isLogin
-        ? await login(data)
-        : await registerUser(data);
-      console.log('Respuesta del backend:', response);
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (response) => {
       dispatch(loginSuccess({ user: response.user || null, token: response.token }));
-      console.log('Token almacenado en cookies');
       setServerError(null);
       reset();
       navigate('/');
-    } catch (err) {
-      console.error(`Error en ${isLogin ? 'login' : 'registro'}:`, err);
+    },
+    onError: (err) => {
+      console.error('Error en login:', err);
       console.log('Detalles del error:', {
         message: err.message,
         response: err.response?.data,
         status: err.response?.status,
-        request: err.request
+        request: err.request,
       });
       if (err.response) {
-        setServerError(err.response.data.message || `Error en ${isLogin ? 'login' : 'registro'}. Inténtalo de nuevo.`);
+        setServerError(err.response.data.message || 'Error en login. Inténtalo de nuevo.');
       } else if (err.request) {
         setServerError('No se pudo conectar con el servidor. Revisa tu conexión o la configuración del backend.');
       } else {
         setServerError('Error inesperado: ' + err.message);
       }
+    },
+  });
+
+  const registerMutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (response) => {
+      dispatch(loginSuccess({ user: response.user || null, token: response.token }));
+      queryClient.invalidateQueries(['ranking']);
+      setServerError(null);
+      reset();
+      navigate('/');
+    },
+    onError: (err) => {
+      console.error('Error en registro:', err);
+      console.log('Detalles del error:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status,
+        request: err.request,
+      });
+      if (err.response) {
+        setServerError(err.response.data.message || 'Error en registro. Inténtalo de nuevo.');
+      } else if (err.request) {
+        setServerError('No se pudo conectar con el servidor. Revisa tu conexión o la configuración del backend.');
+      } else {
+        setServerError('Error inesperado: ' + err.message);
+      }
+    },
+  });
+
+  const onSubmit = (data) => {
+    console.log(`Enviando datos de ${isLogin ? 'login' : 'registro'}:`, data);
+    if (isLogin) {
+      loginMutation.mutate(data);
+    } else {
+      registerMutation.mutate(data);
     }
   };
 
