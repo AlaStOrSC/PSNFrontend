@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { CalendarIcon, MapPinIcon, ClockIcon, SunIcon, CheckCircleIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import api from '../services/api';
 import Modal from './Modal';
 
 function MatchCard({ match, user, onUpdate, onDelete }) {
+  const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -39,51 +41,67 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
     return 'bg-white dark:bg-dark-bg-secondary';
   };
 
+  const updateMatchMutation = useMutation({
+    mutationFn: async (updatedData) => {
+      console.log('Guardando datos:', updatedData);
+      const response = await api.put(`/matches/${match._id}`, updatedData);
+      console.log('Partido actualizado:', response.data.match);
+      return response.data.match;
+    },
+    onSuccess: (updatedMatch) => {
+      onUpdate(updatedMatch);
+      setIsEditing(false);
+      queryClient.invalidateQueries(['matches']);
+      queryClient.invalidateQueries(['ranking']);
+    },
+    onError: (error) => {
+      console.error('Error al guardar:', error);
+      setModalMessage(error.response?.data?.message || error.message);
+      setIsModalOpen(true);
+    },
+  });
+
+  const deleteMatchMutation = useMutation({
+    mutationFn: async () => {
+      console.log('Eliminando partido:', match._id);
+      await api.delete(`/matches/${match._id}`);
+      console.log('Partido eliminado');
+    },
+    onSuccess: () => {
+      onDelete(match._id);
+      queryClient.invalidateQueries(['matches']);
+      queryClient.invalidateQueries(['ranking']);
+    },
+    onError: (error) => {
+      console.error('Error al eliminar:', error);
+      setModalMessage(error.response?.data?.message || error.message);
+      setIsModalOpen(true);
+    },
+  });
+
   const handleEdit = () => {
     setIsEditing(true);
   };
 
-  const handleSave = async () => {
-    try {
-      const updatedData = {
-        date: formData.date,
-        time: formData.time,
-        city: formData.city,
-        player2: formData.player2,
-        player3: formData.player3,
-        player4: formData.player4,
-        results: formData.results,
-        comments: formData.comments,
-        isSaved: isFinalized || match.isSaved,
-      };
+  const handleSave = () => {
+    const updatedData = {
+      date: formData.date,
+      time: formData.time,
+      city: formData.city,
+      player2: formData.player2,
+      player3: formData.player3,
+      player4: formData.player4,
+      results: formData.results,
+      comments: formData.comments,
+      isSaved: isFinalized || match.isSaved,
+    };
 
-      console.log('Guardando datos:', updatedData);
-      const response = await api.put(`/matches/${match._id}`, updatedData);
-      console.log('Partido actualizado:', response.data.match);
-      
-      onUpdate(response.data.match);
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Error al guardar:', error);
-      setModalMessage(error.response?.data?.message || error.message);
-      setIsModalOpen(true);
-    }
+    updateMatchMutation.mutate(updatedData);
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!window.confirm('¿Estás seguro de que quieres eliminar este partido?')) return;
-    
-    try {
-      console.log('Eliminando partido:', match._id);
-      await api.delete(`/matches/${match._id}`);
-      console.log('Partido eliminado');
-      
-      onDelete(match._id);
-    } catch (error) {
-      console.error('Error al eliminar:', error);
-      setModalMessage(error.response?.data?.message || error.message);
-      setIsModalOpen(true);
-    }
+    deleteMatchMutation.mutate();
   };
 
   const handleInputChange = (e) => {

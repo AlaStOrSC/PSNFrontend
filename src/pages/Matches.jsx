@@ -1,48 +1,40 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import CreateMatchForm from '../components/CreateMatchForm';
 import FilterForm from '../components/FilterForm';
 import MatchCard from '../components/MatchCard';
 
 function Matches() {
+  const queryClient = useQueryClient();
   const { user } = useSelector((state) => state.auth);
-  const [matches, setMatches] = useState([]);
   const [filteredMatches, setFilteredMatches] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showFilterForm, setShowFilterForm] = useState(false);
 
-  const fetchMatches = async () => {
-    try {
+  const { data: matches = [], isLoading: loading, error } = useQuery({
+    queryKey: ['matches'],
+    queryFn: async () => {
       console.log('Solicitando partidos...');
       const response = await api.get('/matches');
       console.log('Partidos recibidos:', response.data);
-      setMatches(response.data);
-      setFilteredMatches(response.data);
-      setLoading(false);
-    } catch (err) {
+      return response.data;
+    },
+    refetchOnMount: 'always',
+    onError: (err) => {
       console.error('Error al obtener partidos:', err);
-      setError(err.response?.data?.message || 'Error al cargar los partidos');
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    console.log('Ejecutando useEffect para fetchMatches...');
-    fetchMatches();
-    return () => console.log('Limpiando useEffect de Matches');
-  }, []);
+    },
+  });
 
   const handleCreate = () => {
-    fetchMatches();
+    queryClient.invalidateQueries(['matches']);
     setShowCreateForm(false);
   };
 
   const handleUpdate = (updatedMatch) => {
-    setMatches((prevMatches) =>
-      prevMatches.map((match) =>
+    queryClient.setQueryData(['matches'], (oldMatches) =>
+      oldMatches.map((match) =>
         match._id === updatedMatch._id ? updatedMatch : match
       )
     );
@@ -51,15 +43,19 @@ function Matches() {
         match._id === updatedMatch._id ? updatedMatch : match
       )
     );
+    queryClient.invalidateQueries(['matches']);
+    queryClient.invalidateQueries(['ranking']);
   };
 
   const handleDelete = (matchId) => {
-    setMatches((prevMatches) =>
-      prevMatches.filter((match) => match._id !== matchId)
+    queryClient.setQueryData(['matches'], (oldMatches) =>
+      oldMatches.filter((match) => match._id !== matchId)
     );
     setFilteredMatches((prevMatches) =>
       prevMatches.filter((match) => match._id !== matchId)
     );
+    queryClient.invalidateQueries(['matches']);
+    queryClient.invalidateQueries(['ranking']);
   };
 
   const handleApplyFilters = (filters) => {
@@ -113,7 +109,7 @@ function Matches() {
   if (error) {
     return (
       <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8 text-center">
-        <p className="text-lg text-red-500 dark:text-dark-error">{error}</p>
+        <p className="text-lg text-red-500 dark:text-dark-error">{error.message || 'Error al cargar los partidos'}</p>
       </div>
     );
   }

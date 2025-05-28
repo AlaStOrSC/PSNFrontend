@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import FormContainer from './FormContainer';
 
 function CreateMatchForm({ onCreate }) {
+  const queryClient = useQueryClient();
   const { user } = useSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     player2: '',
@@ -13,25 +15,43 @@ function CreateMatchForm({ onCreate }) {
     time: '',
     city: user?.city || '',
   });
-  const [users, setUsers] = useState([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [errorUsers, setErrorUsers] = useState(null);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await api.get('/users');
-        setUsers(response.data);
-        setLoadingUsers(false);
-      } catch (error) {
-        console.error('Error al obtener usuarios:', error);
-        setErrorUsers(error.response?.data?.message || 'Error al cargar usuarios');
-        setLoadingUsers(false);
-      }
-    };
+  const { data: users = [], isLoading: loadingUsers, error: errorUsers } = useQuery({
+    queryKey: ['ranking'],
+    queryFn: async () => {
+      const response = await api.get('/users');
+      return response.data;
+    },
+    onError: (error) => {
+      console.error('Error al obtener usuarios:', error);
+    },
+  });
 
-    fetchUsers();
-  }, []);
+  const createMatchMutation = useMutation({
+    mutationFn: async (newMatchData) => {
+      console.log('Creando partido:', newMatchData);
+      const response = await api.post('/matches', newMatchData);
+      console.log('Partido creado:', response.data.match);
+      return response.data.match;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['matches']);
+      queryClient.invalidateQueries(['ranking']);
+      onCreate();
+      setFormData({
+        player2: '',
+        player3: '',
+        player4: '',
+        date: '',
+        time: '',
+        city: user?.city || '',
+      });
+    },
+    onError: (error) => {
+      console.error('Error al crear partido:', error);
+      alert('Error al crear el partido: ' + (error.response?.data?.message || error.message));
+    },
+  });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +61,7 @@ function CreateMatchForm({ onCreate }) {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const selectedPlayers = [formData.player2, formData.player3, formData.player4].filter(Boolean);
     const uniquePlayers = new Set(selectedPlayers);
     if (uniquePlayers.size !== selectedPlayers.length) {
@@ -49,34 +69,16 @@ function CreateMatchForm({ onCreate }) {
       return;
     }
 
-    try {
-      const newMatchData = {
-        player2Username: formData.player2,
-        player3Username: formData.player3,
-        player4Username: formData.player4,
-        date: formData.date,
-        time: formData.time,
-        city: formData.city,
-      };
+    const newMatchData = {
+      player2Username: formData.player2,
+      player3Username: formData.player3,
+      player4Username: formData.player4,
+      date: formData.date,
+      time: formData.time,
+      city: formData.city,
+    };
 
-      console.log('Creando partido:', newMatchData);
-      const response = await api.post('/matches', newMatchData);
-      console.log('Partido creado:', response.data.match);
-
-      onCreate(response.data.match);
-
-      setFormData({
-        player2: '',
-        player3: '',
-        player4: '',
-        date: '',
-        time: '',
-        city: user?.city || '',
-      });
-    } catch (error) {
-      console.error('Error al crear partido:', error);
-      alert('Error al crear el partido: ' + (error.response?.data?.message || error.message));
-    }
+    createMatchMutation.mutate(newMatchData);
   };
 
   if (loadingUsers) {
@@ -84,7 +86,7 @@ function CreateMatchForm({ onCreate }) {
   }
 
   if (errorUsers) {
-    return <div className="text-center text-red-500 dark:text-dark-error">{errorUsers}</div>;
+    return <div className="text-center text-red-500 dark:text-dark-error">{errorUsers.message || 'Error al cargar usuarios'}</div>;
   }
 
   const availableUsers = users.filter((u) => u.username !== user?.username);
