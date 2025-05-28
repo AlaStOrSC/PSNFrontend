@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { StarIcon } from '@heroicons/react/20/solid';
+import { useTranslation } from 'react-i18next';
 
 function ProductCard({ product, onPurchase }) {
+  const { t } = useTranslation();
   const [showDetails, setShowDetails] = useState(false);
 
   const renderStars = (rating) => {
@@ -40,15 +42,15 @@ function ProductCard({ product, onPurchase }) {
         onClick={() => setShowDetails(!showDetails)}
         className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg mt-2 hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
       >
-        {showDetails ? 'Ocultar detalle' : 'Ver detalle'}
+        {showDetails ? t('product_card.hide_details') : t('product_card.show_details')}
       </button>
 
       {showDetails && (
         <div className="mt-4">
-          <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Descripción: {product.description}</p>
+          <p className="text-sm text-gray-600 dark:text-dark-text-secondary">{t('product_card.description')}: {product.description}</p>
           <div className="mt-2">
             <p className="text-sm text-gray-600 dark:text-dark-text-secondary">
-              Vendedor: {product.seller.username}
+              {t('product_card.seller')}: {product.seller.username}
             </p>
             <div className="group relative">
               {renderStars(product.seller.averageRating || 0)}
@@ -61,7 +63,7 @@ function ProductCard({ product, onPurchase }) {
             onClick={onPurchase}
             className="bg-green-500 text-white dark:bg-green-600 dark:text-dark-text-primary px-4 py-2 rounded-lg mt-2 hover:bg-green-600 dark:hover:bg-green-700 transition-colors"
           >
-            Comprar
+            {t('product_card.purchase')}
           </button>
         </div>
       )}

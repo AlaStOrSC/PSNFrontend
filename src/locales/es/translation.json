@@ -169,5 +169,10 @@
   "shop.submit_rating": "Enviar valoración",
   "shop.error.invalid_rating": "La valoración debe estar entre 1 y 5 estrellas.",
   "shop.success.rate_product": "¡Gracias por tu valoración!",
-  "shop.error.rate_product": "Error al enviar la valoración. Inténtalo de nuevo."
+  "shop.error.rate_product": "Error al enviar la valoración. Inténtalo de nuevo.",
+  "product_card.show_details": "Ver detalle",
+"product_card.hide_details": "Ocultar detalle",
+"product_card.description": "Descripción",
+"product_card.seller": "Vendedor",
+"product_card.purchase": "Comprar"
 }
