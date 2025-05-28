@@ -13,10 +13,6 @@ function Matches() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showFilterForm, setShowFilterForm] = useState(false);
 
-  useEffect(() => {
-    setFilteredMatches(matches);
-  }, [matches]);
-
   const { data: matches = [], isLoading: loading, error } = useQuery({
     queryKey: ['matches'],
     queryFn: async () => {
@@ -30,6 +26,10 @@ function Matches() {
       console.error('Error al obtener partidos:', err);
     },
   });
+
+  useEffect(() => {
+    setFilteredMatches(matches);
+  }, [matches]);
 
   const handleCreate = () => {
     queryClient.invalidateQueries(['matches']);
@@ -145,7 +145,7 @@ function Matches() {
           />
         )}
         <div className="space-y-6">
-          {filteredMatches.length === 0 ? (
+          {!filteredMatches || filteredMatches.length === 0 ? (
             <p className="text-center text-gray-600 dark:text-dark-text-secondary">No tienes partidos que coincidan con los filtros.</p>
           ) : (
             filteredMatches.map((match) => (
