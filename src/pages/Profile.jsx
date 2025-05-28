@@ -286,7 +286,7 @@ function Profile() {
   ];
 
   return (
-    <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8">
+    <div className="min-h-screen bg-neutral dark:bg-dark-bg flex flex-col justify-center py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">{t('profile.title')}</h1>
 
@@ -380,8 +380,8 @@ function Profile() {
           zIndex={60}
         />
 
-        <div className="mb-6 sm:flex sm:gap-6 sm:items-stretch sm:min-h-[400px]">
-          <div className="max-w-md mx-auto sm:max-w-none sm:mx-0 sm:flex-1">
+        <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="w-full max-w-sm mx-auto">
             <ProfileCard>
               <div className="flex flex-col items-center mb-4">
                 <img
@@ -411,7 +411,7 @@ function Profile() {
 
               <div className="space-y-2 flex-1">
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.username')}:</span>
+                  <span className="font-semibold text-primary dark:text-dark-text-primary">{t('profile.username')}:</span>
                   <span className="text-gray-600 dark:text-dark-text-secondary">{user.username}</span>
                 </div>
                 <div className="flex justify-between">
@@ -480,7 +480,7 @@ function Profile() {
             </ProfileCard>
           </div>
 
-          <div className="max-w-md mx-auto sm:max-w-none sm:mx-0 sm:flex-1">
+          <div className="w-full max-w-sm mx-auto">
             <ProfileCard>
               <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.stats_title')}</h2>
               <div className="flex-1 flex items-center">
@@ -527,114 +527,114 @@ function Profile() {
               </div>
             </ProfileCard>
           </div>
-        </div>
 
-        <div className="max-w-md mx-auto">
-          <ProfileCard>
-            <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.friend_requests_title')}</h2>
-            {isFriendshipLoading ? (
-              <Spinner />
-            ) : friendshipError ? (
-              <p className="text-center text-red-500 dark:text-dark-error">{friendshipError.message || t('profile.error.load_friends')}</p>
-            ) : (
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.sent_requests')}</h3>
-                  {friendshipData?.pendingRequests.sent.length > 0 ? (
-                    <div className="space-y-2">
-                      {friendshipData.pendingRequests.sent.map((request) => (
-                        <div key={request.recipientId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
-                          <img
-                            src={
-                              request.profilePicture ||
-                              `https://ui-avatars.com/api/?name=${request.username}&background=${
-                                theme === 'dark' ? '0f172a' : '05374d'
-                              }&color=fff&size=40`
-                            }
-                            alt={request.username}
-                            className="w-10 h-10 rounded-full mr-3"
-                          />
-                          <span className="flex-1 text-gray-700 dark:text-dark-text-primary">
-                            {t('profile.request_sent_to')} {request.username}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
-                  )}
-                </div>
+          <div className="w-full max-w-sm mx-auto">
+            <ProfileCard>
+              <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.friend_requests_title')}</h2>
+              {isFriendshipLoading ? (
+                <Spinner />
+              ) : friendshipError ? (
+                <p className="text-center text-red-500 dark:text-dark-error">{friendshipError.message || t('profile.error.load_friends')}</p>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.sent_requests')}</h3>
+                    {friendshipData?.pendingRequests.sent.length > 0 ? (
+                      <div className="space-y-2">
+                        {friendshipData.pendingRequests.sent.map((request) => (
+                          <div key={request.recipientId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
+                            <img
+                              src={
+                                request.profilePicture ||
+                                `https://ui-avatars.com/api/?name=${request.username}&background=${
+                                  theme === 'dark' ? '0f172a' : '05374d'
+                                }&color=fff&size=40`
+                              }
+                              alt={request.username}
+                              className="w-10 h-10 rounded-full mr-3"
+                            />
+                            <span className="flex-1 text-gray-700 dark:text-dark-text-primary">
+                              {t('profile.request_sent_to')} {request.username}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
+                    )}
+                  </div>
 
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.received_requests')}</h3>
-                  {friendshipData?.pendingRequests.received.length > 0 ? (
-                    <div className="space-y-2">
-                      {friendshipData.pendingRequests.received.map((request) => (
-                        <div key={request.requesterId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
-                          <img
-                            src={
-                              request.profilePicture ||
-                              `https://ui-avatars.com/api/?name=${request.username}&background=${
-                                theme === 'dark' ? '0f172a' : '05374d'
-                              }&color=fff&size=40`
-                            }
-                            alt={request.username}
-                            className="w-10 h-10 rounded-full mr-3"
-                          />
-                          <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{request.username}</span>
-                          <button
-                            onClick={() => handleAcceptRequest(request.requesterId)}
-                            className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1 rounded-lg ml-2"
-                          >
-                            {t('profile.accept')}
-                          </button>
-                          <button
-                            onClick={() => handleRejectRequest(request.requesterId)}
-                            className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
-                          >
-                            {t('profile.reject')}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_received_requests')}</p>
-                  )}
-                </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.received_requests')}</h3>
+                    {friendshipData?.pendingRequests.received.length > 0 ? (
+                      <div className="space-y-2">
+                        {friendshipData.pendingRequests.received.map((request) => (
+                          <div key={request.requesterId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
+                            <img
+                              src={
+                                request.profilePicture ||
+                                `https://ui-avatars.com/api/?name=${request.username}&background=${
+                                  theme === 'dark' ? '0f172a' : '05374d'
+                                }&color=fff&size=40`
+                              }
+                              alt={request.username}
+                              className="w-10 h-10 rounded-full mr-3"
+                            />
+                            <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{request.username}</span>
+                            <button
+                              onClick={() => handleAcceptRequest(request.requesterId)}
+                              className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1 rounded-lg ml-2"
+                            >
+                              {t('profile.accept')}
+                            </button>
+                            <button
+                              onClick={() => handleRejectRequest(request.requesterId)}
+                              className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
+                            >
+                              {t('profile.reject')}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_received_requests')}</p>
+                    )}
+                  </div>
 
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.friends')}</h3>
-                  {friendshipData?.friends.length > 0 ? (
-                    <div className="space-y-2">
-                      {friendshipData.friends.map((friend) => (
-                        <div key={friend.userId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
-                          <img
-                            src={
-                              friend.profilePicture ||
-                              `https://ui-avatars.com/api/?name=${friend.username}&background=${
-                                theme === 'dark' ? '0f172a' : '05374d'
-                              }&color=fff&size=40`
-                            }
-                            alt={friend.username}
-                            className="w-10 h-10 rounded-full mr-3"
-                          />
-                          <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{friend.username}</span>
-                          <button
-                            onClick={() => handleRemoveFriend(friend.userId)}
-                            className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
-                          >
-                            {t('profile.remove_friend')}
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_friends')}</p>
-                  )}
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.friends')}</h3>
+                    {friendshipData?.friends.length > 0 ? (
+                      <div className="space-y-2">
+                        {friendshipData.friends.map((friend) => (
+                          <div key={friend.userId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
+                            <img
+                              src={
+                                friend.profilePicture ||
+                                `https://ui-avatars.com/api/?name=${friend.username}&background=${
+                                  theme === 'dark' ? '0f172a' : '05374d'
+                                }&color=fff&size=40`
+                              }
+                              alt={friend.username}
+                              className="w-10 h-10 rounded-full mr-3"
+                            />
+                            <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{friend.username}</span>
+                            <button
+                              onClick={() => handleRemoveFriend(friend.userId)}
+                              className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
+                            >
+                              {t('profile.remove_friend')}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_friends')}</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-          </ProfileCard>
+              )}
+            </ProfileCard>
+          </div>
         </div>
       </div>
     </div>

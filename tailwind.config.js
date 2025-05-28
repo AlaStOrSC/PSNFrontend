@@ -7,8 +7,9 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#05374d', // Azul oscuro
-        secondary: '#1a5673', // Azul medio
+        primary: '#05374d',
+        primaryText: 'black', // Azul oscuro #1a5673
+        secondary: '#1a5673', // Azul medio #1a5673
         accent: '#f4a261', // Naranja cálido
         neutral: '#f8fafc', // Blanco grisáceo claro
         // Colores para modo oscuro
@@ -17,7 +18,7 @@ export default {
         'dark-bg-tertiary': '#334155', // Fondo alternado (slate-700)
         'dark-text-primary': '#f3f4f6', // Texto principal (gray-100)
         'dark-text-secondary': '#d1d5db', // Texto secundario (gray-300)
-        'dark-text-accent': '#f4a261', // Texto destacado (accent)
+        'dark-text-accent': '#fff', // Texto destacado (accent)
         'dark-primary': '#1e40af', // Botones/interactivos (indigo-800)
         'dark-secondary': '#3b82f6', // Hovers (blue-500)
         'dark-border': '#4b5563', // Bordes (gray-600)

@@ -144,7 +144,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
   };
 
   return (
-    <div className={`rounded-lg shadow-lg dark:shadow-dark-shadow p-6 ${getCardStyle()} mb-6 max-w-md mx-auto`}>
+    <div className={`rounded-lg shadow-lg dark:shadow-dark-shadow p-6 ${getCardStyle()} w-full`}>
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}

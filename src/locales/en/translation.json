@@ -22,7 +22,7 @@
   "conocenos.chart.title": "Our Environmental Impact",
   "conocenos.chart.description": "As our community of players grows, our commitment to the environment strengthens, contributing to a more sustainable future.",
   "conocenos.chart.x_axis": "Number of Users",
-  "conocenos.chart.y_axis": "Environmental Contribution (Tons of CO₂ Reduced)",
+  "conocenos.chart.y_axis": "Tons of CO₂ Reduced",
   "conocenos.chart.legend": "Environmental Contribution",
   "conocenos.testimonials.title": "What They Say About Us",
   "conocenos.testimonials.ceo.name": "Enrique Macías Moreno",
@@ -171,8 +171,8 @@
   "shop.success.rate_product": "Thank you for your rating!",
   "shop.error.rate_product": "Error submitting the rating. Please try again.",
   "product_card.show_details": "Show Details",
-"product_card.hide_details": "Hide Details",
-"product_card.description": "Description",
-"product_card.seller": "Seller",
-"product_card.purchase": "Purchase"
+  "product_card.hide_details": "Hide Details",
+  "product_card.description": "Description",
+  "product_card.seller": "Seller",
+  "product_card.purchase": "Purchase"
 }

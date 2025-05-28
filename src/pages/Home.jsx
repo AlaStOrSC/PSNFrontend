@@ -9,7 +9,7 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg flex flex-col">
-      <Banner />
+      <Banner className="mb-24" />
       <div className="flex-grow flex flex-col items-center justify-center text-center p-4">
         <h1 className="text-4xl font-bold text-primary dark:text-dark-text-accent mb-4">
           {t('home.welcome')} {user?.username ? user.username : " "}!

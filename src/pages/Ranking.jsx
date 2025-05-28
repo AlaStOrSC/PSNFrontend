@@ -87,6 +87,7 @@ function Ranking() {
       headerName: 'Usuario',
       flex: 0.3,
       minWidth: 200,
+      headerAlign: 'center',
       renderCell: (params) => (
         <div className="flex items-center">
           <img
@@ -117,6 +118,7 @@ function Ranking() {
       headerName: 'Ciudad',
       flex: 0.2,
       minWidth: 150,
+      headerAlign: 'center',
     },
     {
       field: 'score',
@@ -132,6 +134,7 @@ function Ranking() {
       headerName: 'Acción',
       flex: 0.2,
       minWidth: 150,
+      headerAlign: 'center',
       renderCell: (params) => (
         <div className="flex space-x-2">
           <button
