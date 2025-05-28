@@ -14,8 +14,8 @@ function Matches() {
   const [showFilterForm, setShowFilterForm] = useState(false);
 
   useEffect(() => {
-  setFilteredMatches(matches);
-}, [matches]);
+    setFilteredMatches(matches);
+  }, [matches]);
 
   const { data: matches = [], isLoading: loading, error } = useQuery({
     queryKey: ['matches'],
