@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import api from '../services/api';
 import ProductCard from '../components/ProductCard';
 import Modal from '../components/Modal';
-import { useSelector } from 'react-redux';
 
 function PSNShop() {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
   const { user } = useSelector((state) => state.auth);
-  const [products, setProducts] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(window.innerWidth < 640 ? 5 : 10);
@@ -54,27 +57,85 @@ function PSNShop() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const queryParams = new URLSearchParams({
-          page,
-          limit,
-          ...(filters.minRating && { minRating: filters.minRating }),
-          ...(filters.minPrice && { minPrice: filters.minPrice }),
-          ...(filters.maxPrice && { maxPrice: filters.maxPrice }),
-          ...(filters.category && { category: filters.category }),
-          ...(filters.sellerUsername && { sellerUsername: filters.sellerUsername }),
-        }).toString();
-        const response = await api.get(`/products?${queryParams}`);
-        setProducts(response.data.products);
-        setTotalPages(response.data.totalPages);
-      } catch (error) {
-        console.error('Error al cargar productos:', error);
-      }
-    };
-    fetchProducts();
-  }, [page, limit, filters]);
+  const { data: productsData, isLoading, error } = useQuery({
+    queryKey: ['products', page, limit, filters],
+    queryFn: async () => {
+      const queryParams = new URLSearchParams({
+        page,
+        limit,
+        ...(filters.minRating && { minRating: filters.minRating }),
+        ...(filters.minPrice && { minPrice: filters.minPrice }),
+        ...(filters.maxPrice && { maxPrice: filters.maxPrice }),
+        ...(filters.category && { category: filters.category }),
+        ...(filters.sellerUsername && { sellerUsername: filters.sellerUsername }),
+      }).toString();
+      const response = await api.get(`/products?${queryParams}`);
+      setTotalPages(response.data.totalPages);
+      return response.data.products;
+    },
+    onError: (error) => {
+      console.error('Error al cargar productos:', error);
+    },
+  });
+
+  const products = productsData || [];
+
+  const sellMutation = useMutation({
+    mutationFn: async (form) => {
+      const response = await api.post('/products', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      setModalMessage(t('shop.success.sell_product'));
+      setShowModal(true);
+      setShowSellForm(false);
+      setFormData({ name: '', price: '', description: '', category: '', image: null });
+      queryClient.invalidateQueries(['products']);
+    },
+    onError: (error) => {
+      console.error('Error al crear producto:', error);
+      setModalMessage(t('shop.error.sell_product'));
+      setShowModal(true);
+    },
+  });
+
+  const purchaseMutation = useMutation({
+    mutationFn: async (productId) => {
+      await api.post(`/products/purchase/${productId}`);
+    },
+    onSuccess: () => {
+      setModalMessage(t('shop.success.purchase_product'));
+      setShowModal(true);
+      setShowPurchaseForm(false);
+      setShowRatingForm(true);
+      queryClient.invalidateQueries(['products']);
+    },
+    onError: (error) => {
+      console.error('Error al procesar la compra:', error);
+      setModalMessage(t('shop.error.purchase_product'));
+      setShowModal(true);
+    },
+  });
+
+  const rateMutation = useMutation({
+    mutationFn: async ({ productId, rating, comment }) => {
+      await api.post(`/products/rate/${productId}`, { rating, comment });
+    },
+    onSuccess: () => {
+      setModalMessage(t('shop.success.rate_product'));
+      setShowModal(true);
+      setShowRatingForm(false);
+      setRatingData({ productId: '', rating: 0, comment: '' });
+      queryClient.invalidateQueries(['products']);
+    },
+    onError: (error) => {
+      console.error('Error al enviar la valoración:', error);
+      setModalMessage(t('shop.error.rate_product'));
+      setShowModal(true);
+    },
+  });
 
   const handleFilterSubmit = (e) => {
     e.preventDefault();
@@ -94,87 +155,43 @@ function PSNShop() {
     setShowFilterForm(false);
   };
 
-  const handleSellSubmit = async (e) => {
+  const handleSellSubmit = (e) => {
     e.preventDefault();
-    try {
-      const form = new FormData();
-      form.append('name', formData.name);
-      form.append('price', formData.price);
-      form.append('description', formData.description);
-      form.append('category', formData.category);
-      form.append('image', formData.image);
+    const form = new FormData();
+    form.append('name', formData.name);
+    form.append('price', formData.price);
+    form.append('description', formData.description);
+    form.append('category', formData.category);
+    form.append('image', formData.image);
 
-      const response = await api.post('/products', form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      setModalMessage('¡Enhorabuena! Tu producto ha sido puesto a la venta.');
-      setShowModal(true);
-      setShowSellForm(false);
-      setFormData({ name: '', price: '', description: '', category: '', image: null });
-
-      const updatedResponse = await api.get(`/products?page=${page}&limit=${limit}`);
-      setProducts(updatedResponse.data.products);
-      setTotalPages(updatedResponse.data.totalPages);
-    } catch (error) {
-      console.error('Error al crear producto:', error);
-      setModalMessage('Error al crear el producto. Inténtalo de nuevo.');
-      setShowModal(true);
-    }
+    sellMutation.mutate(form);
   };
 
-  const handlePurchaseSubmit = async (e) => {
+  const handlePurchaseSubmit = (e) => {
     e.preventDefault();
-    try {
-      const { name, lastName, phone, city, address, creditCard, productId } = purchaseData;
-      if (!name || !lastName || !phone || !city || !address || !creditCard) {
-        setModalMessage('Por favor, completa todos los campos del formulario de pago.');
-        setShowModal(true);
-        return;
-      }
-
-      await api.post(`/products/purchase/${productId}`);
-
-      setModalMessage('¡Enhorabuena! Compra realizada con éxito.');
+    const { name, lastName, phone, city, address, creditCard, productId } = purchaseData;
+    if (!name || !lastName || !phone || !city || !address || !creditCard) {
+      setModalMessage(t('shop.error.purchase_form_incomplete'));
       setShowModal(true);
-      setShowPurchaseForm(false);
-
-      setRatingData({ ...ratingData, productId });
-      setShowRatingForm(true);
-    } catch (error) {
-      console.error('Error al procesar la compra:', error);
-      setModalMessage('Error al procesar la compra. Inténtalo de nuevo.');
-      setShowModal(true);
+      return;
     }
+
+    purchaseMutation.mutate(productId);
   };
 
-  const handleRatingSubmit = async (e) => {
+  const handleRatingSubmit = (e) => {
     e.preventDefault();
-    try {
-      if (ratingData.rating < 1 || ratingData.rating > 5) {
-        setModalMessage('La valoración debe estar entre 1 y 5 estrellas.');
-        setShowModal(true);
-        return;
-      }
-
-      await api.post(`/products/rate/${ratingData.productId}`, {
-        rating: ratingData.rating,
-        comment: ratingData.comment,
-      });
-
-      setModalMessage('¡Gracias por tu valoración!');
+    if (ratingData.rating < 1 || ratingData.rating > 5) {
+      setModalMessage(t('shop.error.invalid_rating'));
       setShowModal(true);
-      setShowRatingForm(false);
-      setRatingData({ productId: '', rating: 0, comment: '' });
-
-      const updatedResponse = await api.get(`/products?page=${page}&limit=${limit}`);
-      setProducts(updatedResponse.data.products);
-      setTotalPages(updatedResponse.data.totalPages);
-    } catch (error) {
-      console.error('Error al enviar la valoración:', error);
-      setModalMessage('Error al enviar la valoración. Inténtalo de nuevo.');
-      setShowModal(true);
+      return;
     }
+
+    rateMutation.mutate({
+      productId: ratingData.productId,
+      rating: ratingData.rating,
+      comment: ratingData.comment,
+    });
   };
 
   const openPurchaseForm = (productId) => {
@@ -182,9 +199,25 @@ function PSNShop() {
     setShowPurchaseForm(true);
   };
 
+  if (isLoading) {
+    return (
+      <div className="container mx-auto p-4 bg-neutral dark:bg-dark-bg text-center">
+        <p className="text-lg text-gray-600 dark:text-dark-text-secondary">{t('loading')}</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto p-4 bg-neutral dark:bg-dark-bg text-center">
+        <p className="text-lg text-red-500 dark:text-dark-error">{t('shop.error.load_products')}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto p-4 bg-neutral dark:bg-dark-bg">
-      <h1 className="text-3xl font-bold mb-4 text-center text-primary dark:text-dark-text-accent">Tienda PSN</h1>
+      <h1 className="text-3xl font-bold mb-4 text-center text-primary dark:text-dark-text-accent">{t('navbar.tienda')}</h1>
 
       <div className="flex justify-between mb-4">
         {user && (
@@ -192,23 +225,23 @@ function PSNShop() {
             onClick={() => setShowSellForm(true)}
             className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
           >
-            Vender
+            {t('shop.sell')}
           </button>
         )}
         <button
           onClick={() => setShowFilterForm(true)}
           className="bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
         >
-          Filtrar
+          {t('shop.filter')}
         </button>
       </div>
 
       {showFilterForm && (
         <div className="bg-gray-100 dark:bg-dark-bg-tertiary p-4 rounded-lg mb-4">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">Filtros</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">{t('shop.filters_title')}</h2>
           <form onSubmit={handleFilterSubmit}>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Valoración mínima (1-5)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.min_rating_label')}</label>
               <input
                 type="number"
                 value={filters.minRating}
@@ -219,7 +252,7 @@ function PSNShop() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Precio mínimo (€)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.min_price_label')}</label>
               <input
                 type="number"
                 value={filters.minPrice}
@@ -230,7 +263,7 @@ function PSNShop() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Precio máximo (€)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.max_price_label')}</label>
               <input
                 type="number"
                 value={filters.maxPrice}
@@ -241,22 +274,22 @@ function PSNShop() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Categoría</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.category_label')}</label>
               <select
                 value={filters.category}
                 onChange={(e) => setFilters({ ...filters, category: e.target.value })}
                 className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
               >
-                <option value="">Todas las categorías</option>
-                <option value="Palas">Palas</option>
-                <option value="Bolas">Bolas</option>
-                <option value="Ropa">Ropa</option>
-                <option value="Calzado">Calzado</option>
-                <option value="Accesorios">Accesorios</option>
+                <option value="">{t('shop.category_all')}</option>
+                <option value="Palas">{t('shop.category_palas')}</option>
+                <option value="Bolas">{t('shop.category_bolas')}</option>
+                <option value="Ropa">{t('shop.category_ropa')}</option>
+                <option value="Calzado">{t('shop.category_calzado')}</option>
+                <option value="Accesorios">{t('shop.category_accesorios')}</option>
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Vendedor (nombre de usuario)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.seller_label')}</label>
               <input
                 type="text"
                 value={filters.sellerUsername}
@@ -268,21 +301,21 @@ function PSNShop() {
               type="submit"
               className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
             >
-              Aplicar filtros
+              {t('shop.apply_filters')}
             </button>
             <button
               type="button"
               onClick={handleClearFilters}
               className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
             >
-              Limpiar filtros
+              {t('shop.clear_filters')}
             </button>
             <button
               type="button"
               onClick={() => setShowFilterForm(false)}
               className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
             >
-              Cancelar
+              {t('shop.cancel')}
             </button>
           </form>
         </div>
@@ -290,10 +323,10 @@ function PSNShop() {
 
       {showSellForm && (
         <div className="bg-gray-100 dark:bg-dark-bg-tertiary p-4 rounded-lg mb-4">
-          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">Vender un producto</h2>
+          <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">{t('shop.sell_product_title')}</h2>
           <form onSubmit={handleSellSubmit}>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Nombre del producto</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.product_name_label')}</label>
               <input
                 type="text"
                 value={formData.name}
@@ -303,7 +336,7 @@ function PSNShop() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Imagen del producto</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.product_image_label')}</label>
               <input
                 type="file"
                 accept="image/*"
@@ -313,7 +346,7 @@ function PSNShop() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Precio (€)</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.price_label')}</label>
               <input
                 type="number"
                 value={formData.price}
@@ -325,7 +358,7 @@ function PSNShop() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Descripción</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.description_label')}</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -335,33 +368,33 @@ function PSNShop() {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Categoría</label>
+              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.category_label')}</label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 required
               >
-                <option value="">Selecciona una categoría</option>
-                <option value="Palas">Palas</option>
-                <option value="Bolas">Bolas</option>
-                <option value="Ropa">Ropa</option>
-                <option value="Calzado">Calzado</option>
-                <option value="Accesorios">Accesorios</option>
+                <option value="">{t('shop.category_select')}</option>
+                <option value="Palas">{t('shop.category_palas')}</option>
+                <option value="Bolas">{t('shop.category_bolas')}</option>
+                <option value="Ropa">{t('shop.category_ropa')}</option>
+                <option value="Calzado">{t('shop.category_calzado')}</option>
+                <option value="Accesorios">{t('shop.category_accesorios')}</option>
               </select>
             </div>
             <button
               type="submit"
               className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
             >
-              Enviar
+              {t('shop.submit')}
             </button>
             <button
               type="button"
               onClick={() => setShowSellForm(false)}
               className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
             >
-              Cancelar
+              {t('shop.cancel')}
             </button>
           </form>
         </div>
@@ -383,25 +416,25 @@ function PSNShop() {
           disabled={page === 1}
           className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg mr-2 disabled:bg-gray-400 dark:disabled:bg-gray-600"
         >
-          Anterior
+          {t('shop.previous')}
         </button>
-        <span className="self-center text-gray-700 dark:text-dark-text-primary">Página {page} de {totalPages}</span>
+        <span className="self-center text-gray-700 dark:text-dark-text-primary">{t('shop.page_of', { page, totalPages })}</span>
         <button
           onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={page === totalPages}
           className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg ml-2 disabled:bg-gray-400 dark:disabled:bg-gray-600"
         >
-          Siguiente
+          {t('shop.next')}
         </button>
       </div>
 
       {showPurchaseForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center">
           <div className="bg-white dark:bg-dark-bg-secondary p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">Formulario de pago</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">{t('shop.payment_form_title')}</h2>
             <form onSubmit={handlePurchaseSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Nombre</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.payment_first_name_label')}</label>
                 <input
                   type="text"
                   value={purchaseData.name}
@@ -411,7 +444,7 @@ function PSNShop() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Apellidos</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.payment_last_name_label')}</label>
                 <input
                   type="text"
                   value={purchaseData.lastName}
@@ -421,7 +454,7 @@ function PSNShop() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Teléfono</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.payment_phone_label')}</label>
                 <input
                   type="tel"
                   value={purchaseData.phone}
@@ -431,7 +464,7 @@ function PSNShop() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Ciudad</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.payment_city_label')}</label>
                 <input
                   type="text"
                   value={purchaseData.city}
@@ -441,7 +474,7 @@ function PSNShop() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Dirección</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.payment_address_label')}</label>
                 <input
                   type="text"
                   value={purchaseData.address}
@@ -451,7 +484,7 @@ function PSNShop() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Tarjeta de crédito</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.payment_credit_card_label')}</label>
                 <input
                   type="text"
                   value={purchaseData.creditCard}
@@ -464,14 +497,14 @@ function PSNShop() {
                 type="submit"
                 className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
               >
-                Pagar
+                {t('shop.pay')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowPurchaseForm(false)}
                 className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
               >
-                Cancelar
+                {t('shop.cancel')}
               </button>
             </form>
           </div>
@@ -481,10 +514,10 @@ function PSNShop() {
       {showRatingForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-70 flex items-center justify-center">
           <div className="bg-white dark:bg-dark-bg-secondary p-6 rounded-lg w-full max-w-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">Valora el producto</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-dark-text-primary">{t('shop.rate_product_title')}</h2>
             <form onSubmit={handleRatingSubmit}>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Valoración (1-5 estrellas)</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.rating_label')}</label>
                 <input
                   type="number"
                   value={ratingData.rating}
@@ -496,7 +529,7 @@ function PSNShop() {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">Comentario (opcional, máximo 100 caracteres)</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-dark-text-primary">{t('shop.comment_label')}</label>
                 <textarea
                   value={ratingData.comment}
                   onChange={(e) => setRatingData({ ...ratingData, comment: e.target.value })}
@@ -508,14 +541,14 @@ function PSNShop() {
                 type="submit"
                 className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
               >
-                Enviar valoración
+                {t('shop.submit_rating')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowRatingForm(false)}
                 className="ml-2 bg-gray-500 text-white dark:bg-gray-600 dark:text-dark-text-primary px-4 py-2 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
               >
-                Cancelar
+                {t('shop.cancel')}
               </button>
             </form>
           </div>
