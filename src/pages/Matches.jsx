@@ -13,6 +13,10 @@ function Matches() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showFilterForm, setShowFilterForm] = useState(false);
 
+  useEffect(() => {
+  setFilteredMatches(matches);
+}, [matches]);
+
   const { data: matches = [], isLoading: loading, error } = useQuery({
     queryKey: ['matches'],
     queryFn: async () => {
