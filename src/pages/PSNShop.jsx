@@ -418,7 +418,7 @@ function PSNShop() {
         >
           {t('shop.previous')}
         </button>
-        <span className="self-center text-gray-700 dark:text-dark-text-primary">{t('shop.page_of', { page, totalPages })}</span>
+        <span className="self-center text-gray-700 dark:text-dark-text-primary">Página {page} de {totalPages}</span>
         <button
           onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={page === totalPages}
