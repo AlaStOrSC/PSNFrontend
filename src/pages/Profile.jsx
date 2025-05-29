@@ -8,6 +8,7 @@ import ModalP from '../components/ModalP';
 import ProfileCard from '../components/ProfileCard';
 import LuckyWheel from '../components/LuckyWheel';
 import Spinner from '../components/Spinner';
+import { ArrowsPointingOutIcon } from '@heroicons/react/24/solid';
 
 function Profile() {
   const dispatch = useDispatch();
@@ -30,6 +31,8 @@ function Profile() {
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState(false);
   const [prize, setPrize] = useState('');
   const [isConfettiActive, setIsConfettiActive] = useState(false);
+  const [isFriendsModalOpen, setIsFriendsModalOpen] = useState(false);
+  const [modalSection, setModalSection] = useState(null);
   const fileInputRef = useRef(null);
 
   const { data: friendshipData, isLoading: isFriendshipLoading, error: friendshipError } = useQuery({
@@ -244,6 +247,16 @@ function Profile() {
     setIsConfettiActive(false);
   };
 
+  const closeFriendsModal = () => {
+    setIsFriendsModalOpen(false);
+    setModalSection(null);
+  };
+
+  const handleOpenFriendsModal = (section) => {
+    setModalSection(section);
+    setIsFriendsModalOpen(true);
+  };
+
   const handleRedeemPoints = () => {
     setIsRedeemModalOpen(true);
   };
@@ -380,8 +393,104 @@ function Profile() {
           zIndex={60}
         />
 
+        <ModalP
+          isOpen={isFriendsModalOpen}
+          onClose={closeFriendsModal}
+          title={
+            modalSection === 'sent'
+              ? t('profile.sent_requests')
+              : modalSection === 'received'
+              ? t('profile.received_requests')
+              : t('profile.friends')
+          }
+          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          zIndex={70}
+        >
+          <div className="space-y-4 p-4">
+            {modalSection === 'sent' && friendshipData?.pendingRequests.sent.length > 0 ? (
+              friendshipData.pendingRequests.sent.map((request) => (
+                <div key={request.recipientId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
+                  <img
+                    src={
+                      request.profilePicture ||
+                      `https://ui-avatars.com/api/?name=${request.username}&background=${
+                        theme === 'dark' ? '0f172a' : '05374d'
+                      }&color=fff&size=40`
+                    }
+                    alt={request.username}
+                    className="w-10 h-10 rounded-full mr-3"
+                  />
+                  <span className="flex-1 text-gray-700 dark:text-dark-text-primary">
+                    {t('profile.request_sent_to')} {request.username}
+                  </span>
+                </div>
+              ))
+            ) : modalSection === 'sent' ? (
+              <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
+            ) : null}
+
+            {modalSection === 'received' && friendshipData?.pendingRequests.received.length > 0 ? (
+              friendshipData.pendingRequests.received.map((request) => (
+                <div key={request.requesterId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
+                  <img
+                    src={
+                      request.profilePicture ||
+                      `https://ui-avatars.com/api/?name=${request.username}&background=${
+                        theme === 'dark' ? '0f172a' : '05374d'
+                      }&color=fff&size=40`
+                    }
+                    alt={request.username}
+                    className="w-10 h-10 rounded-full mr-3"
+                  />
+                  <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{request.username}</span>
+                  <button
+                    onClick={() => handleAcceptRequest(request.requesterId)}
+                    className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1 rounded-lg ml-2"
+                  >
+                    {t('profile.accept')}
+                  </button>
+                  <button
+                    onClick={() => handleRejectRequest(request.requesterId)}
+                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
+                  >
+                    {t('profile.reject')}
+                  </button>
+                </div>
+              ))
+            ) : modalSection === 'received' ? (
+              <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_received_requests')}</p>
+            ) : null}
+
+            {modalSection === 'friends' && friendshipData?.friends.length > 0 ? (
+              friendshipData.friends.map((friend) => (
+                <div key={friend.userId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
+                  <img
+                    src={
+                      friend.profilePicture ||
+                      `https://ui-avatars.com/api/?name=${friend.username}&background=${
+                        theme === 'dark' ? '0f172a' : '05374d'
+                      }&color=fff&size=40`
+                    }
+                    alt={friend.username}
+                    className="w-10 h-10 rounded-full mr-3"
+                  />
+                  <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{friend.username}</span>
+                  <button
+                    onClick={() => handleRemoveFriend(friend.userId)}
+                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
+                  >
+                    {t('profile.remove_friend')}
+                  </button>
+                </div>
+              ))
+            ) : modalSection === 'friends' ? (
+              <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_friends')}</p>
+            ) : null}
+          </div>
+        </ModalP>
+
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="w-full max-w-sm mx-auto">
+          <div className="w-full max-w-sm mx-auto h-[450px]">
             <ProfileCard>
               <div className="flex flex-col items-center mb-4">
                 <img
@@ -480,7 +589,7 @@ function Profile() {
             </ProfileCard>
           </div>
 
-          <div className="w-full max-w-sm mx-auto">
+          <div className="w-full max-w-sm mx-auto h-[450px]">
             <ProfileCard>
               <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.stats_title')}</h2>
               <div className="flex-1 flex items-center">
@@ -528,7 +637,7 @@ function Profile() {
             </ProfileCard>
           </div>
 
-          <div className="w-full max-w-sm mx-auto">
+          <div className="w-full max-w-sm mx-auto h-[450px]">
             <ProfileCard>
               <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.friend_requests_title')}</h2>
               {isFriendshipLoading ? (
@@ -538,9 +647,17 @@ function Profile() {
               ) : (
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.sent_requests')}</h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.sent_requests')}</h3>
+                      <button
+                        onClick={() => handleOpenFriendsModal('sent')}
+                        className="text-primary dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                      >
+                        <ArrowsPointingOutIcon className="h-5 w-5" />
+                      </button>
+                    </div>
                     {friendshipData?.pendingRequests.sent.length > 0 ? (
-                      <div className="space-y-2">
+                      <div className="space-y-2 max-h-[120px] overflow-y-auto">
                         {friendshipData.pendingRequests.sent.map((request) => (
                           <div key={request.recipientId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                             <img
@@ -565,9 +682,17 @@ function Profile() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.received_requests')}</h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.received_requests')}</h3>
+                      <button
+                        onClick={() => handleOpenFriendsModal('received')}
+                        className="text-primary dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                      >
+                        <ArrowsPointingOutIcon className="h-5 w-5" />
+                      </button>
+                    </div>
                     {friendshipData?.pendingRequests.received.length > 0 ? (
-                      <div className="space-y-2">
+                      <div className="space-y-2 max-h-[120px] overflow-y-auto">
                         {friendshipData.pendingRequests.received.map((request) => (
                           <div key={request.requesterId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                             <img
@@ -602,9 +727,17 @@ function Profile() {
                   </div>
 
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('profile.friends')}</h3>
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.friends')}</h3>
+                      <button
+                        onClick={() => handleOpenFriendsModal('friends')}
+                        className="text-primary dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                      >
+                        <ArrowsPointingOutIcon className="h-5 w-5" />
+                      </button>
+                    </div>
                     {friendshipData?.friends.length > 0 ? (
-                      <div className="space-y-2">
+                      <div className="space-y-2 max-h-[120px] overflow-y-auto">
                         {friendshipData.friends.map((friend) => (
                           <div key={friend.userId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                             <img
