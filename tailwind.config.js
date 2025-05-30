@@ -6,12 +6,20 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Montserrat', 'Poppins', 'sans-serif'], // Fuente predeterminada para todo el proyecto
+        heading: ['Poppins', 'sans-serif'], // Opcional: para títulos
+      },
       colors: {
         primary: '#05374d',
-        primaryText: 'black', // Azul oscuro #1a5673
+        buttons: '#1e40af',
+        buttonsHover: '#3b82f6',
+        primaryText: '#000000', // Azul oscuro #1a5673
         secondary: '#1a5673', // Azul medio #1a5673
         accent: '#f4a261', // Naranja cálido
         neutral: '#f8fafc', // Blanco grisáceo claro
+        save: '#28A745',
+        saveHover: '#34C759',
         // Colores para modo oscuro
         'dark-bg': '#0f172a', // Fondo principal (slate-900)
         'dark-bg-secondary': '#1e293b', // Fondo contenedores (slate-800)

@@ -184,7 +184,7 @@ function Chat() {
     <div className="fixed bottom-4 right-4 z-50">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-primary text-white px-4 py-2 rounded-lg shadow-lg hover:bg-secondary transition-colors flex items-center dark:bg-dark-primary dark:hover:bg-dark-secondary"
+        className="bg-secondary text-white px-4 py-2 rounded-lg shadow-lg hover:bg-secondary transition-colors flex items-center dark:bg-dark-primary dark:hover:bg-dark-secondary"
       >
         Chat
         {isOpen ? (
@@ -241,7 +241,7 @@ function Chat() {
                 </div>
                 <button
                   onClick={() => handleOpenChat(selectedUser.userId)}
-                  className="bg-primary text-white px-3 py-1 rounded-lg hover:bg-secondary"
+                  className="bg-primary text-white px-3 py-1 rounded-lg hover:bg-secondary dark:bg-dark-primary dark:hover:bg-buttonsHover"
                 >
                   Abrir chat
                 </button>
@@ -272,8 +272,8 @@ function Chat() {
                       <div
                         className={`max-w-xs p-2 rounded-lg ${
                           msg.sender === user.userId
-                            ? 'bg-primary text-white'
-                            : 'bg-gray-200 text-gray-800'
+                            ? 'bg-secondary text-white dark:bg-dark-primary'
+                            : 'bg-gray-200 text-gray-800 dark:bg-gray-300'
                         }`}
                       >
                         <p>{msg.content}</p>
@@ -297,7 +297,7 @@ function Chat() {
                     />
                     <button
                       onClick={handleSendMessage}
-                      className="ml-2 bg-primary text-white p-2 rounded-lg hover:bg-secondary"
+                      className="ml-2 bg-secondary text-white p-2 rounded-lg hover:bg-primary dark:bg-dark-primary dark:hover:bg-buttonsHover"
                     >
                       Enviar
                     </button>

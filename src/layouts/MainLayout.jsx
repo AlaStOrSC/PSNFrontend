@@ -3,9 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
 import { toggleTheme } from '../store/slices/themeSlice';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { HomeIcon, UserIcon, TrophyIcon, Bars3Icon, XMarkIcon, BoltIcon, EnvelopeIcon, ShoppingBagIcon, MoonIcon, SunIcon, InformationCircleIcon, LanguageIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, UserIcon, TrophyIcon, Bars3Icon, XMarkIcon, BoltIcon, EnvelopeIcon, ShoppingBagIcon, MoonIcon, SunIcon, InformationCircleIcon, ArrowRightOnRectangleIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid';
 import Chat from '../components/Chat';
 import { useTranslation } from 'react-i18next';
+import LogoNavbar from '../assets/LogoNavbar.png';
+import FlagES from '../assets/uk.png';
+import FlagGB from '../assets/es.png';
 
 function MainLayout() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -48,7 +51,11 @@ function MainLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold text-white dark:text-dark-text-primary">PSN</h1>
+              <img
+                src={LogoNavbar}
+                alt="Logo"
+                className="h-20 w-auto"
+              />
             </div>
             <div className="hidden md:flex items-center space-x-4">
               {navItems.map((item) => (
@@ -56,7 +63,7 @@ function MainLayout() {
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                    `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 min-w-[100px] ${
                       isActive
                         ? 'bg-secondary text-white dark:bg-dark-primary dark:text-dark-text-primary'
                         : 'hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary'
@@ -69,14 +76,18 @@ function MainLayout() {
               ))}
               <button
                 onClick={handleLanguageToggle}
-                className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200"
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 min-w-[50px]"
               >
-                <LanguageIcon className="h-5 w-5 mr-2" />
+                <img
+                  src={i18n.language === 'es' ? FlagES : FlagGB}
+                  alt={i18n.language === 'es' ? 'Español' : 'English'}
+                  className="h-5 w-5 mr-2"
+                />
                 {i18n.language === 'es' ? 'EN' : 'ES'}
               </button>
               <button
                 onClick={handleThemeToggle}
-                className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200"
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 min-w-[50px]"
               >
                 {theme === 'light' ? (
                   <MoonIcon className="h-5 w-5" />
@@ -87,16 +98,16 @@ function MainLayout() {
               {isAuthenticated ? (
                 <button
                   onClick={handleLogout}
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200"
+                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 min-w-[50px]"
                 >
-                  {t('navbar.cerrar_sesion')}
+                  <ArrowLeftOnRectangleIcon className="h-5 w-5" />
                 </button>
               ) : (
                 <NavLink
                   to="/auth"
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200"
+                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 min-w-[50px]"
                 >
-                  {t('navbar.iniciar_sesion')}
+                  <ArrowRightOnRectangleIcon className="h-5 w-5" />
                 </NavLink>
               )}
             </div>
@@ -119,7 +130,7 @@ function MainLayout() {
                   key={item.name}
                   to={item.path}
                   className={({ isActive }) =>
-                    `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                    `flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 min-w-[100px] ${
                       isActive
                         ? 'bg-secondary text-white dark:bg-dark-primary dark:text-dark-text-primary'
                         : 'hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary'
@@ -136,9 +147,13 @@ function MainLayout() {
                   handleLanguageToggle();
                   toggleMenu();
                 }}
-                className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 w-full text-left"
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 w-full text-left min-w-[50px]"
               >
-                <LanguageIcon className="h-5 w-5 mr-2" />
+                <img
+                  src={i18n.language === 'es' ? FlagES : FlagGB}
+                  alt={i18n.language === 'es' ? 'Español' : 'English'}
+                  className="h-5 w-5 mr-2"
+                />
                 {i18n.language === 'es' ? 'EN' : 'ES'}
               </button>
               <button
@@ -146,7 +161,7 @@ function MainLayout() {
                   handleThemeToggle();
                   toggleMenu();
                 }}
-                className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 w-full text-left"
+                className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 w-full text-left min-w-[50px]"
               >
                 {theme === 'light' ? (
                   <MoonIcon className="h-5 w-5 mr-2" />
@@ -161,17 +176,17 @@ function MainLayout() {
                     handleLogout();
                     toggleMenu();
                   }}
-                  className="w-full text-left px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200"
+                  className="flex items-center w-full text-left px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 min-w-[50px]"
                 >
-                  {t('navbar.cerrar_sesion')}
+                  <ArrowLeftOnRectangleIcon className="h-5 w-5 mr-2" />
                 </button>
               ) : (
                 <NavLink
                   to="/auth"
-                  className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200"
+                  className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 min-w-[50px]"
                   onClick={toggleMenu}
                 >
-                  {t('navbar.iniciar_sesion')}
+                  <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2" />
                 </NavLink>
               )}
             </div>

@@ -178,7 +178,7 @@ function Profile() {
   });
 
   if (!user) {
-    return <div className="text-center text-red-500 dark:text-dark-error">{t('profile.error.no_user')}</div>;
+    return <div className="text-center text-primaryText dark:text-dark-error">{t('profile.error.no_user')}</div>;
   }
 
   const defaultAvatar = `https://ui-avatars.com/api/?name=${user.username}&background=${
@@ -301,14 +301,14 @@ function Profile() {
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg flex flex-col justify-center py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">{t('profile.title')}</h1>
+        <h1 className="text-3xl font-bold text-primaryText dark:text-dark-text-accent mb-6 text-center">{t('profile.title')}</h1>
 
         <ModalP
           isOpen={isModalOpen}
           onClose={closeModal}
           title={modalMessage.includes('insuficientes') ? t('redeem.error_title') : modalMessage.includes('Error') ? t('profile.modal.error_title') : t('redeem.success_title')}
           message={modalMessage}
-          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          className="text-primaryText dark:bg-dark-bg-secondary dark:text-dark-text-primary"
           confetti={isConfettiActive}
           zIndex={60}
         />
@@ -317,50 +317,50 @@ function Profile() {
           isOpen={isRedeemModalOpen}
           onClose={closeRedeemModal}
           title={t('redeem.title')}
-          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          className="text-primaryText dark:bg-dark-bg-secondary dark:text-dark-text-primary"
           zIndex={50}
         >
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('redeem.100_points')}</h3>
+              <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary mb-2">{t('redeem.100_points')}</h3>
               <div className="space-y-2">
                 <button
                   onClick={() => handleRedeemOption('luckyWheel', 100)}
-                  className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                  className="w-full px-4 py-2 bg-secondary text-neutral dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
                 >
                   {t('redeem.lucky_wheel')}
                 </button>
                 <button
                   onClick={() => handleRedeemOption('customGrip', 100)}
-                  className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                  className="w-full px-4 py-2 bg-secondary text-neutral dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
                 >
                   {t('redeem.custom_grip')}
                 </button>
               </div>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('redeem.500_points')}</h3>
+              <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary mb-2">{t('redeem.500_points')}</h3>
               <button
                 onClick={() => handleRedeemOption('coachingSessions', 500)}
-                className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                className="w-full px-4 py-2 bg-secondary text-neutral dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
               >
                 {t('redeem.coaching_sessions')}
               </button>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('redeem.1000_points')}</h3>
+              <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary mb-2">{t('redeem.1000_points')}</h3>
               <button
                 onClick={() => handleRedeemOption('psnPack', 1000)}
-                className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                className="w-full px-4 py-2 bg-secondary text-neutral dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
               >
                 {t('redeem.psn_pack')}
               </button>
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary mb-2">{t('redeem.5000_points')}</h3>
+              <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary mb-2">{t('redeem.5000_points')}</h3>
               <button
                 onClick={() => handleRedeemOption('highPerformancePaddle', 5000)}
-                className="w-full px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                className="w-full px-4 py-2 bg-secondary text-neutral dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
               >
                 {t('redeem.high_performance_paddle')}
               </button>
@@ -372,7 +372,7 @@ function Profile() {
           isOpen={isWheelModalOpen}
           onClose={closeWheelModal}
           title={t('redeem.lucky_wheel')}
-          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          className="text-primaryText dark:bg-dark-bg-secondary dark:text-dark-text-primary"
           zIndex={50}
         >
           <LuckyWheel
@@ -388,7 +388,7 @@ function Profile() {
           onClose={closePrizeModal}
           title={prize === t('redeem.prizes.next_time') ? t('redeem.no_prize_title') : t('redeem.prize_title')}
           message={prize === t('redeem.prizes.next_time') ? t('redeem.no_prize_message') : `${t('redeem.prize_message').replace('{prize}', prize)} `}
-          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          className="text-primaryText dark:bg-dark-bg-secondary dark:text-dark-text-primary"
           confetti={isConfettiActive}
           zIndex={60}
         />
@@ -403,7 +403,7 @@ function Profile() {
               ? t('profile.received_requests')
               : t('profile.friends')
           }
-          className="dark:bg-dark-bg-secondary dark:text-dark-text-primary"
+          className="text-primaryText dark:bg-dark-bg-secondary dark:text-dark-text-primary"
           zIndex={70}
         >
           <div className="space-y-4 p-4">
@@ -420,13 +420,13 @@ function Profile() {
                     alt={request.username}
                     className="w-10 h-10 rounded-full mr-3"
                   />
-                  <span className="flex-1 text-gray-700 dark:text-dark-text-primary">
+                  <span className="flex-1 text-primaryText dark:text-dark-text-primary">
                     {t('profile.request_sent_to')} {request.username}
                   </span>
                 </div>
               ))
             ) : modalSection === 'sent' ? (
-              <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
+              <p className="text-primaryText dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
             ) : null}
 
             {modalSection === 'received' && friendshipData?.pendingRequests.received.length > 0 ? (
@@ -442,23 +442,23 @@ function Profile() {
                     alt={request.username}
                     className="w-10 h-10 rounded-full mr-3"
                   />
-                  <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{request.username}</span>
+                  <span className="flex-1 text-primaryText dark:text-dark-text-primary">{request.username}</span>
                   <button
                     onClick={() => handleAcceptRequest(request.requesterId)}
-                    className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1 rounded-lg ml-2"
+                    className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-neutral dark:text-white px-3 py-1 rounded-lg ml-2"
                   >
                     {t('profile.accept')}
                   </button>
                   <button
                     onClick={() => handleRejectRequest(request.requesterId)}
-                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
+                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-neutral dark:text-white px-3 py-1 rounded-lg ml-2"
                   >
                     {t('profile.reject')}
                   </button>
                 </div>
               ))
             ) : modalSection === 'received' ? (
-              <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_received_requests')}</p>
+              <p className="text-primaryText dark:text-dark-text-secondary">{t('profile.no_received_requests')}</p>
             ) : null}
 
             {modalSection === 'friends' && friendshipData?.friends.length > 0 ? (
@@ -474,23 +474,23 @@ function Profile() {
                     alt={friend.username}
                     className="w-10 h-10 rounded-full mr-3"
                   />
-                  <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{friend.username}</span>
+                  <span className="flex-1 text-primaryText dark:text-dark-text-primary">{friend.username}</span>
                   <button
                     onClick={() => handleRemoveFriend(friend.userId)}
-                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
+                    className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-neutral dark:text-white px-3 py-1 rounded-lg ml-2"
                   >
                     {t('profile.remove_friend')}
                   </button>
                 </div>
               ))
             ) : modalSection === 'friends' ? (
-              <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_friends')}</p>
+              <p className="text-primaryText dark:text-dark-text-secondary">{t('profile.no_friends')}</p>
             ) : null}
           </div>
         </ModalP>
 
         <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="w-full max-w-sm mx-auto h-[450px]">
+          <div className="w-full min-w-[24.8rem] mx-auto h-[520px]">
             <ProfileCard>
               <div className="flex flex-col items-center mb-4">
                 <img
@@ -508,7 +508,7 @@ function Profile() {
                 <button
                   onClick={handleUploadClick}
                   disabled={isUploading}
-                  className="text-primary dark:text-dark-text-accent hover:underline dark:hover:text-dark-secondary disabled:opacity-50"
+                  className="text-neutral dark:text-dark-text-accent hover:underline dark:hover:text-dark-secondary disabled:opacity-50"
                 >
                   {isUploading
                     ? t('profile.uploading')
@@ -520,49 +520,49 @@ function Profile() {
 
               <div className="space-y-2 flex-1">
                 <div className="flex justify-between">
-                  <span className="font-semibold text-primary dark:text-dark-text-primary">{t('profile.username')}:</span>
-                  <span className="text-gray-600 dark:text-dark-text-secondary">{user.username}</span>
+                  <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.username')}:</span>
+                  <span className="text-primaryText dark:text-dark-text-secondary">{user.username}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.phone')}:</span>
+                  <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.phone')}:</span>
                   {isEditing ? (
                     <input
                       type="text"
                       name="phone"
                       value={editedData.phone}
                       onChange={handleInputChange}
-                      className="border rounded-lg p-1 text-gray-600 dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                      className="border rounded-lg p-1 text-primaryText dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                     />
                   ) : (
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.phone}</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{user.phone}</span>
                   )}
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.email')}:</span>
+                  <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.email')}:</span>
                   {isEditing ? (
                     <input
                       type="email"
                       name="email"
                       value={editedData.email}
                       onChange={handleInputChange}
-                      className="border rounded-lg p-1 text-gray-600 dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                      className="border rounded-lg p-1 text-primaryText dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                     />
                   ) : (
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.email}</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{user.email}</span>
                   )}
                 </div>
                 <div className="flex justify-between">
-                  <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.city')}:</span>
+                  <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.city')}:</span>
                   {isEditing ? (
                     <input
                       type="text"
                       name="city"
                       value={editedData.city}
                       onChange={handleInputChange}
-                      className="border rounded-lg p-1 text-gray-600 dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                      className="border rounded-lg p-1 text-primaryText dark:text-dark-text-secondary dark:bg-dark-bg-tertiary dark:border-dark-border focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                     />
                   ) : (
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.city}</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{user.city}</span>
                   )}
                 </div>
               </div>
@@ -573,14 +573,14 @@ function Profile() {
                 {isEditing ? (
                   <button
                     onClick={handleSave}
-                    className="px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                    className="px-4 py-2 bg-secondary text-neutral dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
                   >
                     {t('profile.save_changes')}
                   </button>
                 ) : (
                   <button
                     onClick={handleEdit}
-                    className="px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+                    className="px-4 py-2 bg-secondary text-neutral dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
                   >
                     {t('profile.edit')}
                   </button>
@@ -589,47 +589,47 @@ function Profile() {
             </ProfileCard>
           </div>
 
-          <div className="w-full max-w-sm mx-auto h-[450px]">
+          <div className="w-full min-w-[24.8rem] mx-auto h-[520px]">
             <ProfileCard>
-              <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.stats_title')}</h2>
+              <h2 className="text-xl font-semibold text-primaryText dark:text-dark-text-accent mb-4 text-center">{t('profile.stats_title')}</h2>
               <div className="flex-1 flex items-center">
                 <div className="space-y-2 w-full">
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.score')}:</span>
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{(user.score ?? 0).toFixed(2)}</span>
+                    <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.score')}:</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{(user.score ?? 0).toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.matches_won')}:</span>
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesWon ?? 0}</span>
+                    <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.matches_won')}:</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{user.matchesWon ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.matches_lost')}:</span>
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesLost ?? 0}</span>
+                    <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.matches_lost')}:</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{user.matchesLost ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.matches_drawn')}:</span>
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.matchesDrawn ?? 0}</span>
+                    <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.matches_drawn')}:</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{user.matchesDrawn ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.total_matches')}:</span>
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.totalMatches ?? 0}</span>
+                    <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.total_matches')}:</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{user.totalMatches ?? 0}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.win_percentage')}:</span>
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{winPercentage}%</span>
+                    <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.win_percentage')}:</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{winPercentage}%</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.points')}:</span>
-                    <span className="text-gray-600 dark:text-dark-text-secondary">{user.points ?? 0}</span>
+                    <span className="font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.points')}:</span>
+                    <span className="text-primaryText dark:text-dark-text-secondary">{user.points ?? 0}</span>
                   </div>
                 </div>
               </div>
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handleRedeemPoints}
-                  className="px-4 py-2 text-white font-semibold rounded-lg shadow-md transition-all duration-300
-                    bg-gradient-to-r from-[#f4a261] to-[#1a5673] hover:from-[#e69550] hover:to-[#134a62]
-                    dark:from-[#d88a3f] dark:to-[#0f3c50] dark:hover:from-[#c07a36] dark:hover:to-[#0c2e40]"
+                  className="px-4 py-2 text-neutral font-semibold rounded-lg shadow-md transition-all duration-300
+                    bg-secondary hover:bg-buttonsHover
+                    dark:bg-dark-primary dark:hover:bg-buttonsHover dark:text-dark-text-primary"
                 >
                   {t('profile.redeem_points')}
                 </button>
@@ -637,21 +637,21 @@ function Profile() {
             </ProfileCard>
           </div>
 
-          <div className="w-full max-w-sm mx-auto h-[450px]">
+          <div className="w-full min-w-[24.8rem] mx-auto h-[520px]">
             <ProfileCard>
-              <h2 className="text-xl font-semibold text-primary dark:text-dark-text-accent mb-4 text-center">{t('profile.friend_requests_title')}</h2>
+              <h2 className="text-xl font-semibold text-primaryText dark:text-dark-text-accent mb-4 text-center">{t('profile.friend_requests_title')}</h2>
               {isFriendshipLoading ? (
                 <Spinner />
               ) : friendshipError ? (
-                <p className="text-center text-red-500 dark:text-dark-error">{friendshipError.message || t('profile.error.load_friends')}</p>
+                <p className="text-center text-primaryText dark:text-dark-error">{friendshipError.message || t('profile.error.load_friends')}</p>
               ) : (
                 <div className="space-y-4">
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.sent_requests')}</h3>
+                      <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.sent_requests')}</h3>
                       <button
                         onClick={() => handleOpenFriendsModal('sent')}
-                        className="text-primary dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                        className="text-neutral dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
                       >
                         <ArrowsPointingOutIcon className="h-5 w-5" />
                       </button>
@@ -670,23 +670,23 @@ function Profile() {
                               alt={request.username}
                               className="w-10 h-10 rounded-full mr-3"
                             />
-                            <span className="flex-1 text-gray-700 dark:text-dark-text-primary">
+                            <span className="flex-1 text-primaryText dark:text-dark-text-primary">
                               {t('profile.request_sent_to')} {request.username}
                             </span>
                           </div>
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
+                      <p className="text-primaryText dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
                     )}
                   </div>
 
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.received_requests')}</h3>
+                      <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.received_requests')}</h3>
                       <button
                         onClick={() => handleOpenFriendsModal('received')}
-                        className="text-primary dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                        className="text-neutral dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
                       >
                         <ArrowsPointingOutIcon className="h-5 w-5" />
                       </button>
@@ -705,16 +705,16 @@ function Profile() {
                               alt={request.username}
                               className="w-10 h-10 rounded-full mr-3"
                             />
-                            <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{request.username}</span>
+                            <span className="flex-1 text-primaryText dark:text-dark-text-primary">{request.username}</span>
                             <button
                               onClick={() => handleAcceptRequest(request.requesterId)}
-                              className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-white px-3 py-1 rounded-lg ml-2"
+                              className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-neutral dark:text-white px-3 py-1 rounded-lg ml-2"
                             >
                               {t('profile.accept')}
                             </button>
                             <button
                               onClick={() => handleRejectRequest(request.requesterId)}
-                              className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
+                              className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-neutral dark:text-white px-3 py-1 rounded-lg ml-2"
                             >
                               {t('profile.reject')}
                             </button>
@@ -722,16 +722,16 @@ function Profile() {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_received_requests')}</p>
+                      <p className="text-primaryText dark:text-dark-text-secondary">{t('profile.no_received_requests')}</p>
                     )}
                   </div>
 
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-lg font-semibold text-gray-700 dark:text-dark-text-primary">{t('profile.friends')}</h3>
+                      <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.friends')}</h3>
                       <button
                         onClick={() => handleOpenFriendsModal('friends')}
-                        className="text-primary dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                        className="text-neutral dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
                       >
                         <ArrowsPointingOutIcon className="h-5 w-5" />
                       </button>
@@ -750,10 +750,10 @@ function Profile() {
                               alt={friend.username}
                               className="w-10 h-10 rounded-full mr-3"
                             />
-                            <span className="flex-1 text-gray-700 dark:text-dark-text-primary">{friend.username}</span>
+                            <span className="flex-1 text-primaryText dark:text-dark-text-primary">{friend.username}</span>
                             <button
                               onClick={() => handleRemoveFriend(friend.userId)}
-                              className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-white px-3 py-1 rounded-lg ml-2"
+                              className="bg-red-500 dark:bg-red-600 hover:bg-red-600 dark:hover:bg-red-700 text-neutral dark:text-white px-3 py-1 rounded-lg ml-2"
                             >
                               {t('profile.remove_friend')}
                             </button>
@@ -761,7 +761,7 @@ function Profile() {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-gray-600 dark:text-dark-text-secondary">{t('profile.no_friends')}</p>
+                      <p className="text-primaryText dark:text-dark-text-secondary">{t('profile.no_friends')}</p>
                     )}
                   </div>
                 </div>

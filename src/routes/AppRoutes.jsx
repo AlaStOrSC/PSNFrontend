@@ -50,9 +50,7 @@ function AppRoutes() {
           <Route
             path="/conocenos"
             element={
-              <ProtectedRoute>
                 <Conocenos />
-              </ProtectedRoute>
             }
           />
         </Route>

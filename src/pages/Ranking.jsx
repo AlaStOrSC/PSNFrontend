@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../services/api';
 import useWindowSize from '../hooks/useWindowSize';
 import Modal from '../components/Modal';
-import { UserPlusIcon, ChatBubbleLeftIcon, TrophyIcon } from '@heroicons/react/24/solid';
+import { UserPlusIcon, TrophyIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
 function Ranking() {
@@ -144,13 +144,6 @@ function Ranking() {
           >
             <UserPlusIcon className="w-5 h-5" />
           </button>
-          <button
-            onClick={() => handleChat(params.row.userId)}
-            className="text-primary hover:text-secondary transition-colors duration-200 dark:text-dark-text-accent dark:hover:text-dark-secondary"
-            title="Abrir chat"
-          >
-            <ChatBubbleLeftIcon className="w-5 h-5" />
-          </button>
         </div>
       ),
     },
@@ -158,7 +151,7 @@ function Ranking() {
 
   return (
     <div className="container mx-auto p-4 bg-neutral dark:bg-dark-bg">
-      <h1 className="text-3xl font-bold mb-6 text-center text-primary dark:text-dark-text-accent">
+      <h1 className="text-3xl font-bold mb-6 text-center text-primaryText dark:text-dark-text-accent">
         Ranking de Jugadores
       </h1>
       <Modal
@@ -175,146 +168,158 @@ function Ranking() {
       ) : (
         <div className="bg-neutral rounded-lg shadow-xl p-6 overflow-x-auto dark:bg-dark-bg-secondary dark:shadow-dark-shadow">
           <div style={{ height: 600, width: '100%' }}>
-            <DataGrid
-              rows={users.map((rankedUser, index) => ({
-                id: rankedUser.userId,
-                position: index + 1,
-                user: rankedUser.username,
-                username: rankedUser.username,
-                profilePicture: rankedUser.profilePicture,
-                city: rankedUser.city,
-                score: rankedUser.score,
-                userId: rankedUser.userId,
-              }))}
-              columns={columns}
-              initialState={{
-                sorting: {
-                  sortModel: [{ field: 'score', sort: 'asc' }],
-                },
-                pagination: { paginationModel: { pageSize: 10 } },
-              }}
-              pageSizeOptions={[10, 25, 50]}
-              disableRowSelectionOnClick
-              columnVisibilityModel={{
-                city: !isMobile,
-                actions: !isMobile,
-              }}
-              getRowClassName={(params) =>
-                params.row.userId === user?.userId ? 'bg-blue-100' : ''
-              }
-              sx={{
-                '& .MuiDataGrid-root': {
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  width: isMobile ? '100%' : '100vw',
-                  maxWidth: '100%',
-                },
-                '& .MuiDataGrid-columnHeaders': {
-                  background: 'linear-gradient(to bottom, #05374d, #075e7a)',
-                  color: '#05374d',
-                  fontWeight: 800,
-                  textTransform: 'uppercase',
-                  borderBottom: '3px solid #1f2937',
-                  fontSize: '1.15rem',
-                },
-                '& .MuiDataGrid-columnHeader': {
-                  borderRight: '1px solid #d1d5db',
-                  padding: '0 12px',
-                  '&:last-child': {
-                    borderRight: 'none',
-                  },
-                },
-                '& .MuiDataGrid-cell': {
-                  color: '#1f2937',
-                  borderRight: '1px solid #d1d5db',
-                  padding: '0 12px',
-                  '&:last-child': {
-                    borderRight: 'none',
-                  },
-                },
-                '& .MuiDataGrid-row': {
-                  backgroundColor: '#ffffff',
-                  '&:nth-of-type(even)': {
-                    backgroundColor: '#f9fafb',
-                  },
-                  '&:hover': {
-                    backgroundColor: '#e0f2fe',
-                    transition: 'background-color 0.2s ease',
-                  },
-                },
-                '& .MuiDataGrid-footerContainer': {
-                  backgroundColor: '#f3f4f6',
-                  borderTop: '1px solid #d1d5db',
-                },
-                '& .MuiDataGrid-toolbarContainer': {
-                  padding: '8px',
-                },
-                '& .bg-blue-100': {
-                  backgroundColor: '#93c5fd',
-                  '&:hover': {
-                    backgroundColor: '#7bafe6',
-                  },
-                },
-                '.dark & .MuiDataGrid-root': {
-                  border: '1px solid #4b5563',
-                  backgroundColor: '#1e293b',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-                },
-                '.dark & .MuiDataGrid-columnHeaders': {
-                  background: 'linear-gradient(to bottom, #1e40af, #3b82f6)',
-                  color: '#f4a261',
-                  borderBottom: '3px solid #4b5563',
-                },
-                '.dark & .MuiDataGrid-columnHeader': {
-                  background: '#0f172a',
-                  borderRight: '1px solid #4b5563',
-                  '&:last-child': {
-                    borderRight: 'none',
-                  },
-                },
-                '.dark & .MuiDataGrid-cell': {
-                  color: '#d1d5db',
-                  borderRight: '1px solid #4b5563',
-                  '&:last-child': {
-                    borderRight: 'none',
-                  },
-                },
-                '.dark & .MuiDataGrid-row': {
-                  backgroundColor: '#1e293b',
-                  '&:nth-of-type(even)': {
-                    backgroundColor: '#334155',
-                  },
-                  '&:hover': {
-                    backgroundColor: '#4b5563',
-                    transition: 'background-color 0.2s ease',
-                  },
-                },
-                '.dark & .MuiDataGrid-footerContainer': {
-                  backgroundColor: '#334155',
-                  borderTop: '1px solid #4b5563',
-                  color: '#f3f4f6',
-                },
-                '.dark & .bg-blue-100': {
-                  backgroundColor: '#4b5563',
-                  '&:hover': {
-                    backgroundColor: '#6b7280',
-                  },
-                },
-                '.dark & .MuiTablePagination-root': {
-                  color: '#f3f4f6',
-                },
-                '.dark & .MuiTablePagination-selectLabel': {
-                  color: '#f3f4f6',
-                },
-                '.dark & .MuiTablePagination-displayedRows': {
-                  color: '#f3f4f6',
-                },
-                '.dark & .MuiDataGrid-footerContainer .MuiSvgIcon-root': {
-                  color: '#f3f4f6',
-                },
-              }}
-            />
+<DataGrid
+  rows={users.map((rankedUser, index) => ({
+    id: rankedUser.userId,
+    position: index + 1,
+    user: rankedUser.username,
+    username: rankedUser.username,
+    profilePicture: rankedUser.profilePicture,
+    city: rankedUser.city,
+    score: rankedUser.score,
+    userId: rankedUser.userId,
+  }))}
+  columns={columns}
+  initialState={{
+    sorting: {
+      sortModel: [{ field: 'score', sort: 'asc' }],
+    },
+    pagination: { paginationModel: { pageSize: 10 } },
+  }}
+  pageSizeOptions={[10, 25, 50]}
+  disableRowSelectionOnClick
+  columnVisibilityModel={{
+    city: !isMobile,
+    actions: !isMobile,
+  }}
+  getRowClassName={(params) =>
+    params.row.userId === user?.userId ? 'bg-blue-100' : ''
+  }
+  sx={{
+    '& .MuiDataGrid-root': {
+      border: '1px solid #d1d5db',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+      width: isMobile ? '100%' : '100vw',
+      maxWidth: '100%',
+    },
+    '& .MuiDataGrid-columnHeaders': {
+      background: 'linear-gradient(to bottom, #05374d, #075e7a)',
+      color: '#000000',
+      fontWeight: 800,
+      textTransform: 'uppercase',
+      borderBottom: '3px solid #1f2937',
+      fontSize: '1.15rem',
+    },
+    '& .MuiDataGrid-menuIcon': {
+      color: '#000000',
+      '& .MuiSvgIcon-root': {
+        color: '#000000',
+      },
+    },
+    '.dark & .MuiDataGrid-menuIcon': {
+      color: '#f3f4f6',
+      '& .MuiSvgIcon-root': {
+        color: '#f3f4f6',
+      },
+    },
+    '& .MuiDataGrid-columnHeader': {
+      borderRight: '1px solid #d1d5db',
+      padding: '0 12px',
+      '&:last-child': {
+        borderRight: 'none',
+      },
+    },
+    '& .MuiDataGrid-cell': {
+      color: '#000000',
+      borderRight: '1px solid #d1d5db',
+      padding: '0 12px',
+      '&:last-child': {
+        borderRight: 'none',
+      },
+    },
+    '& .MuiDataGrid-row': {
+      backgroundColor: '#ffffff',
+      '&:nth-of-type(even)': {
+        backgroundColor: '#f9fafb',
+      },
+      '&:hover': {
+        backgroundColor: '#e0f2fe',
+        transition: 'background-color 0.2s ease',
+      },
+    },
+    '& .MuiDataGrid-footerContainer': {
+      backgroundColor: '#f3f4f6',
+      borderTop: '1px solid #d1d5db',
+    },
+    '& .MuiDataGrid-toolbarContainer': {
+      padding: '8px',
+    },
+    '& .bg-blue-100': {
+      backgroundColor: '#93c5fd',
+      '&:hover': {
+        backgroundColor: '#7bafe6',
+      },
+    },
+    '.dark & .MuiDataGrid-root': {
+      border: '1px solid #4b5563',
+      backgroundColor: '#1e293b',
+      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+    },
+    '.dark & .MuiDataGrid-columnHeaders': {
+      background: 'linear-gradient(to bottom, #1e40af, #3b82f6)',
+      color: 'white',
+      borderBottom: '3px solid #4b5563',
+    },
+    '.dark & .MuiDataGrid-columnHeader': {
+      background: '#0f172a',
+      borderRight: '1px solid #4b5563',
+      '&:last-child': {
+        borderRight: 'none',
+      },
+    },
+    '.dark & .MuiDataGrid-cell': {
+      color: '#d1d5db',
+      borderRight: '1px solid #4b5563',
+      '&:last-child': {
+        borderRight: 'none',
+      },
+    },
+    '.dark & .MuiDataGrid-row': {
+      backgroundColor: '#1e293b',
+      '&:nth-of-type(even)': {
+        backgroundColor: '#334155',
+      },
+      '&:hover': {
+        backgroundColor: '#4b5563',
+        transition: 'background-color 0.2s ease',
+      },
+    },
+    '.dark & .MuiDataGrid-footerContainer': {
+      backgroundColor: '#334155',
+      borderTop: '1px solid #4b5563',
+      color: '#f3f4f6',
+    },
+    '.dark & .bg-blue-100': {
+      backgroundColor: '#4b5563',
+      '&:hover': {
+        backgroundColor: '#6b7280',
+      },
+    },
+    '.dark & .MuiTablePagination-root': {
+      color: '#f3f4f6',
+    },
+    '.dark & .MuiTablePagination-selectLabel': {
+      color: '#f3f4f6',
+    },
+    '.dark & .MuiTablePagination-displayedRows': {
+      color: '#f3f4f6',
+    },
+    '.dark & .MuiDataGrid-footerContainer .MuiSvgIcon-root': {
+      color: '#f3f4f6',
+    },
+  }}
+/>
           </div>
         </div>
       )}

@@ -23,14 +23,14 @@ function FormContainer({ isOpen, onClose, onSubmit, onReset, title, submitLabel 
             <button
               type="button"
               onClick={onReset}
-              className="px-4 py-2 bg-gray-500 dark:bg-gray-600 text-white dark:text-dark-text-primary rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors"
+              className="px-4 py-2 bg-secondary dark:bg-buttons text-white dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-buttonsHover transition-colors"
             >
               {resetLabel}
             </button>
           )}
           <button
             type="submit"
-            className="px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+            className="px-4 py-2 bg-secondary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
           >
             {submitLabel}
           </button>

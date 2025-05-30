@@ -15,13 +15,13 @@ const ModalP = ({ isOpen, onClose, title, message, className = '', confetti = fa
             colors={['#FFFF00', '#FF0000', '#FF69B4', '#00BFFF', '#FF00FF', '#00FF00', '#FFA500']}
           />
         )}
-        <h2 className="text-xl font-semibold text-gray-700 dark:text-dark-text-primary mb-4">{title}</h2>
-        {message && <p className="text-gray-600 dark:text-dark-text-secondary mb-6">{message}</p>}
+        <h2 className="text-xl font-semibold text-primaryText dark:text-dark-text-primary mb-4">{title}</h2>
+        {message && <p className="text-primaryText dark:text-dark-text-secondary mb-6">{message}</p>}
         {children && <div className="mb-6">{children}</div>}
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+            className="px-4 py-2 bg-secondary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
           >
             Cerrar
           </button>

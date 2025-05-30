@@ -125,13 +125,13 @@ function Matches() {
         <div className="flex justify-center space-x-4 mb-6">
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
-            className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+            className="bg-secondary text-white dark:bg-dark-primary dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
           >
             {showCreateForm ? 'Cerrar formulario' : 'Crear partido'}
           </button>
           <button
             onClick={() => setShowFilterForm(!showFilterForm)}
-            className="bg-accent text-white dark:bg-dark-text-accent dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-orange-500 dark:hover:bg-yellow-600 transition-colors"
+            className="bg-secondary text-white dark:bg-buttons dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-buttonsHover dark:hover:bg-buttonsHover transition-colors"
           >
             {showFilterForm ? 'Cerrar filtros' : 'Filtros'}
           </button>
