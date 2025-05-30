@@ -651,7 +651,7 @@ function Profile() {
                       <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.sent_requests')}</h3>
                       <button
                         onClick={() => handleOpenFriendsModal('sent')}
-                        className="text-neutral dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                        className="text-primaryText dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
                       >
                         <ArrowsPointingOutIcon className="h-5 w-5" />
                       </button>
@@ -686,7 +686,7 @@ function Profile() {
                       <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.received_requests')}</h3>
                       <button
                         onClick={() => handleOpenFriendsModal('received')}
-                        className="text-neutral dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                        className="text-primaryText dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
                       >
                         <ArrowsPointingOutIcon className="h-5 w-5" />
                       </button>
@@ -731,7 +731,7 @@ function Profile() {
                       <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-primary">{t('profile.friends')}</h3>
                       <button
                         onClick={() => handleOpenFriendsModal('friends')}
-                        className="text-neutral dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
+                        className="text-primaryText dark:text-dark-text-accent hover:text-secondary dark:hover:text-dark-secondary"
                       >
                         <ArrowsPointingOutIcon className="h-5 w-5" />
                       </button>

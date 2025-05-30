@@ -7,8 +7,7 @@ import { HomeIcon, UserIcon, TrophyIcon, Bars3Icon, XMarkIcon, BoltIcon, Envelop
 import Chat from '../components/Chat';
 import { useTranslation } from 'react-i18next';
 import LogoNavbar from '../assets/LogoNavbar.png';
-import FlagES from '../assets/uk.png';
-import FlagGB from '../assets/es.png';
+import 'flag-icons/css/flag-icons.min.css';
 
 function MainLayout() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -78,11 +77,7 @@ function MainLayout() {
                 onClick={handleLanguageToggle}
                 className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 min-w-[50px]"
               >
-                <img
-                  src={i18n.language === 'es' ? FlagES : FlagGB}
-                  alt={i18n.language === 'es' ? 'Español' : 'English'}
-                  className="h-5 w-5 mr-2"
-                />
+                <span className={`fi fi-${i18n.language === 'es' ? 'gb' : 'es'} h-5 w-5 mr-2`}></span>
                 {i18n.language === 'es' ? 'EN' : 'ES'}
               </button>
               <button
@@ -149,11 +144,7 @@ function MainLayout() {
                 }}
                 className="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:bg-secondary hover:text-white dark:hover:bg-dark-primary dark:hover:text-dark-text-primary transition-colors duration-200 w-full text-left min-w-[50px]"
               >
-                <img
-                  src={i18n.language === 'es' ? FlagES : FlagGB}
-                  alt={i18n.language === 'es' ? 'Español' : 'English'}
-                  className="h-5 w-5 mr-2"
-                />
+                <span className={`fi fi-${i18n.language === 'es' ? 'gb' : 'es'} h-5 w-5 mr-2`}></span>
                 {i18n.language === 'es' ? 'EN' : 'ES'}
               </button>
               <button
