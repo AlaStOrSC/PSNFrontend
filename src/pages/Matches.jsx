@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { format, parse } from 'date-fns';
 import api from '../services/api';
 import CreateMatchForm from '../components/CreateMatchForm';
 import FilterForm from '../components/FilterForm';
@@ -12,13 +14,13 @@ function Matches() {
   const [filteredMatches, setFilteredMatches] = useState([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showFilterForm, setShowFilterForm] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const { data: matches = [], isLoading: loading, error } = useQuery({
     queryKey: ['matches'],
     queryFn: async () => {
-      console.log('Solicitando partidos...');
       const response = await api.get('/matches');
-      console.log('Partidos recibidos:', response.data);
       return response.data;
     },
     refetchOnMount: 'always',
@@ -28,8 +30,23 @@ function Matches() {
   });
 
   useEffect(() => {
-    setFilteredMatches(matches);
-  }, [matches]);
+    const params = new URLSearchParams(location.search);
+    const dateFilter = params.get('date');
+
+    if (dateFilter) {
+      const selectedDate = parse(dateFilter, 'yyyy-MM-dd', new Date());
+      const filtered = matches.filter((match) => {
+        const matchDate = new Date(match.date);
+        return (
+          format(matchDate, 'yyyy-MM-dd') === dateFilter &&
+          match.result === 'pending'
+        );
+      });
+      setFilteredMatches(filtered);
+    } else {
+      setFilteredMatches(matches);
+    }
+  }, [matches, location.search]);
 
   const handleCreate = () => {
     queryClient.invalidateQueries(['matches']);
@@ -102,6 +119,11 @@ function Matches() {
     setFilteredMatches(filtered);
   };
 
+  const handleClearFilter = () => {
+    navigate('/matches', { replace: true });
+    setFilteredMatches(matches);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8 text-center">
@@ -135,6 +157,14 @@ function Matches() {
           >
             {showFilterForm ? 'Cerrar filtros' : 'Filtros'}
           </button>
+          {location.search.includes('date') && (
+            <button
+              onClick={handleClearFilter}
+              className="bg-red-500 text-white dark:bg-red-600 dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-red-600 dark:hover:bg-red-700 transition-colors"
+            >
+              Limpiar filtro de fecha
+            </button>
+          )}
         </div>
         {showCreateForm && <CreateMatchForm onCreate={handleCreate} />}
         {showFilterForm && (
@@ -146,7 +176,7 @@ function Matches() {
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {!filteredMatches || filteredMatches.length === 0 ? (
-            <p className="text-center text-gray-600 dark:text-dark-text-secondary">No tienes partidos que coincidan con los filtros.</p>
+            <p className="text-center text-gray-600 dark:text-dark-text-secondary col-span-full">No tienes partidos que coincidan con los filtros.</p>
           ) : (
             filteredMatches.map((match) => (
               <MatchCard

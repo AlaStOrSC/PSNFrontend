@@ -1,11 +1,26 @@
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
+import api from '../services/api';
 import Banner from '../components/Banner';
 import NewsCards from '../components/NewsCards';
+import Calendar from '../components/Calendar';
 
 function Home() {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const { data: matches = [], isLoading: matchesLoading, error: matchesError } = useQuery({
+    queryKey: ['matches'],
+    queryFn: async () => {
+      const response = await api.get('/matches');
+      return response.data;
+    },
+    refetchOnMount: 'always',
+    onError: (err) => {
+      console.error('Error al obtener partidos:', err);
+    },
+  });
 
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg flex flex-col">
@@ -22,6 +37,13 @@ function Home() {
           <p className="text-lg text-primaryText dark:text-dark-text-secondary mb-6">
             {t('home.unauthenticated_message')}
           </p>
+        )}
+        {matchesLoading ? (
+          <p className="text-lg text-primaryText dark:text-dark-text-secondary">Cargando calendario...</p>
+        ) : matchesError ? (
+          <p className="text-lg text-red-500 dark:text-dark-error">Error al cargar los partidos</p>
+        ) : (
+          <Calendar matches={matches} locale={i18n.language} />
         )}
         <div className="space-x-4 mb-12">
           {!isAuthenticated && (

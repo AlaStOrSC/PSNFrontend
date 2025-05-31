@@ -3,8 +3,8 @@ import bannerImage from '../assets/b4.jpg';
 function Banner({ className = '' }) {
   return (
     <div
-      className={`relative bg-cover bg-center h-96 flex items-center justify-center bg-fixed ${className}`}
-      style={{ backgroundImage: `url(${bannerImage})` }}
+      className={`relative bg-cover bg-center h-[420px] flex items-center justify-center bg-fixed ${className}`}
+      style={{ backgroundImage: `url(${bannerImage})`, backgroundPosition: '50% 150%' }}
     >
       <div className="absolute inset-0 bg-primary dark:bg-dark-bg-secondary opacity-50"></div>
       <div className="relative z-10 text-center text-white dark:text-dark-text-primary px-4">

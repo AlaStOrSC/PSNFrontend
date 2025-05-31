@@ -7,6 +7,7 @@ import { loginSuccess } from '../store/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { login, registerUser } from '../services/authService';
+import LogoNavbar from '../assets/LogoLogin.png';
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -102,9 +103,9 @@ function AuthPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral">
       <div className="bg-white p-10 rounded-xl shadow-xl w-full max-w-md">
-        <h1 className="text-3xl font-bold text-primary mb-8 text-center">
-          Padel Social
-        </h1>
+         <div className="flex justify-center mb-6">
+          <img src={LogoNavbar} alt="Padel Social Logo" className="h-32 w-auto" />
+        </div>
         <div className="flex justify-center mb-6">
           <button
             className={`px-4 py-2 font-medium ${isLogin ? 'bg-primary text-white' : 'bg-gray-200 text-gray-700'} rounded-l-lg`}

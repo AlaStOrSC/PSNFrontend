@@ -174,5 +174,12 @@
   "product_card.hide_details": "Ocultar detalles",
   "product_card.description": "Descripción",
   "product_card.seller": "Vendedor",
-  "product_card.purchase": "Comprar"
+  "product_card.purchase": "Comprar",
+  "calendar.nextmatches" : "Proximós partidos",
+    "ranking.user" : "USUARIO",
+  "ranking.city" : "CIUDAD",
+  "ranking.score" : "PUNTUACIÓN",
+  "ranking.action" : "AGREGAR",
+  "ranking.rank" : "PUESTO",
+  "ranking.title" : "RANKING DE JUGADORES"
 }

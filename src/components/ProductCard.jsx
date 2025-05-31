@@ -1,10 +1,8 @@
-import { useState } from 'react';
-import { StarIcon } from '@heroicons/react/20/solid';
 import { useTranslation } from 'react-i18next';
+import { StarIcon } from '@heroicons/react/20/solid';
 
-function ProductCard({ product, onPurchase }) {
+function ProductCard({ product, onPurchase, onCardClick }) {
   const { t } = useTranslation();
-  const [showDetails, setShowDetails] = useState(false);
 
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -22,14 +20,17 @@ function ProductCard({ product, onPurchase }) {
         {[...Array(emptyStars)].map((_, i) => (
           <StarIcon key={`empty-${i}`} className="w-5 h-5 text-gray-300 dark:text-gray-600" />
         ))}
-        <span className="ml-1 text-sm text-gray-600 dark:text-dark-text-secondary">({rating.toFixed(1)})</span>
+        <span className="ml-1 text-sm text-primaryText dark:text-neutral">({rating.toFixed(1)})</span>
       </div>
     );
   };
 
   return (
-    <div className="bg-white dark:bg-dark-bg-secondary shadow-md dark:shadow-dark-shadow rounded-lg p-4">
-      <h3 className="text-lg font-semibold text-gray-800 dark:text-dark-text-primary">{product.name}</h3>
+    <div
+      className="bg-white dark:bg-dark-bg-secondary shadow-md dark:shadow-dark-shadow rounded-lg p-4 cursor-pointer transform transition-all duration-300 animate-fadeIn"
+      onClick={onCardClick}
+    >
+      <h3 className="text-lg font-semibold text-primaryText dark:text-neutral">{product.name}</h3>
       <div className="relative w-full h-48 mt-2 bg-white dark:bg-dark-bg-secondary rounded-lg overflow-hidden">
         <img
           src={product.image}
@@ -37,36 +38,25 @@ function ProductCard({ product, onPurchase }) {
           className="w-full h-full object-contain rounded-lg"
         />
       </div>
-      <p className="text-xl font-bold mt-2 text-gray-900 dark:text-dark-text-primary">€{product.price.toFixed(2)}</p>
+      <p className="text-xl font-bold mt-2 text-primaryText dark:text-neutral">€{product.price.toFixed(2)}</p>
+      <p className="text-sm text-primaryText dark:text-neutral mt-2">
+        {t('product_card.seller')}: {product.seller.username}
+      </p>
+      <div className="group relative mt-2">
+        {renderStars(product.seller.averageRating || 0)}
+        <span className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral text-xs rounded py-1 px-2">
+          {product.seller.averageRating?.toFixed(1) || 0}
+        </span>
+      </div>
       <button
-        onClick={() => setShowDetails(!showDetails)}
-        className="bg-primary text-white dark:bg-dark-primary dark:text-dark-text-primary px-4 py-2 rounded-lg mt-2 hover:bg-secondary dark:hover:bg-dark-secondary transition-colors"
+        onClick={(e) => {
+          e.stopPropagation();
+          onPurchase();
+        }}
+        className="bg-secondary text-neutral dark:bg-green-600 dark:text-neutral px-4 py-2 rounded-lg mt-4 w-full hover:bg-buttonsHover dark:hover:bg-green-700 transition-colors"
       >
-        {showDetails ? t('product_card.hide_details') : t('product_card.show_details')}
+        {t('product_card.purchase')}
       </button>
-
-      {showDetails && (
-        <div className="mt-4">
-          <p className="text-sm text-gray-600 dark:text-dark-text-secondary">{t('product_card.description')}: {product.description}</p>
-          <div className="mt-2">
-            <p className="text-sm text-gray-600 dark:text-dark-text-secondary">
-              {t('product_card.seller')}: {product.seller.username}
-            </p>
-            <div className="group relative">
-              {renderStars(product.seller.averageRating || 0)}
-              <span className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 dark:bg-dark-bg-tertiary text-white dark:text-dark-text-primary text-xs rounded py-1 px-2">
-                {product.seller.averageRating?.toFixed(1) || 0}
-              </span>
-            </div>
-          </div>
-          <button
-            onClick={onPurchase}
-            className="bg-green-500 text-white dark:bg-green-600 dark:text-dark-text-primary px-4 py-2 rounded-lg mt-2 hover:bg-green-600 dark:hover:bg-green-700 transition-colors"
-          >
-            {t('product_card.purchase')}
-          </button>
-        </div>
-      )}
     </div>
   );
 }

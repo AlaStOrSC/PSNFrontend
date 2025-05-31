@@ -174,5 +174,12 @@
   "product_card.hide_details": "Hide Details",
   "product_card.description": "Description",
   "product_card.seller": "Seller",
-  "product_card.purchase": "Purchase"
+  "product_card.purchase": "Purchase",
+  "calendar.nextmatches": "Next matches",
+  "ranking.user" : "USER",
+  "ranking.city" : "CITY",
+  "ranking.score" : "SCORE",
+  "ranking.action" : "ADD",
+  "ranking.rank" : "RANK",
+  "ranking.title" : "PLAYER'S RANKING"
 }

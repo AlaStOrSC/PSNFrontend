@@ -6,8 +6,12 @@ import useWindowSize from '../hooks/useWindowSize';
 import Modal from '../components/Modal';
 import { UserPlusIcon, TrophyIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+
 
 function Ranking() {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const { isMobile } = useWindowSize();
@@ -76,7 +80,7 @@ function Ranking() {
   const columns = [
     {
       field: 'position',
-      headerName: 'Puesto',
+      headerName: t('ranking.rank'),
       flex: 0.1,
       minWidth: 100,
       headerAlign: 'center',
@@ -84,7 +88,7 @@ function Ranking() {
     },
     {
       field: 'user',
-      headerName: 'Usuario',
+      headerName: t('ranking.user'),
       flex: 0.3,
       minWidth: 200,
       headerAlign: 'center',
@@ -115,14 +119,14 @@ function Ranking() {
     },
     {
       field: 'city',
-      headerName: 'Ciudad',
+      headerName: t('ranking.city'),
       flex: 0.2,
       minWidth: 150,
       headerAlign: 'center',
     },
     {
       field: 'score',
-      headerName: 'Puntuación',
+      headerName: t('ranking.score'),
       flex: 0.2,
       minWidth: 150,
       sortComparator: (v1, v2) => v2 - v1,
@@ -131,7 +135,7 @@ function Ranking() {
     },
     {
       field: 'actions',
-      headerName: 'Acción',
+      headerName: t('ranking.action'),
       flex: 0.2,
       minWidth: 150,
       headerAlign: 'center',
@@ -152,7 +156,7 @@ function Ranking() {
   return (
     <div className="container mx-auto p-4 bg-neutral dark:bg-dark-bg">
       <h1 className="text-3xl font-bold mb-6 text-center text-primaryText dark:text-dark-text-accent">
-        Ranking de Jugadores
+        {t('ranking.title')}
       </h1>
       <Modal
         isOpen={isModalOpen}
