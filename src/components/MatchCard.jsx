@@ -14,6 +14,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
     date: match.date.split('T')[0],
     time: match.time,
     city: match.city,
+    player1: match.player1?.username || '',
     player2: match.player2?.username || '',
     player3: match.player3?.username || '',
     player4: match.player4?.username || '',
@@ -88,6 +89,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
       date: formData.date,
       time: formData.time,
       city: formData.city,
+      player1: formData.player1,
       player2: formData.player2,
       player3: formData.player3,
       player4: formData.player4,
@@ -143,6 +145,38 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
     setModalMessage('');
   };
 
+  const team1 = [match.player1, match.player2];
+  const team2 = [match.player3, match.player4];
+
+  const renderPlayer = (player, field) => {
+    if (!player) {
+      return isEditing ? (
+        <input
+          type="text"
+          name={field}
+          value={formData[field]}
+          onChange={handleInputChange}
+          className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+          placeholder="Libre"
+        />
+      ) : (
+        'Libre'
+      );
+    }
+    return isEditing ? (
+      <input
+        type="text"
+        name={field}
+        value={formData[field]}
+        onChange={handleInputChange}
+        className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+        placeholder="Jugador"
+      />
+    ) : (
+      player.username || 'Desconocido'
+    );
+  };
+
   return (
     <div className={`rounded-lg shadow-lg dark:shadow-dark-shadow p-6 ${getCardStyle()} w-full`}>
       <Modal
@@ -172,45 +206,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
       )}
 
       <p className="text-lg text-primaryText dark:text-dark-text-primary mb-2">
-        {isEditing ? (
-          <>
-            {user.username} /{' '}
-            <input
-              type="text"
-              name="player2"
-              value={formData.player2}
-              onChange={handleInputChange}
-              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
-              placeholder="Compañero"
-            />
-          </>
-        ) : (
-          `${user.username} / ${match.player2?.username || 'Desconocido'}`
-        )}
-        {' vs '}
-        {isEditing ? (
-          <>
-            <input
-              type="text"
-              name="player3"
-              value={formData.player3}
-              onChange={handleInputChange}
-              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
-              placeholder="Rival 1"
-            />
-            {' / '}
-            <input
-              type="text"
-              name="player4"
-              value={formData.player4}
-              onChange={handleInputChange}
-              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
-              placeholder="Rival 2"
-            />
-          </>
-        ) : (
-          `${match.player3?.username || 'Desconocido'} / ${match.player4?.username || 'Desconocido'}`
-        )}
+        {renderPlayer(match.player1, 'player1')} / {renderPlayer(match.player2, 'player2')} vs {renderPlayer(match.player3, 'player3')} / {renderPlayer(match.player4, 'player4')}
       </p>
 
       <p className="text-primaryText dark:text-dark-text-secondary flex items-center mb-2">

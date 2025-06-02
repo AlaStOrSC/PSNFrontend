@@ -70,9 +70,9 @@ function CreateMatchForm({ onCreate }) {
     }
 
     const newMatchData = {
-      player2Username: formData.player2,
-      player3Username: formData.player3,
-      player4Username: formData.player4,
+      player2Username: formData.player2 || null,
+      player3Username: formData.player3 || null,
+      player4Username: formData.player4 || null,
       date: formData.date,
       time: formData.time,
       city: formData.city,
@@ -120,9 +120,8 @@ function CreateMatchForm({ onCreate }) {
           value={formData.player2}
           onChange={handleInputChange}
           className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
-          required
         >
-          <option value="" disabled>Selecciona un compañero</option>
+          <option value="">Dejar libre</option>
           {availableForPlayer2.map((user) => (
             <option key={user._id} value={user.username}>
               {user.username}
@@ -139,9 +138,8 @@ function CreateMatchForm({ onCreate }) {
           value={formData.player3}
           onChange={handleInputChange}
           className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
-          required
         >
-          <option value="" disabled>Selecciona un rival</option>
+          <option value="">Dejar libre</option>
           {availableForPlayer3.map((user) => (
             <option key={user._id} value={user.username}>
               {user.username}
@@ -158,9 +156,8 @@ function CreateMatchForm({ onCreate }) {
           value={formData.player4}
           onChange={handleInputChange}
           className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
-          required
         >
-          <option value="" disabled>Selecciona un rival</option>
+          <option value="">Dejar libre</option>
           {availableForPlayer4.map((user) => (
             <option key={user._id} value={user.username}>
               {user.username}

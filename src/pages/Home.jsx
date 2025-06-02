@@ -5,6 +5,7 @@ import api from '../services/api';
 import Banner from '../components/Banner';
 import NewsCards from '../components/NewsCards';
 import Calendar from '../components/Calendar';
+import JoinMatches from '../components/JoinMatches';
 
 function Home() {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -16,6 +17,7 @@ function Home() {
       const response = await api.get('/matches');
       return response.data;
     },
+    enabled: isAuthenticated,
     refetchOnMount: 'always',
     onError: (err) => {
       console.error('Error al obtener partidos:', err);
@@ -26,25 +28,39 @@ function Home() {
     <div className="min-h-screen bg-neutral dark:bg-dark-bg flex flex-col">
       <Banner className="mb-24" />
       <div className="flex-grow flex flex-col items-center justify-center text-center p-4">
-        <h1 className="text-4xl font-bold text-primaryText dark:text-dark-text-accent mb-4">
-          {t('home.welcome')} {user?.username ? user.username : " "}!
-        </h1>
-        {isAuthenticated && user && user.username ? (
-          <p className="text-lg text-primaryText dark:text-dark-text-secondary mb-6">
-            {t('home.authenticated_message')} 
-          </p>
-        ) : (
-          <p className="text-lg text-primaryText dark:text-dark-text-secondary mb-6">
-            {t('home.unauthenticated_message')}
-          </p>
+        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="flex flex-col justify-center items-center">
+            <h1 className="text-4xl font-bold text-primaryText dark:text-dark-text-accent mb-4">
+              {t('home.welcome')} {user?.username ? user.username : " "}!
+            </h1>
+            {isAuthenticated && user && user.username ? (
+              <p className="text-lg text-primaryText dark:text-dark-text-secondary">
+                {t('home.authenticated_message')} 
+              </p>
+            ) : (
+              <p className="text-lg text-primaryText dark:text-dark-text-secondary">
+                {t('home.unauthenticated_message')}
+              </p>
+            )}
+          </div>
+
+          {isAuthenticated && (
+            <div className="flex justify-center">
+              {matchesLoading ? (
+                <p className="text-lg text-primaryText dark:text-dark-text-secondary">Cargando calendario...</p>
+              ) : matchesError ? (
+                <p className="text-lg text-red-500 dark:text-dark-error">Error al cargar los partidos</p>
+              ) : (
+                <Calendar matches={matches} locale={i18n.language} />
+              )}
+            </div>
+          )}
+        </div>
+
+        {isAuthenticated && (
+          <JoinMatches locale={i18n.language} />
         )}
-        {matchesLoading ? (
-          <p className="text-lg text-primaryText dark:text-dark-text-secondary">Cargando calendario...</p>
-        ) : matchesError ? (
-          <p className="text-lg text-red-500 dark:text-dark-error">Error al cargar los partidos</p>
-        ) : (
-          <Calendar matches={matches} locale={i18n.language} />
-        )}
+
         <div className="space-x-4 mb-12">
           {!isAuthenticated && (
             <>

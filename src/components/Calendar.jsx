@@ -6,8 +6,10 @@ import { es, enUS } from 'date-fns/locale';
 import 'react-calendar/dist/Calendar.css';
 import { useTranslation } from 'react-i18next';
 
+
+
 function Calendar({ matches, locale }) {
-  const { t } = useTranslation();
+   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [value, setValue] = useState(new Date());
 
@@ -33,7 +35,7 @@ function Calendar({ matches, locale }) {
   };
 
   return (
-      <div>    {t('calendar.nextmatches')}
+      <div>   {t('calendar.nextmatches')}
     <div className="max-w-[300px] mx-auto my-8 p-4 bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg">
       <ReactCalendar
         onChange={setValue}
