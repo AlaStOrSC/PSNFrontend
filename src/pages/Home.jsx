@@ -27,18 +27,26 @@ function Home() {
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg flex flex-col">
       <Banner className="mb-24" />
-      <div className="flex-grow flex flex-col items-center justify-center text-center p-4">
-        <div className="w-full max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div
+        className={`flex-grow flex flex-col items-center p-4 ${
+          isAuthenticated ? 'justify-start' : 'justify-center'
+        }`}
+      >
+        <div
+          className={`w-full max-w-7xl mx-auto ${
+            isAuthenticated ? 'grid grid-cols-1 md:grid-cols-2 gap-6 mb-6' : 'flex flex-col items-center text-center'
+          }`}
+        >
           <div className="flex flex-col justify-center items-center">
             <h1 className="text-4xl font-bold text-primaryText dark:text-dark-text-accent mb-4">
-              {t('home.welcome')} {user?.username ? user.username : " "}!
+              {t('home.welcome')} {user?.username ? user.username : ''}!
             </h1>
             {isAuthenticated && user && user.username ? (
-              <p className="text-lg text-primaryText dark:text-dark-text-secondary">
-                {t('home.authenticated_message')} 
+              <p className="text-lg text-primaryText dark:text-dark-text-secondary mb-4">
+                {t('home.authenticated_message')}
               </p>
             ) : (
-              <p className="text-lg text-primaryText dark:text-dark-text-secondary">
+              <p className="text-lg text-primaryText dark:text-dark-text-secondary mb-4">
                 {t('home.unauthenticated_message')}
               </p>
             )}
@@ -47,9 +55,13 @@ function Home() {
           {isAuthenticated && (
             <div className="flex justify-center">
               {matchesLoading ? (
-                <p className="text-lg text-primaryText dark:text-dark-text-secondary">Cargando calendario...</p>
+                <p className="text-lg text-primaryText dark:text-dark-text-secondary">
+                  Cargando calendario...
+                </p>
               ) : matchesError ? (
-                <p className="text-lg text-red-500 dark:text-dark-error">Error al cargar los partidos</p>
+                <p className="text-lg text-red-500 dark:text-dark-error">
+                  Error al cargar los partidos
+                </p>
               ) : (
                 <Calendar matches={matches} locale={i18n.language} />
               )}
@@ -57,9 +69,7 @@ function Home() {
           )}
         </div>
 
-        {isAuthenticated && (
-          <JoinMatches locale={i18n.language} />
-        )}
+        {isAuthenticated && <JoinMatches locale={i18n.language} />}
 
         <div className="space-x-4 mb-12">
           {!isAuthenticated && (
