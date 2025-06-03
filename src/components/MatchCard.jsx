@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { CalendarIcon, MapPinIcon, ClockIcon, SunIcon, CheckCircleIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import api from '../services/api';
 import Modal from './Modal';
 
 function MatchCard({ match, user, onUpdate, onDelete }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,7 +16,6 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
     date: match.date.split('T')[0],
     time: match.time,
     city: match.city,
-    player1: match.player1?.username || '',
     player2: match.player2?.username || '',
     player3: match.player3?.username || '',
     player4: match.player4?.username || '',
@@ -89,7 +90,6 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
       date: formData.date,
       time: formData.time,
       city: formData.city,
-      player1: formData.player1,
       player2: formData.player2,
       player3: formData.player3,
       player4: formData.player4,
@@ -145,44 +145,28 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
     setModalMessage('');
   };
 
-  const team1 = [match.player1, match.player2];
-  const team2 = [match.player3, match.player4];
-
-  const renderPlayer = (player, field) => {
-    if (!player) {
-      return isEditing ? (
-        <input
-          type="text"
-          name={field}
-          value={formData[field]}
-          onChange={handleInputChange}
-          className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
-          placeholder="Libre"
-        />
-      ) : (
-        'Libre'
-      );
+  const getUserTeam = () => {
+    const userId = user._id;
+    if (match.player1?._id === userId || match.player2?._id === userId) {
+      return {
+        team1: [match.player1?.username || t('matches.empty_slot'), match.player2?.username || t('matches.empty_slot')],
+        team2: [match.player3?.username || t('matches.empty_slot'), match.player4?.username || t('matches.empty_slot')],
+      };
     }
-    return isEditing ? (
-      <input
-        type="text"
-        name={field}
-        value={formData[field]}
-        onChange={handleInputChange}
-        className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
-        placeholder="Jugador"
-      />
-    ) : (
-      player.username || 'Desconocido'
-    );
+    return {
+      team1: [match.player1?.username || t('matches.empty_slot'), match.player2?.username || t('matches.empty_slot')],
+      team2: [match.player3?.username || t('matches.empty_slot'), match.player4?.username || t('matches.empty_slot')],
+    };
   };
+
+  const { team1, team2 } = getUserTeam();
 
   return (
     <div className={`rounded-lg shadow-lg dark:shadow-dark-shadow p-6 ${getCardStyle()} w-full`}>
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title="Error"
+        title={t('profile.modal.error_title')}
         message={modalMessage}
       />
 
@@ -206,7 +190,45 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
       )}
 
       <p className="text-lg text-primaryText dark:text-dark-text-primary mb-2">
-        {renderPlayer(match.player1, 'player1')} / {renderPlayer(match.player2, 'player2')} vs {renderPlayer(match.player3, 'player3')} / {renderPlayer(match.player4, 'player4')}
+        {isEditing ? (
+          <>
+            {team1[0]} /{' '}
+            <input
+              type="text"
+              name="player2"
+              value={formData.player2}
+              onChange={handleInputChange}
+              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+              placeholder="Compañero"
+            />
+          </>
+        ) : (
+          `${team1[0]} / ${team1[1]}`
+        )}
+        {' vs '}
+        {isEditing ? (
+          <>
+            <input
+              type="text"
+              name="player3"
+              value={formData.player3}
+              onChange={handleInputChange}
+              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+              placeholder="Rival 1"
+            />
+            {' / '}
+            <input
+              type="text"
+              name="player4"
+              value={formData.player4}
+              onChange={handleInputChange}
+              className="inline p-1 border border-gray-200 dark:border-dark-border rounded bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+              placeholder="Rival 2"
+            />
+          </>
+        ) : (
+          `${team2[0]} / ${team2[1]}`
+        )}
       </p>
 
       <p className="text-primaryText dark:text-dark-text-secondary flex items-center mb-2">

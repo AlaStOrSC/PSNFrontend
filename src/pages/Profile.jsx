@@ -42,9 +42,12 @@ function Profile() {
         api.get('/users/friends/requests'),
         api.get('/users/friends'),
       ]);
-      return { pendingRequests: requestsResponse.data, friends: friendsResponse.data };
+      return { requests: requestsResponse.data, friends: friendsResponse.data };
     },
     enabled: !!user,
+    onError: (err) => {
+      console.error('Error al obtener datos de amistad:', err);
+    },
   });
 
   const updateProfileMutation = useMutation({
@@ -407,8 +410,8 @@ function Profile() {
           zIndex={70}
         >
           <div className="space-y-4 p-4">
-            {modalSection === 'sent' && friendshipData?.pendingRequests.sent.length > 0 ? (
-              friendshipData.pendingRequests.sent.map((request) => (
+            {modalSection === 'sent' && friendshipData?.requests.sent.length > 0 ? (
+              friendshipData.requests.sent.map((request) => (
                 <div key={request.recipientId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                   <img
                     src={
@@ -429,8 +432,8 @@ function Profile() {
               <p className="text-primaryText dark:text-dark-text-secondary">{t('profile.no_sent_requests')}</p>
             ) : null}
 
-            {modalSection === 'received' && friendshipData?.pendingRequests.received.length > 0 ? (
-              friendshipData.pendingRequests.received.map((request) => (
+            {modalSection === 'received' && friendshipData?.requests.received.length > 0 ? (
+              friendshipData.requests.received.map((request) => (
                 <div key={request.requesterId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                   <img
                     src={
@@ -656,9 +659,9 @@ function Profile() {
                         <ArrowsPointingOutIcon className="h-5 w-5" />
                       </button>
                     </div>
-                    {friendshipData?.pendingRequests.sent.length > 0 ? (
+                    {friendshipData?.requests.sent.length > 0 ? (
                       <div className="space-y-2 max-h-[120px] overflow-y-auto">
-                        {friendshipData.pendingRequests.sent.map((request) => (
+                        {friendshipData.requests.sent.map((request) => (
                           <div key={request.recipientId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                             <img
                               src={
@@ -691,9 +694,9 @@ function Profile() {
                         <ArrowsPointingOutIcon className="h-5 w-5" />
                       </button>
                     </div>
-                    {friendshipData?.pendingRequests.received.length > 0 ? (
+                    {friendshipData?.requests.received.length > 0 ? (
                       <div className="space-y-2 max-h-[120px] overflow-y-auto">
-                        {friendshipData.pendingRequests.received.map((request) => (
+                        {friendshipData.requests.received.map((request) => (
                           <div key={request.requesterId} className="bg-gray-100 dark:bg-dark-bg-tertiary p-3 rounded-lg flex items-center">
                             <img
                               src={
