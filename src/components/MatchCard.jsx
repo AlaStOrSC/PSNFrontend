@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { CalendarIcon, MapPinIcon, ClockIcon, SunIcon, CheckCircleIcon, PencilIcon, TrashIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import api from '../services/api';
 import Modal from './Modal';
 
 function MatchCard({ match, user, onUpdate, onDelete }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [isEditing, setIsEditing] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -143,12 +145,28 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
     setModalMessage('');
   };
 
+  const getUserTeam = () => {
+    const userId = user._id;
+    if (match.player1?._id === userId || match.player2?._id === userId) {
+      return {
+        team1: [match.player1?.username || t('matches.empty_slot'), match.player2?.username || t('matches.empty_slot')],
+        team2: [match.player3?.username || t('matches.empty_slot'), match.player4?.username || t('matches.empty_slot')],
+      };
+    }
+    return {
+      team1: [match.player1?.username || t('matches.empty_slot'), match.player2?.username || t('matches.empty_slot')],
+      team2: [match.player3?.username || t('matches.empty_slot'), match.player4?.username || t('matches.empty_slot')],
+    };
+  };
+
+  const { team1, team2 } = getUserTeam();
+
   return (
     <div className={`rounded-lg shadow-lg dark:shadow-dark-shadow p-6 ${getCardStyle()} w-full`}>
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title="Error"
+        title={t('profile.modal.error_title')}
         message={modalMessage}
       />
 
@@ -174,7 +192,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
       <p className="text-lg text-primaryText dark:text-dark-text-primary mb-2">
         {isEditing ? (
           <>
-            {user.username} /{' '}
+            {team1[0]} /{' '}
             <input
               type="text"
               name="player2"
@@ -185,7 +203,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
             />
           </>
         ) : (
-          `${user.username} / ${match.player2?.username || 'Desconocido'}`
+          `${team1[0]} / ${team1[1]}`
         )}
         {' vs '}
         {isEditing ? (
@@ -209,7 +227,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
             />
           </>
         ) : (
-          `${match.player3?.username || 'Desconocido'} / ${match.player4?.username || 'Desconocido'}`
+          `${team2[0]} / ${team2[1]}`
         )}
       </p>
 

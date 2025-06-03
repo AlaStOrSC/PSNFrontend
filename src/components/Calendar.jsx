@@ -33,15 +33,15 @@ function Calendar({ matches, locale }) {
   };
 
   return (
-      <div>    {t('calendar.nextmatches')}
-    <div className="max-w-[300px] mx-auto my-8 p-4 bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg">
+      <div className="dark:text-neutral" >    {t('calendar.nextmatches')}
+    <div className="max-w-[300px] mx-auto my-8 p-4 bg-white dark:bg-neutral rounded-lg shadow-lg">
       <ReactCalendar
         onChange={setValue}
         value={value}
         onClickDay={handleDayClick}
         tileClassName={tileClassName}
         locale={locale}
-        className="w-full text-primaryText dark:text-dark-text-primary border-none"
+        className="w-full text-primaryText dark:text-primaryText border-none"
         navigationLabel={({ date }) =>
           `${format(date, 'MMMM yyyy', { locale: locale === 'es' ? es : enUS })}`
         }
