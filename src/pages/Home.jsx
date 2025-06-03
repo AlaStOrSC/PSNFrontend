@@ -28,6 +28,7 @@ function Home() {
       return response.data;
     },
     refetchOnMount: 'always',
+    enabled: isAuthenticated,
     onError: (err) => {
       console.error('Error al obtener partidos:', err);
     },
@@ -110,73 +111,75 @@ function Home() {
             {t('home.unauthenticated_message')}
           </p>
         )}
-        {isAuthenticated && (
-          <div className="w-full max-w-[1700px] px-4 mb-12">
-            <h2 className="text-2xl font-bold text-primaryText dark:text-dark-text-accent mb-6">
-              {t('home.joinable_title')}
-            </h2>
-            {joinableLoading || friendshipLoading ? (
-              <p className="text-lg text-primaryText dark:text-dark-text-secondary">
-                {t('loading')}
-              </p>
-            ) : joinableError ? (
-              <p className="text-lg text-red-500 dark:text-dark-error">
-                {t('home.no_joinable_matches')}
-              </p>
-            ) : filteredJoinableMatches.length === 0 ? (
-              <p className="text-lg text-primaryText dark:text-dark-text-secondary">
-                {t('home.no_joinable_matches')}
-              </p>
+        {isAuthenticated ? (
+          <>
+            <div className="w-full max-w-full px-4 mb-12">
+              <h2 className="text-2xl font-bold text-primaryText dark:text-dark-text-accent mb-6">
+                {t('home.joinable_title')}
+              </h2>
+              {joinableLoading || friendshipLoading ? (
+                <p className="text-lg text-primaryText dark:text-dark-text-secondary">
+                  {t('loading')}
+                </p>
+              ) : joinableError ? (
+                <p className="text-lg text-red-500 dark:text-dark-error">
+                  {t('home.no_joinable_matches')}
+                </p>
+              ) : filteredJoinableMatches.length === 0 ? (
+                <p className="text-lg text-primaryText dark:text-dark-text-secondary">
+                  {t('home.no_joinable_matches')}
+                </p>
+              ) : (
+                <div className="relative w-full">
+                  <Swiper
+                    modules={[Navigation]}
+                    spaceBetween={30}
+                    slidesPerView={1}
+                    breakpoints={{
+                      640: { slidesPerView: 1 },
+                      768: { slidesPerView: 2 },
+                      1024: { slidesPerView: 3 },
+                      1280: { slidesPerView: 3 },
+                      1536: { slidesPerView: 4 },
+                    }}
+                    navigation={{
+                      nextEl: '.swiper-button-next',
+                      prevEl: '.swiper-button-prev',
+                    }}
+                    className="mySwiper"
+                  >
+                    {filteredJoinableMatches.map((match) => (
+                      <SwiperSlide key={match._id}>
+                        <JoinableMatchCard
+                          match={match}
+                          friends={friendshipData?.friends}
+                          onJoin={handleJoinClick}
+                        />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                  <div className="swiper-button-prev absolute -left-16 top-1/2 transform -translate-y-1/2 text-primaryText dark:text-dark-text-primary">
+                    <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </div>
+                  <div className="swiper-button-next absolute -right-16 top-1/2 transform -translate-y-1/2 text-primaryText dark:text-dark-text-primary">
+                    <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </div>
+              )}
+            </div>
+            {matchesLoading ? (
+              <p className="text-lg text-primaryText dark:text-dark-text-secondary">{t('loading')}</p>
+            ) : matchesError ? (
+              <p className="text-lg text-red-500 dark:text-dark-error">{t('home.error_matches')}</p>
             ) : (
-              <div className="relative w-full">
-                <Swiper
-                  modules={[Navigation]}
-                  spaceBetween={30}
-                  slidesPerView={1}
-                  breakpoints={{
-                    640: { slidesPerView: 1 },
-                    768: { slidesPerView: 2 },
-                    1024: { slidesPerView: 3 },
-                    1280: { slidesPerView: 3 },
-                    1536: { slidesPerView: 4 },
-                  }}
-                  navigation={{
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                  }}
-                  className="mySwiper"
-                >
-                  {filteredJoinableMatches.map((match) => (
-                    <SwiperSlide key={match._id}>
-                      <JoinableMatchCard
-                        match={match}
-                        friends={friendshipData?.friends}
-                        onJoin={handleJoinClick}
-                      />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-                <div className="swiper-button-prev absolute -left-16 top-1/2 transform -translate-y-1/2 text-primaryText dark:text-dark-text-primary">
-                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </div>
-                <div className="swiper-button-next absolute -right-16 top-1/2 transform -translate-y-1/2 text-primaryText dark:text-dark-text-primary">
-                  <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
+              <Calendar matches={matches} locale={i18n.language} />
             )}
-          </div>
-        )}
-        {matchesLoading ? (
-          <p className="text-lg text-primaryText dark:text-dark-text-secondary">{t('loading')}</p>
-        ) : matchesError ? (
-          <p className="text-lg text-red-500 dark:text-dark-error">{t('home.error_matches')}</p>
-        ) : (
-          <Calendar matches={matches} locale={i18n.language} />
-        )}
+          </>
+        ) : null}
         <div className="space-x-4 mb-12">
           {!isAuthenticated && (
             <>
