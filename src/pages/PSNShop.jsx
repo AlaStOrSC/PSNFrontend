@@ -17,7 +17,7 @@ function PSNShop() {
   const { user } = useSelector((state) => state.auth);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [limit, setLimit] = useState(window.innerWidth < 640 ? 5 : 10);
+  const [limit, setLimit] = useState(window.innerWidth < 640 ? 5 : 15);
   const [showSellForm, setShowSellForm] = useState(false);
   const [showFilterForm, setShowFilterForm] = useState(false);
   const [filters, setFilters] = useState({
@@ -26,7 +26,9 @@ function PSNShop() {
     maxPrice: '',
     category: '',
     sellerUsername: '',
+    name: '',
   });
+  const [appliedFilters, setAppliedFilters] = useState(filters);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -57,16 +59,16 @@ function PSNShop() {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
-    LebronImage,
-    TapiaImage,
-    CoelloImage,
-    BullpadelImage,
-    PackBolasImage,
+    { image: LebronImage, name: 'Lebron', seller: 'PSN' },
+    { image: TapiaImage, name: 'Tapia', seller: 'PSN' },
+    { image: CoelloImage, name: 'Coello', seller: 'PSN' },
+    { image: BullpadelImage, name: 'Bullpadel', seller: 'PSN' },
+    { image: PackBolasImage, name: 'Bolas', seller: 'PSN' },
   ];
 
   useEffect(() => {
     const handleResize = () => {
-      setLimit(window.innerWidth < 640 ? 5 : 10);
+      setLimit(window.innerWidth < 640 ? 5 : 15);
     };
     window.addEventListener('resize', handleResize);
     handleResize();
@@ -81,18 +83,36 @@ function PSNShop() {
   }, [slides.length]);
 
   const { data: productsData, isLoading, error } = useQuery({
-    queryKey: ['products', page, limit, filters],
+    queryKey: ['products', page, limit, appliedFilters],
     queryFn: async () => {
-      const queryParams = new URLSearchParams({
-        page,
-        limit,
-        ...(filters.minRating && { minRating: filters.minRating }),
-        ...(filters.minPrice && { minPrice: filters.minPrice }),
-        ...(filters.maxPrice && { maxPrice: filters.maxPrice }),
-        ...(filters.category && { category: filters.category }),
-        ...(filters.sellerUsername && { sellerUsername: filters.sellerUsername }),
-      }).toString();
-      const response = await api.get(`/products?${queryParams}`);
+      const queryParams = new URLSearchParams();
+      queryParams.append('page', page);
+      queryParams.append('limit', limit);
+      if (appliedFilters.minRating && appliedFilters.minRating >= 1 && appliedFilters.minRating <= 5) {
+        queryParams.append('minRating', appliedFilters.minRating);
+      }
+      if (appliedFilters.minPrice && appliedFilters.minPrice >= 0) {
+        queryParams.append('minPrice', appliedFilters.minPrice);
+      }
+      if (appliedFilters.maxPrice && appliedFilters.maxPrice >= 0) {
+        queryParams.append('maxPrice', appliedFilters.maxPrice);
+      }
+      if (appliedFilters.category) {
+        queryParams.append('category', appliedFilters.category);
+      }
+      if (appliedFilters.sellerUsername) {
+        queryParams.append('sellerUsername', appliedFilters.sellerUsername);
+      }
+      if (appliedFilters.name && appliedFilters.name.trim()) {
+        queryParams.append('name', appliedFilters.name.trim());
+      }
+
+      const queryString = queryParams.toString();
+      console.log('Query URL:', `/products?${queryString}`);
+      console.log('Applied Filters:', appliedFilters);
+
+      const response = await api.get(`/products?${queryString}`);
+      console.log('API Response:', response.data);
       setTotalPages(response.data.totalPages);
       return response.data.products;
     },
@@ -162,18 +182,23 @@ function PSNShop() {
 
   const handleFilterSubmit = (e) => {
     e.preventDefault();
+    console.log('Filters submitted:', filters);
+    setAppliedFilters({ ...filters });
     setPage(1);
     setShowFilterForm(false);
   };
 
   const handleClearFilters = () => {
-    setFilters({
+    const clearedFilters = {
       minRating: '',
       minPrice: '',
       maxPrice: '',
       category: '',
       sellerUsername: '',
-    });
+      name: '',
+    };
+    setFilters(clearedFilters);
+    setAppliedFilters(clearedFilters);
     setPage(1);
     setShowFilterForm(false);
   };
@@ -217,6 +242,20 @@ function PSNShop() {
     });
   };
 
+  const handleSlideClick = (slide) => {
+    const newFilters = {
+      minRating: '',
+      minPrice: '',
+      maxPrice: '',
+      category: '',
+      sellerUsername: slide.seller,
+      name: slide.name,
+    };
+    setFilters(newFilters);
+    setAppliedFilters(newFilters);
+    setPage(1);
+  };
+
   const openPurchaseForm = (productId) => {
     setPurchaseData({ ...purchaseData, productId });
     setShowPurchaseForm(true);
@@ -245,64 +284,63 @@ function PSNShop() {
 
   return (
     <div className="container mx-auto p-4 bg-neutral dark:bg-dark-bg">
-<div className="relative w-full h-[425px] mb-6 rounded-xl overflow-hidden shadow-lg">
-  {slides.map((slide, index) => (
-    <div
-      key={index}
-      className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-        currentSlide === index ? 'opacity-100' : 'opacity-0'
-      }`}
-      style={{
-        backgroundImage: `url(${slide})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    />
-  ))}
-
-  <button
-    onClick={() =>
-      setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
-    }
-    className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
-    aria-label="Previous slide"
-  >
-    ◀
-  </button>
-  <button
-    onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
-    className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/40 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
-    aria-label="Next slide"
-  >
-    ▶
-  </button>
-
-  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-    {slides.map((_, index) => (
-      <button
-        key={index}
-        onClick={() => setCurrentSlide(index)}
-        className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-          currentSlide === index ? 'bg-white' : 'bg-gray-400'
-        }`}
-      />
-    ))}
-  </div>
-</div>
+      <div className="relative w-full h-[425px] mb-6 rounded-xl overflow-hidden shadow-lg">
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out cursor-pointer ${
+              currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            }`}
+            style={{
+              backgroundImage: `url(${slide.image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+            onClick={() => handleSlideClick(slide)}
+          />
+        ))}
+        <button
+          onClick={() =>
+            setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length)
+          }
+          className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/40 text-white p-4 rounded-full hover:bg-black/70 transition-colors z-20"
+          aria-label="Previous slide"
+        >
+          ◀
+        </button>
+        <button
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % slides.length)}
+          className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black/40 text-white p-4 rounded-full hover:bg-black/70 transition-colors z-20"
+          aria-label="Next slide"
+        >
+          ▶
+        </button>
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-2 bg-black/30 p-2 rounded-full z-20">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                currentSlide === index ? 'bg-blue-500' : 'bg-gray-400'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
 
       <h1 className="text-3xl font-bold mb-4 text-center text-primaryText dark:text-neutral">{t('navbar.tienda')}</h1>
 
       <div className="flex justify-between mb-4">
         {user && (
           <button
-            onClick={() => setShowSellForm(true)}
+            onClick={() => setShowSellForm((prev) => !prev)}
             className="bg-secondary text-neutral dark:bg-dark-primary dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
           >
             {t('shop.sell')}
           </button>
         )}
         <button
-          onClick={() => setShowFilterForm(true)}
+          onClick={() => setShowFilterForm((prev) => !prev)}
           className="bg-secondary text-neutral dark:bg-gray-600 dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-gray-700 transition-colors"
         >
           {t('shop.filter')}
@@ -313,6 +351,15 @@ function PSNShop() {
         <div className="bg-gray-100 dark:bg-dark-bg-tertiary p-4 rounded-lg mb-4">
           <h2 className="text-xl font-semibold mb-4 text-primaryText dark:text-neutral">{t('shop.filters_title')}</h2>
           <form onSubmit={handleFilterSubmit}>
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1 text-primaryText dark:text-neutral">{t('shop.product_name_label')}</label>
+              <input
+                type="text"
+                value={filters.name}
+                onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+              />
+            </div>
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1 text-primaryText dark:text-neutral">{t('shop.min_rating_label')}</label>
               <input
@@ -630,11 +677,12 @@ function PSNShop() {
       )}
 
       {showModal && (
-        <Modal message={modalMessage} onClose={() => setShowModal(false)} />
+        <Modal message={modalMessage} onClose={() => setShowModal(false)} isOpen={showModal} />
       )}
 
       {showDescriptionModal && selectedProduct && (
         <Modal
+          isOpen={showDescriptionModal}
           title={selectedProduct.name}
           message={selectedProduct.description}
           onClose={() => setShowDescriptionModal(false)}

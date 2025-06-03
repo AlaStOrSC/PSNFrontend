@@ -53,7 +53,7 @@ function ProductCard({ product, onPurchase, onCardClick }) {
           e.stopPropagation();
           onPurchase();
         }}
-        className="bg-secondary text-neutral dark:bg-green-600 dark:text-neutral px-4 py-2 rounded-lg mt-4 w-full hover:bg-buttonsHover dark:hover:bg-green-700 transition-colors"
+        className="bg-green-600 text-neutral dark:bg-green-600 dark:text-neutral px-4 py-2 rounded-lg mt-4 w-full hover:bg-green-700 dark:hover:bg-green-700 transition-colors"
       >
         {t('product_card.purchase')}
       </button>
