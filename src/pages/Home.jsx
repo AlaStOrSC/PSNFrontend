@@ -90,14 +90,15 @@ function Home() {
     joinMatchMutation.mutate(selectedMatchId);
   };
 
-  const filteredJoinableMatches = joinableMatches.filter((match) => {
-    const players = [match.player1, match.player2, match.player3, match.player4].filter(Boolean);
-    const includesFriend = players.some((player) =>
-      friendshipData?.friends.some((friend) => friend.id === player._id)
-    );
-    const includesUser = players.some((player) => player._id === user?._id);
-    return includesFriend && !includesUser;
-  });
+const filteredJoinableMatches = joinableMatches.filter((match) => {
+  const players = [match.player1, match.player2, match.player3, match.player4].filter(Boolean);
+  const includesFriend = players.some((player) =>
+    friendshipData?.friends.some((friend) => friend.id === player._id)
+  );
+  const includesUser = players.some((player) => String(player._id) === String(user.userId));
+  const shouldRender = includesFriend && !includesUser;
+  return shouldRender;
+});
 
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg flex flex-col">

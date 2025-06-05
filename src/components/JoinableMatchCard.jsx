@@ -5,7 +5,7 @@ function JoinableMatchCard({ match, friends, onJoin }) {
   const { t } = useTranslation();
   const formatDate = (date) => new Date(date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
 
-  const defaultAvatar = `https://ui-avatars.com/api/?name=Empty&background=0f172a&color=fff&size=40`;
+
 
   const players = [
     { player: match.player1, position: 'player1' },
@@ -13,6 +13,7 @@ function JoinableMatchCard({ match, friends, onJoin }) {
     { player: match.player3, position: 'player3' },
     { player: match.player4, position: 'player4' },
   ];
+
 
   return (
     <div className="bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg dark:shadow-dark-shadow p-6 w-96">
@@ -26,7 +27,7 @@ function JoinableMatchCard({ match, friends, onJoin }) {
               {player ? (
                 <>
                   <img
-                    src={player.profilePicture || defaultAvatar}
+                    src={player.profilePicture || `https://ui-avatars.com/api/?name=${player.username}&background=0f172a&color=fff&size=40`}
                     alt={player.username}
                     className="w-10 h-10 rounded-full mr-3"
                   />
@@ -54,7 +55,7 @@ function JoinableMatchCard({ match, friends, onJoin }) {
               {player ? (
                 <>
                   <img
-                    src={player.profilePicture || defaultAvatar}
+                    src={player.profilePicture || `https://ui-avatars.com/api/?name=${player.username}&background=0f172a&color=fff&size=40`}
                     alt={player.username}
                     className="w-10 h-10 rounded-full mr-3"
                   />
