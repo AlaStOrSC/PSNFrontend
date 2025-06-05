@@ -146,13 +146,15 @@ function PSNShop() {
 
   const purchaseMutation = useMutation({
     mutationFn: async (productId) => {
-      await api.post(`/products/purchase/${productId}`);
+      const response = await api.post(`/products/purchase/${productId}`);
+      return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       setModalMessage(t('shop.success.purchase_product'));
       setShowModal(true);
       setShowPurchaseForm(false);
       setShowRatingForm(true);
+      setRatingData({ ...ratingData, productId: data.product._id });
       queryClient.invalidateQueries(['products']);
     },
     onError: (error) => {
@@ -164,7 +166,8 @@ function PSNShop() {
 
   const rateMutation = useMutation({
     mutationFn: async ({ productId, rating, comment }) => {
-      await api.post(`/products/rate/${productId}`, { rating, comment });
+      const response = await api.post(`/products/rate/${productId}`, { rating, comment });
+      return response.data;
     },
     onSuccess: () => {
       setModalMessage(t('shop.success.rate_product'));
@@ -231,6 +234,11 @@ function PSNShop() {
     e.preventDefault();
     if (ratingData.rating < 1 || ratingData.rating > 5) {
       setModalMessage(t('shop.error.invalid_rating'));
+      setShowModal(true);
+      return;
+    }
+    if (!ratingData.productId) {
+      setModalMessage(t('shop.error.rate_product'));
       setShowModal(true);
       return;
     }
@@ -451,7 +459,7 @@ function PSNShop() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                className="w-full p-2 border border-gray-200 dark:border-dark-bg-tertiary rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 required
               />
             </div>
@@ -461,7 +469,7 @@ function PSNShop() {
                 type="file"
                 accept="image/*"
                 onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
-                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral"
+                className="w-full p-2 border border-gray-200 dark:border-dark-bg-tertiary rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral-dark-gray focus:outline-none focus:ring-2 focus:ring-dark-secondary dark:bg-dark-bg-tertiary"
                 required
               />
             </div>
@@ -471,7 +479,7 @@ function PSNShop() {
                 type="number"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 min="0"
                 step="0.01"
                 required
@@ -482,7 +490,7 @@ function PSNShop() {
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 maxLength="100"
                 required
               />
@@ -492,7 +500,7 @@ function PSNShop() {
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                 required
               >
                 <option value="">{t('shop.category_select')}</option>
@@ -505,14 +513,14 @@ function PSNShop() {
             </div>
             <button
               type="submit"
-              className="bg-secondary text-neutral dark:bg-dark-primary dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
+              className="bg-secondary text-neutral dark:bg-dark-primary dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary"
             >
               {t('shop.submit')}
             </button>
             <button
               type="button"
               onClick={() => setShowSellForm(false)}
-              className="ml-2 bg-secondary text-neutral dark:bg-gray-600 dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-gray-700 transition-colors"
+              className="ml-2 bg-secondary text-neutral dark:bg-gray-600 dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-gray-700"
             >
               {t('shop.cancel')}
             </button>
@@ -560,7 +568,7 @@ function PSNShop() {
                   type="text"
                   value={purchaseData.name}
                   onChange={(e) => setPurchaseData({ ...purchaseData, name: e.target.value })}
-                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
@@ -570,7 +578,7 @@ function PSNShop() {
                   type="text"
                   value={purchaseData.lastName}
                   onChange={(e) => setPurchaseData({ ...purchaseData, lastName: e.target.value })}
-                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
@@ -580,7 +588,7 @@ function PSNShop() {
                   type="tel"
                   value={purchaseData.phone}
                   onChange={(e) => setPurchaseData({ ...purchaseData, phone: e.target.value })}
-                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
@@ -590,7 +598,7 @@ function PSNShop() {
                   type="text"
                   value={purchaseData.city}
                   onChange={(e) => setPurchaseData({ ...purchaseData, city: e.target.value })}
-                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
@@ -600,7 +608,7 @@ function PSNShop() {
                   type="text"
                   value={purchaseData.address}
                   onChange={(e) => setPurchaseData({ ...purchaseData, address: e.target.value })}
-                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
@@ -610,21 +618,21 @@ function PSNShop() {
                   type="text"
                   value={purchaseData.creditCard}
                   onChange={(e) => setPurchaseData({ ...purchaseData, creditCard: e.target.value })}
-                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   required
                 />
               </div>
               <button
                 type="submit"
-                className="bg-secondary text-neutral dark:bg-dark-primary dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
+                className="bg-secondary text-neutral dark:bg-dark-primary dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary"
               >
                 {t('shop.pay')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowPurchaseForm(false)}
-                className="ml-2 bg-secondary text-neutral dark:bg-gray-600 dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-gray-700 transition-colors"
-              >
+                className="ml-2 bg-secondary text-neutral dark:bg-gray-600 dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-gray-700"
+                >
                 {t('shop.cancel')}
               </button>
             </form>
@@ -643,7 +651,7 @@ function PSNShop() {
                   type="number"
                   value={ratingData.rating}
                   onChange={(e) => setRatingData({ ...ratingData, rating: parseInt(e.target.value) })}
-                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   min="1"
                   max="5"
                   required
@@ -654,20 +662,20 @@ function PSNShop() {
                 <textarea
                   value={ratingData.comment}
                   onChange={(e) => setRatingData({ ...ratingData, comment: e.target.value })}
-                  className="w-full p-2 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
+                  className="w-full p-2 border border-gray-200 dark:border-dark-bg rounded-lg bg-white dark:bg-dark-bg-tertiary text-primaryText dark:text-neutral focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
                   maxLength="100"
                 />
               </div>
               <button
                 type="submit"
-                className="bg-secondary text-neutral dark:bg-dark-primary dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
+                className="bg-secondary text-neutral dark:bg-dark-primary dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary"
               >
                 {t('shop.submit_rating')}
               </button>
               <button
                 type="button"
                 onClick={() => setShowRatingForm(false)}
-                className="ml-2 bg-secondary text-neutral dark:bg-gray-600 dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-gray-700 transition-colors"
+                className="ml-2 bg-secondary text-neutral dark:bg-gray-600 dark:text-neutral px-4 py-2 rounded-lg hover:bg-buttonsHover dark:hover:bg-gray-700"
               >
                 {t('shop.cancel')}
               </button>

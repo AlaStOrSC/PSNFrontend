@@ -1,8 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import api from '../services/api';
 import Spinner from './Spinner';
+import { useTranslation } from 'react-i18next';
+
+
 //Uso de reactquery solo para practicar con el, aunque no tenga sentido en una peticion de noticias.
 function NewsCards() {
+  const { t } = useTranslation();
   const { data: articles = [], isLoading, error } = useQuery({
     queryKey: ['news'],
     queryFn: async () => {
@@ -29,7 +33,7 @@ function NewsCards() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-neutral dark:bg-dark-bg">
       <h1 className="text-3xl md:text-4xl font-bold text-primaryText dark:text-dark-text-accent text-center mb-8">
-        ¡Mantente al día con los últimos acontecimientos!
+        {t('news.title')}
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {articles.map((article, index) => (

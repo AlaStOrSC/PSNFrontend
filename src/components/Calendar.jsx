@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 
 function Calendar({ matches, locale }) {
-   const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [value, setValue] = useState(new Date());
 

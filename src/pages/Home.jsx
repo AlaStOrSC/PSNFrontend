@@ -66,7 +66,10 @@ function Home() {
       const response = await api.put(`/matches/join/${matchId}`);
       return response.data.match;
     },
-    onSuccess: () => {
+    onSuccess: (updatedMatch) => {
+      queryClient.setQueryData(['joinableMatches'], (oldMatches) =>
+        oldMatches ? oldMatches.filter((match) => match._id !== updatedMatch._id) : []
+      );
       queryClient.invalidateQueries(['joinableMatches']);
       queryClient.invalidateQueries(['matches']);
       setIsJoinModalOpen(false);
@@ -87,13 +90,14 @@ function Home() {
     joinMatchMutation.mutate(selectedMatchId);
   };
 
-  const filteredJoinableMatches = joinableMatches.filter((match) =>
-    [match.player1, match.player2, match.player3, match.player4]
-      .filter(Boolean)
-      .some((player) =>
-        friendshipData?.friends.some((friend) => friend.id === player._id)
-      )
-  );
+  const filteredJoinableMatches = joinableMatches.filter((match) => {
+    const players = [match.player1, match.player2, match.player3, match.player4].filter(Boolean);
+    const includesFriend = players.some((player) =>
+      friendshipData?.friends.some((friend) => friend.id === player._id)
+    );
+    const includesUser = players.some((player) => player._id === user?._id);
+    return includesFriend && !includesUser;
+  });
 
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg flex flex-col">
@@ -113,7 +117,7 @@ function Home() {
         )}
         {isAuthenticated ? (
           <>
-            <div className="w-full max-w-full px-4 mb-12">
+            <div className="w-full max-w-[1700px] px-4 mb-12">
               <h2 className="text-2xl font-bold text-primaryText dark:text-dark-text-accent mb-6">
                 {t('home.joinable_title')}
               </h2>

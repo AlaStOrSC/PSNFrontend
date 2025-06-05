@@ -1,4 +1,3 @@
-import React from 'react';
 import BannerM from '../components/BannerM';
 import ValueCard from '../components/ValueCard';
 import EnvironmentalImpactChart from '../components/EnvironmentalImpactChart';
@@ -7,20 +6,23 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import bannerImage from '../assets/MedioAmbiente.jpg';
+import sostenibilidad from '../assets/sostenibilidad.jpg';
+import calidad from '../assets/calidad.jpg'
+import comunidad from '../assets/comunidad.jpg'
 
 const valueCards = [
   {
-    image: 'https://picsum.photos/300/200?random=1',
+    image: calidad,
     titleKey: 'conocenos.cards.calidad.title',
     descriptionKey: 'conocenos.cards.calidad.description',
   },
   {
-    image: 'https://picsum.photos/300/200?random=2',
+    image: comunidad,
     titleKey: 'conocenos.cards.comunidad.title',
     descriptionKey: 'conocenos.cards.comunidad.description',
   },
   {
-    image: 'https://picsum.photos/300/200?random=3',
+    image: sostenibilidad,
     titleKey: 'conocenos.cards.sostenibilidad.title',
     descriptionKey: 'conocenos.cards.sostenibilidad.description',
   },
