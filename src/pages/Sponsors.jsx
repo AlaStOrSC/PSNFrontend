@@ -9,7 +9,7 @@ import Logo5 from '../assets/SegurosSantaLogo.png';
 import Logo6 from '../assets/HeadLogo.png';
 import Logo7 from '../assets/BabolatLogo.png';
 import Logo8 from '../assets/AdidasLogo.png';
-import Gatorade from '../assets/gatorade.png';
+import Gatorade from '../assets/Gatorade.png';
 import LeroySalon from '../assets/LeroyDecoracion.png';
 import SantaLucia from '../assets/SantaLucia.jpeg';
 import Head from '../assets/HeadRethink.jpg';
