@@ -5,8 +5,6 @@ function JoinableMatchCard({ match, friends, onJoin }) {
   const { t } = useTranslation();
   const formatDate = (date) => new Date(date).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
 
-
-
   const players = [
     { player: match.player1, position: 'player1' },
     { player: match.player2, position: 'player2' },
@@ -14,16 +12,15 @@ function JoinableMatchCard({ match, friends, onJoin }) {
     { player: match.player4, position: 'player4' },
   ];
 
-
   return (
-    <div className="bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg dark:shadow-dark-shadow p-6 w-96">
+    <div className="bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg dark:shadow-dark-shadow p-6 w-96 relative">
       <h3 className="text-lg font-bold text-primaryText dark:text-dark-text-accent mb-4 text-center">
         {formatDate(match.date)}, {match.time}, {match.city}
       </h3>
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          {players.slice(0, 2).map(({ player, position }) => (
-            <div key={position} className="flex items-center mb-2">
+          {players.slice(0, 2).map(({ player, position }, index) => (
+            <div key={position} className="flex items-center mb-6 relative">
               {player ? (
                 <>
                   <img
@@ -33,7 +30,12 @@ function JoinableMatchCard({ match, friends, onJoin }) {
                   />
                   <div>
                     <p className="text-primaryText dark:text-dark-text-primary">{player.username}</p>
-                    <p className="text-sm text-gray-600 dark:text-dark-text-secondary">{player.score.toFixed(2)}</p>
+                    <p
+                      className="absolute text-sm text-gray-600 dark:text-dark-text-secondary"
+                      style={{ left: '50%', top: 'calc(90%)' }}
+                    >
+                      {player.score.toFixed(2)}
+                    </p>
                   </div>
                 </>
               ) : (
@@ -48,10 +50,10 @@ function JoinableMatchCard({ match, friends, onJoin }) {
             </div>
           ))}
         </div>
-        <div className="w-px bg-gray-200 dark:bg-dark-border h-20 mx-4"></div>
+        <div className="w-px bg-gray-200 dark:bg-dark-border h-28 mx-4"></div>
         <div className="flex-1">
-          {players.slice(2, 4).map(({ player, position }) => (
-            <div key={position} className="flex items-center mb-2">
+          {players.slice(2, 4).map(({ player, position }, index) => (
+            <div key={position} className="flex items-center mb-6 relative">
               {player ? (
                 <>
                   <img
@@ -61,7 +63,12 @@ function JoinableMatchCard({ match, friends, onJoin }) {
                   />
                   <div>
                     <p className="text-primaryText dark:text-dark-text-primary">{player.username}</p>
-                    <p className="text-sm text-gray-600 dark:text-dark-text-secondary">{player.score.toFixed(2)}</p>
+                    <p
+                      className="absolute text-sm text-gray-600 dark:text-dark-text-secondary"
+                      style={{ left: '50%', top: 'calc(90%)' }}
+                    >
+                      {player.score.toFixed(2)}
+                    </p>
                   </div>
                 </>
               ) : (

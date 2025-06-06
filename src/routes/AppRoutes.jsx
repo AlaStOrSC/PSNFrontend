@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from '../pages/AuthPage';
 import Home from '../pages/Home';
 import Matches from '../pages/Matches';
@@ -7,7 +7,15 @@ import MainLayout from '../layouts/MainLayout';
 import Ranking from '../pages/Ranking';
 import PSNShop from '../pages/PSNShop';
 import Conocenos from '../pages/Conocenos';
+import AdminZone from '../pages/AdminZone';
+import Sponsors from '../pages/Sponsors';
 import ProtectedRoute from '../components/ProtectedRoute';
+import { useSelector } from 'react-redux';
+
+function AdminRoute({ children }) {
+  const { user } = useSelector((state) => state.auth);
+  return user && user.role === 'admin' ? children : <Navigate to="/" />;
+}
 
 function AppRoutes() {
   return (
@@ -47,10 +55,16 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
+          <Route path="/conocenos" element={<Conocenos />} />
+          <Route path="/sponsors" element={<Sponsors />} />
           <Route
-            path="/conocenos"
+            path="/admin"
             element={
-                <Conocenos />
+              <ProtectedRoute>
+                <AdminRoute>
+                  <AdminZone />
+                </AdminRoute>
+              </ProtectedRoute>
             }
           />
         </Route>

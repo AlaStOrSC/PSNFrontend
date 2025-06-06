@@ -95,7 +95,7 @@ const filteredJoinableMatches = joinableMatches.filter((match) => {
   const includesFriend = players.some((player) =>
     friendshipData?.friends.some((friend) => friend.id === player._id)
   );
-  const includesUser = players.some((player) => String(player._id) === String(user.userId));
+  const includesUser = players.some((player) => String(player._id) === String(user?.userId));
   const shouldRender = includesFriend && !includesUser;
   return shouldRender;
 });

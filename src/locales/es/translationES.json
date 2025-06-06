@@ -205,5 +205,21 @@
   "banner.texth1": "Encuentra con quien jugar al pádel y compite para subir en el ranking",
   "banner.texth2": "Juega en pistas de todo el mundo y encuentra jugadores de tu nivel",
   "news.title": "¡Mantente al día con las últimas noticias!",
-  "home.close": "Cerrar"
+  "home.close": "Cerrar",
+  "admin.userfilter" : "Nombre de usuario",
+  "admin.title" : "Panel de administración",
+  "admin.delete_confirm_title": "Confirmar eliminación",
+  "admin.delete_confirm_message": "¿Estás seguro de que quieres eliminar a este usuario?",
+  "admin.delete_confirm_button": "Confirmar",
+  "admin.delete_cancel_button": "Cancelar",
+  "sponsors.title": "Socios",
+  "sponsors.banner_text": "Impulsando el futuro del pádel y del medio ambiente con la ayuda de nuestros patrocinadores",
+    "Head.title_card" : "Head Rethink",
+    "Head.h2Text" : " Head no solo nos ayuda con sus presurizadores para que nuestras pelotas duren más, con su iniciativa Head Rethink han planteado todo un sistema para apoyar al medio ambiente desde diferentes vías, os animamos a que sigais sus pasos, https://www.head.com/es_ES/rethink  ",
+  "pepsico.title_card" : "¡Hidrátate antes de tu partido!" ,
+  "SantaLu.title_card" : "Comprometidos con el pádel femenino",
+  "SantaLu.h2Text" : "Es un honor que grandes empresas como santalucía seguros, tomen iniciativas patrocinando a jugadoras tan importantes como Alejandra Salazar, desde PSN os agradecemos el apoyo y que sigais haciendo que el pádel femenino crezca sin parar.",
+  "Leroy.title_card" : "Decora con Leroy Merlin",
+    "gatorade.h2Text" : " Desde PSN y con la ayuda de PepsiCo, sabemos que los partidos pueden ser muy exigentes y que no hay nada mejor para tu salud y placer, que refrescarte con un Gatorade durante tus partidos.",
+  "Leroy.h2Text" : "Para los verdaderos amantes del pádel, te animamos a que decores tu salón con los colores de tu deporte favorito, para que cuando veas jugar a tus ídolos te sientas como si estuvieras en la pista. "
 }

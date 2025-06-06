@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
 import { toggleTheme } from '../store/slices/themeSlice';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { HomeIcon, UserIcon, TrophyIcon, Bars3Icon, XMarkIcon, BoltIcon, EnvelopeIcon, ShoppingBagIcon, MoonIcon, SunIcon, InformationCircleIcon, ArrowRightOnRectangleIcon, ArrowLeftOnRectangleIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, UserIcon, TrophyIcon, Bars3Icon, XMarkIcon, BoltIcon, EnvelopeIcon, ShoppingBagIcon, MoonIcon, SunIcon, InformationCircleIcon, ArrowRightOnRectangleIcon, ArrowLeftOnRectangleIcon, ShieldCheckIcon, HeartIcon } from '@heroicons/react/24/solid';
 import Chat from '../components/Chat';
 import { useTranslation } from 'react-i18next';
 import LogoNavbar from '../assets/LogoNavbar.png';
@@ -42,6 +42,10 @@ function MainLayout() {
     { name: t('navbar.ranking'), path: '/ranking', icon: TrophyIcon },
     { name: t('navbar.tienda'), path: '/shop', icon: ShoppingBagIcon },
     { name: t('navbar.conocenos'), path: '/conocenos', icon: InformationCircleIcon },
+    { name: t('sponsors.title'), path: '/sponsors', icon: HeartIcon },
+    ...(user && user.role === 'admin' ? [
+      { name: 'Admin', path: '/admin', icon: ShieldCheckIcon },
+    ] : []),
   ];
 
   return (

@@ -205,5 +205,21 @@
   "banner.texth1": "Find someone to play padel with and compete to climb the ranking.",
   "banner.texth2": "Play on courts around the world and find players at your level.",
   "news.title": "Stay up to date with the latest news!",
-  "home.close": "Close"
+  "home.close": "Close",
+  "admin.userfilter" : "Username",
+  "admin.title" : "Admin dashboard",
+  "admin.delete_confirm_title": "Confirm deletion",
+  "admin.delete_confirm_message": "Are you sure you want to delete this user?",
+  "admin.delete_confirm_button": "Confirm",
+  "admin.delete_cancel_button": "Cancel",
+  "sponsors.title": "Sponsors",
+  "sponsors.banner_text": "Driving the future of padel and the environment with the support of our sponsors",
+  "Head.title_card" : "Head Rethink",
+  "Head.h2Text" : "Head not only helps us with their pressurizers to make our balls last longer, but with their Head Rethink initiative, they have developed a comprehensive system to support the environment in various ways. We encourage you to follow in their footsteps, https://www.head.com/es_ES/rethink",
+  "pepsico.title_card" : "Hydrate before your match!" ,
+  "SantaLu.title_card" : "Committed to women's paddle tennis",
+  "SantaLu.h2Text" : "It is an honor that great companies like Santalucía Seguros take initiatives to sponsor such important players as Alejandra Salazar. From PSN, we thank you for your support and for continuing to make women's paddle tennis grow unstoppable.",
+  "Leroy.title_card" : "Decorate with Leroy Merlin",
+  "gatorade.h2Text" : "From PSN and with the help of PepsiCo, we know that matches can be very demanding and that there’s nothing better for your health and enjoyment than refreshing yourself with a Gatorade during your games.",
+  "Leroy.h2Text" : "For true padel lovers, we encourage you to decorate your living room with the colors of your favorite sport, so that when you watch your idols play, you feel like you're on the court."
 }

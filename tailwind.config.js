@@ -23,7 +23,8 @@ export default {
         // Colores para modo oscuro
         'dark-bg': '#0f172a', // Fondo principal (slate-900)
         'dark-bg-secondary': '#1e293b', // Fondo contenedores (slate-800)
-        'dark-bg-tertiary': '#334155', // Fondo alternado (slate-700)
+        'dark-bg-tertiary': '#334155', // Fondo alternado (slate-700
+        'dark-bg-border': 'rgb(176, 180, 187)',
         'dark-text-primary': '#f3f4f6', // Texto principal (gray-100)
         'dark-text-secondary': '#d1d5db', // Texto secundario (gray-300)
         'dark-text-accent': '#fff', // Texto destacado (accent)
