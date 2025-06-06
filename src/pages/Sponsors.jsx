@@ -22,17 +22,17 @@ function Sponsors() {
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg">
       <div
-        className="relative h-96 bg-cover bg-center"
-        style={{ backgroundImage: `url(${BannerImg})` }}
-      >
-        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <h1
-            className="text-4xl md:text-5xl font-bold text-white text-center px-4 animate__animated animate__fadeInUp"
-          >
-            {t('sponsors.banner_text')}
-          </h1>
-        </div>
-      </div>
+  className="relative h-96 bg-cover bg-center"
+  style={{ backgroundImage: `url(${BannerImg})` }}
+>
+  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <h1
+      className="text-4xl md:text-5xl font-bold text-white text-center px-16 animate__animated animate__fadeInUp"
+    >
+      {t('sponsors.banner_text')}
+    </h1>
+  </div>
+</div>
 
       <div className="py-12 bg-gradient-to-r from-neutral to-gray-100 dark:from-dark-bg-border dark:to-gray-700 overflow-hidden">
   <div className="max-w-7xl mx-auto px-4">
