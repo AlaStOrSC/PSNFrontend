@@ -80,7 +80,6 @@ function TestimonialSlider() {
             </SwiperSlide>
           ))}
         </Swiper>
-        {/* Botones personalizados de navegación */}
         <div className="custom-swiper-button-prev absolute top-1/2 -left-10 transform -translate-y-1/2 cursor-pointer text-primary dark:text-dark-text-accent">
           <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
             <path
