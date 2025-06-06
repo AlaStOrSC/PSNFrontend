@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import FormContainer from './FormContainer';
+import { useTranslation } from 'react-i18next';
+
 
 function FilterForm({ isOpen, onClose, onApplyFilters }) {
+  const { t } = useTranslation()
   const [filters, setFilters] = useState({
     dateFrom: '',
     dateTo: '',
@@ -39,13 +42,13 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
       onClose={onClose}
       onSubmit={handleApplyFilters}
       onReset={handleResetFilters}
-      title="Filtrar partidos"
-      submitLabel="Aplicar filtros"
-      resetLabel="Limpiar filtros"
+      title={t('matches.filtermatches')}
+      submitLabel={t('matches.applyfilters')}
+      resetLabel={t('matches.cleanfilters')}
     >
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
-          Fecha desde
+          {t('matches.datefrom')}
         </label>
         <input
           type="date"
@@ -57,7 +60,7 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
-          Fecha hasta
+          {t('matches.dateto')}
         </label>
         <input
           type="date"
@@ -69,7 +72,7 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
-          Estado
+          {t('matches.state')}
         </label>
         <select
           name="status"
@@ -77,14 +80,14 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
           onChange={handleInputChange}
           className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
         >
-          <option value="Todos">Todos</option>
-          <option value="Finalizado">Finalizado</option>
-          <option value="Pendiente">Pendiente</option>
+          <option value="Todos">{t('matches.allfilter')}</option>
+          <option value="Finalizado">{t('matches.finishedfilter')}</option>
+          <option value="Pendiente">{t('matches.pendingfilter')}</option>
         </select>
       </div>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 dark:text-dark-text-primary mb-2">
-          Resultado
+          {t('matches.result')}
         </label>
         <select
           name="result"
@@ -92,10 +95,10 @@ function FilterForm({ isOpen, onClose, onApplyFilters }) {
           onChange={handleInputChange}
           className="w-full p-3 border border-gray-200 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg-tertiary text-gray-700 dark:text-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-dark-secondary"
         >
-          <option value="Todos">Todos</option>
-          <option value="Ganados">Ganados</option>
-          <option value="Perdidos">Perdidos</option>
-          <option value="Empatados">Empatados</option>
+          <option value="Todos">{t('matches.allfilter')}</option>
+          <option value="Ganados">{t('matches.won')}</option>
+          <option value="Perdidos">{t('matches.lost')}</option>
+          <option value="Empatados">{t('matches.drawn')}</option>
         </select>
       </div>
     </FormContainer>

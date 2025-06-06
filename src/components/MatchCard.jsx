@@ -270,23 +270,23 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
         {match.rainWarning && (
           <p className="text-primaryText dark:text-yellow-400 flex items-center mt-1 text-sm">
             <ExclamationTriangleIcon className="h-5 w-5 mr-2 text-primaryText dark:text-yellow-400" />
-            Posibilidad de lluvia, recomendado reservar en cubierto
+            {t('matches.rainwarning')}
           </p>
         )}
       </div>
 
       <p className="text-primaryText dark:text-dark-text-secondary mb-4">
-        Estado: <span className="font-semibold">{isFinalized ? 'Finalizado' : 'Pendiente'}</span>
+        {t('matches.state')}: <span className="font-semibold">{isFinalized ? t('matches.state2') : t('matches.state3')}</span>
       </p>
 
       {isFinalized && (
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-accent mb-2">Resultado</h3>
+          <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-accent mb-2">{t('matches.result')}</h3>
           <table className="w-full text-center border-collapse border-2 border-gray-200 dark:border-dark-border">
             <thead>
               <tr>
-                <th className="border-2 border-gray-200 dark:border-dark-border p-2 text-primaryText dark:text-dark-text-primary">Equipo 1</th>
-                <th className="border-2 border-gray-200 dark:border-dark-border p-2 text-primaryText dark:text-dark-text-primary">Equipo 2</th>
+                <th className="border-2 border-gray-200 dark:border-dark-border p-2 text-primaryText dark:text-dark-text-primary">{t('matches.team1')}</th>
+                <th className="border-2 border-gray-200 dark:border-dark-border p-2 text-primaryText dark:text-dark-text-primary">{t('matches.team2')}</th>
               </tr>
             </thead>
             <tbody>
@@ -329,7 +329,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
 
       {isFinalized && (
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-accent mb-2">Comentarios</h3>
+          <h3 className="text-lg font-semibold text-primaryText dark:text-dark-text-accent mb-2">{t('match.comments')}</h3>
           {isEditing ? (
             <textarea
               name="comments"
@@ -352,7 +352,7 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
             className="flex items-center px-4 py-2 bg-save text-white dark:bg-save dark:text-dark-text-primary rounded-lg hover:bg-saveHover dark:hover:bg-saveHover transition-colors"
           >
             <CheckCircleIcon className="h-5 w-5 mr-2" />
-            Guardar
+            {t('matches.save')}
           </button>
         )}
         <button
@@ -360,14 +360,14 @@ function MatchCard({ match, user, onUpdate, onDelete }) {
           className="flex items-center px-4 py-2 bg-secondary text-white dark:bg-dark-primary dark:text-dark-text-primary rounded-lg hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
         >
           <PencilIcon className="h-5 w-5 mr-2" />
-          Editar
+          {t('matches.edit')}
         </button>
         <button
           onClick={handleDelete}
           className="flex items-center px-4 py-2 bg-red-500 text-white dark:bg-red-600 dark:text-dark-text-primary rounded-lg hover:bg-red-600 dark:hover:bg-red-700 transition-colors"
         >
           <TrashIcon className="h-5 w-5 mr-2" />
-          Borrar
+          {t('matches.delete')}
         </button>
       </div>
     </div>

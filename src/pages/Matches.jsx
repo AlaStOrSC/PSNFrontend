@@ -7,8 +7,11 @@ import api from '../services/api';
 import CreateMatchForm from '../components/CreateMatchForm';
 import FilterForm from '../components/FilterForm';
 import MatchCard from '../components/MatchCard';
+import { useTranslation } from 'react-i18next';
+
 
 function Matches() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { user } = useSelector((state) => state.auth);
   const [filteredMatches, setFilteredMatches] = useState([]);
@@ -127,7 +130,7 @@ function Matches() {
   if (loading) {
     return (
       <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8 text-center">
-        <p className="text-lg text-gray-700 dark:text-dark-text-secondary">Cargando partidos...</p>
+        <p className="text-lg text-gray-700 dark:text-dark-text-secondary">{t('matches.loadingmatches')}</p>
       </div>
     );
   }
@@ -143,26 +146,26 @@ function Matches() {
   return (
     <div className="min-h-screen bg-neutral dark:bg-dark-bg py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">Tus partidos</h1>
+        <h1 className="text-3xl font-bold text-primary dark:text-dark-text-accent mb-6 text-center">{t('matches.yourmatches')}</h1>
         <div className="flex justify-center space-x-4 mb-6">
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
             className="bg-secondary text-white dark:bg-dark-primary dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-buttonsHover dark:hover:bg-dark-secondary transition-colors"
           >
-            {showCreateForm ? 'Cerrar formulario' : 'Crear partido'}
+            {showCreateForm ? t('matches.closeform') : t('matches.creatematch')}
           </button>
           <button
             onClick={() => setShowFilterForm(!showFilterForm)}
             className="bg-secondary text-white dark:bg-buttons dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-buttonsHover dark:hover:bg-buttonsHover transition-colors"
           >
-            {showFilterForm ? 'Cerrar filtros' : 'Filtros'}
+            {showFilterForm ? t('matches.closefilter') : t('matches.filter')}
           </button>
           {location.search.includes('date') && (
             <button
               onClick={handleClearFilter}
               className="bg-red-500 text-white dark:bg-red-600 dark:text-dark-text-primary px-6 py-3 rounded-lg font-medium hover:bg-red-600 dark:hover:bg-red-700 transition-colors"
             >
-              Limpiar filtro de fecha
+              {t('matches.cleandate')}
             </button>
           )}
         </div>
@@ -176,7 +179,7 @@ function Matches() {
         )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {!filteredMatches || filteredMatches.length === 0 ? (
-            <p className="text-center text-gray-600 dark:text-dark-text-secondary col-span-full">No tienes partidos que coincidan con los filtros.</p>
+            <p className="text-center text-gray-600 dark:text-dark-text-secondary col-span-full">{t('matches.nofilter')}</p>
           ) : (
             filteredMatches.map((match) => (
               <MatchCard
