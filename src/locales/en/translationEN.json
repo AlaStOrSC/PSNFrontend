@@ -9,7 +9,6 @@
   "navbar.iniciar_sesion": "Log In",
   "navbar.cambiar_tema": "Change Theme",
   "footer.copyright": "© 2025 PSN. All rights reserved.",
-  "footer.contact": "enriquemaciasm1989@gmail.com",
   "conocenos.title": "At PSN, we do things right and are a company committed to the environment.",
   "conocenos.values_title": "Our Values",
   "conocenos.description": "At PSN, we are dedicated to connecting padel enthusiasts through an innovative platform that promotes competition, community, and sustainability. Our values focus on quality, inclusivity, and respect for the environment. Every match organized and product sold contributes to reducing our environmental impact, supporting reforestation and recycling initiatives. Join us to enjoy padel while caring for the planet.",
@@ -251,6 +250,24 @@
   "matches.drawn" : "Drawn",
   "matches.applyfilters" : "Apply filters",
   "matches.dateto" : "Date to",
-  "matches.datefrom" : "Date from"
+  "matches.datefrom" : "Date from",
+      "footer.quick_links": "Quick Links",
+    "footer.create_match": "Create a match",
+    "footer.ranking": "Ranking",
+    "footer.profile": "Profile",
+    "footer.visit_shop": "Visit our shop",
+    "footer.about_company": "About the Company",
+    "footer.about_us": "About Us",
+    "footer.sponsors": "Sponsors",
+    "footer.faq": "FAQ",
+    "footer.faq_who_we_are": "Who are we?",
+    "footer.faq_how_to_start": "How to start?",
+    "footer.faq_how_to_earn_points": "How do I earn points?",
+    "footer.faq_how_to_redeem_points": "How to redeem my points?",
+    "footer.faq_how_to_sell": "How to sell in the shop?",
+    "footer.faq_how_to_create_match": "How to create a match?",
+    "footer.follow_us": "Follow Us",
+    "footer.contact": "Contact"
+  
   
 }

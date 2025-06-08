@@ -132,11 +132,11 @@ function Sponsors() {
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-155.333%);
+      transform: translateX(-100%);
     }
   }
   .animate-scroll {
-    animation: scroll 18s linear infinite;
+    animation: scroll 40s linear infinite;
   }
   .pause-scroll:hover {
     animation-play-state: paused;
