@@ -270,7 +270,7 @@ function AdminZone() {
     },
     {
       field: 'actions',
-      headerName: t('ranking.action'),
+      headerName: t('admin.action'),
       flex: 0.2,
       minWidth: 150,
       headerAlign: 'center',

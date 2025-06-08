@@ -267,5 +267,6 @@
     "footer.faq_how_to_sell": "¿Cómo vender en la tienda?",
     "footer.faq_how_to_create_match": "¿Cómo crear un partido?",
     "footer.follow_us": "Síguenos",
-    "footer.contact": "Contacto"
+    "footer.contact": "Contacto",
+    "admin.action": "BORRAR/EDITAR"
 }

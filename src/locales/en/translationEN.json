@@ -267,7 +267,8 @@
     "footer.faq_how_to_sell": "How to sell in the shop?",
     "footer.faq_how_to_create_match": "How to create a match?",
     "footer.follow_us": "Follow Us",
-    "footer.contact": "Contact"
+    "footer.contact": "Contact",
+    "admin.action": "DELETE/EDIT"
   
   
 }
