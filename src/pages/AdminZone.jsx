@@ -46,7 +46,6 @@ function AdminZone() {
         email: updatedUser.email,
         phone: updatedUser.phone,
         city: updatedUser.city,
-        points: updatedUser.points,
         score: updatedUser.score,
       });
       return response.data;
@@ -106,7 +105,6 @@ function AdminZone() {
       email: editUser.email || '',
       phone: editUser.phone || '',
       city: editUser.city || '',
-      points: editUser.points || 0,
       score: editUser.score || 0,
     });
   };
@@ -231,25 +229,6 @@ function AdminZone() {
         ),
     },
     {
-      field: 'points',
-      headerName: t('profile.points'),
-      flex: 0.15,
-      minWidth: 100,
-      headerAlign: 'center',
-      align: 'center',
-      renderCell: (params) =>
-        editUser?.userId === params.row.userId ? (
-          <input
-            type="number"
-            value={editUser.points}
-            onChange={(e) => setEditUser({ ...editUser, points: parseInt(e.target.value) || 0 })}
-            className="border border-gray-300 dark:border-dark-border rounded p-1 text-primaryText dark:text-dark-text-primary bg-white dark:bg-dark-bg-tertiary"
-          />
-        ) : (
-          params.row.points
-        ),
-    },
-    {
       field: 'score',
       headerName: t('profile.score'),
       flex: 0.15,
@@ -355,7 +334,6 @@ function AdminZone() {
                 email: userData.email,
                 phone: userData.phone,
                 city: userData.city,
-                points: userData.points,
                 score: userData.score,
                 userId: userData.userId,
                 profilePicture: userData.profilePicture,
@@ -370,7 +348,6 @@ function AdminZone() {
                 email: !isMobile,
                 phone: !isMobile,
                 city: !isMobile,
-                points: !isMobile,
                 score: !isMobile,
               }}
               getRowClassName={(params) =>
