@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import LogoNavbar from '../assets/LogoNavbar.png';
 import 'flag-icons/css/flag-icons.min.css';
 
+
 function MainLayout() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const { theme } = useSelector((state) => state.theme);
@@ -20,6 +21,9 @@ function MainLayout() {
   const handleLogout = () => {
     dispatch(logout());
     navigate('/auth');
+  };
+  const handleLogoClick = () => {
+    navigate('/');
   };
 
   const toggleMenu = () => {
@@ -52,15 +56,17 @@ function MainLayout() {
     <div className="flex flex-col min-h-screen bg-neutral dark:bg-dark-bg">
       <nav className="bg-primary text-white shadow-lg dark:bg-dark-bg-secondary dark:shadow-dark-shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <img
-                src={LogoNavbar}
-                alt="Logo"
-                className="h-20 w-auto"
-              />
-            </div>
-            <div className="hidden md:flex items-center space-x-4">
+         <div className="flex justify-between h-16">
+      <div className="flex items-center">
+        <img
+          src={LogoNavbar}
+          alt="Logo"
+          className="h-20 w-auto"
+          onClick={handleLogoClick}
+          style={{ cursor: 'pointer' }}
+        />
+      </div>
+            <div className="hidden md:flex items-center space-x-2">
               {navItems.map((item) => (
                 <NavLink
                   key={item.name}
