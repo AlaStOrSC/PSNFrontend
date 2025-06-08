@@ -9,7 +9,7 @@ export default {
       fontFamily: {
         sans: ['Montserrat', 'Poppins', 'sans-serif'], // Fuente predeterminada para todo el proyecto
         heading: ['Poppins', 'sans-serif'], // Opcional: para títulos
-        quirky: ['Bungee', 'cursive'], // Fuente "rara" para elementos destacados
+        quirky: ['Bungee', 'cursive'], // Fuente "rara" para elementos destacados, no usada finalmente
       },
       colors: {
         primary: '#05374d',

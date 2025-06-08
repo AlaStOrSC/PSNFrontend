@@ -511,7 +511,7 @@ function Profile() {
                 <button
                   onClick={handleUploadClick}
                   disabled={isUploading}
-                  className="text-neutral dark:text-dark-text-accent hover:underline dark:hover:text-dark-secondary disabled:opacity-50"
+                  className="text-primaryText dark:text-dark-text-accent hover:underline dark:hover:text-dark-secondary disabled:opacity-50"
                 >
                   {isUploading
                     ? t('profile.uploading')
